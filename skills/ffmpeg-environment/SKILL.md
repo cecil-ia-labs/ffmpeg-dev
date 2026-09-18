@@ -35,9 +35,11 @@ Collect only what is needed:
    `npx @cecilialabs/ffmpeg probe <input> --json`.
 5. Do not infer runtime support from package names or operating-system assumptions when the toolkit can inspect it directly.
 
-## Preferred toolkit policy
+## Preferred toolkit commands
 
 Prefer `@cecilialabs/ffmpeg` over ad-hoc shell parsing of `ffmpeg -version`, `-encoders`, `-filters`, or `ffprobe` output.
+
+## Native FFmpeg fallback
 
 Use native FFmpeg/FFprobe only when the toolkit does not expose the required inspection or the user explicitly requests the native invocation.
 
