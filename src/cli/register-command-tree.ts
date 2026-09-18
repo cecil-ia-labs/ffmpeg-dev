@@ -7,6 +7,7 @@ import { configureMilestone5Options } from "./milestone-5-options.js";
 import { configureMilestone6Options } from "./milestone-6-options.js";
 import { configureMilestone7Options } from "./milestone-7-options.js";
 import { configureMilestone8Options } from "./milestone-8-options.js";
+import { configureMilestone9Options } from "./milestone-9-options.js";
 import type { CommandSpec } from "./command-spec.js";
 import { runPlaceholder } from "./placeholder.js";
 
@@ -35,6 +36,7 @@ function registerSpec(parent: Command, spec: CommandSpec): void {
   configureMilestone6Options(command, path);
   configureMilestone7Options(command, path);
   configureMilestone8Options(command, path);
+  configureMilestone9Options(command, path);
   const action = resolveCommandAction(path);
   if (action) {
     command.action((...args: unknown[]) => action(command, args.slice(0, -1)));

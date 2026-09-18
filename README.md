@@ -1,7 +1,7 @@
 # FFmpeg Media Toolkit
 
-**Current milestone:** 8 — Diagnostics & Repair  
-**Version:** `0.6.0`
+**Current milestone:** 9 — Streaming & Capture  
+**Version:** `0.7.0`
 
 FFmpeg Media Toolkit is a professional, agent-friendly TypeScript CLI and plugin foundation for deterministic FFmpeg/FFprobe media workflows.
 
@@ -15,9 +15,9 @@ FFmpeg Media Toolkit is a professional, agent-friendly TypeScript CLI and plugin
 - **Media engine:** FFmpeg + FFprobe
 - **Minimum supported FFmpeg:** `6.1`
 
-## Milestone 8 status
+## Milestone 9 status
 
-Milestone 8 adds typed media diagnostics and observation-driven repair workflows on top of the runtime, probe, video, audio, conversion, and composition foundations established in Milestones 2–7.
+Milestone 9 adds typed network streaming and camera capture on top of the runtime, probe, video, audio, conversion, composition, and diagnostics foundations established in Milestones 2–8.
 
 Implemented now:
 
@@ -44,7 +44,9 @@ Implemented now:
 - `compose slideshow <directory>`;
 - `diagnose <input>`;
 - `repair timestamps <input>`;
-- `repair normalize <input>`.
+- `repair normalize <input>`;
+- `stream camera`;
+- `stream file <input>`.
 
 Video, audio, conversion, and composition operations now include:
 
@@ -58,7 +60,7 @@ Video, audio, conversion, and composition operations now include:
 - MP4/MOV/MKV H.264 + AAC output profiles;
 - WebM VP9 + Opus output profiles.
 
-Streaming commands remain registered placeholders until Milestone 9.
+Streaming commands are implemented in Milestone 9 for HTTP, RTMP, RTSP, SRT, UDP, and TCP destinations. Direct WebSocket output remains an explicit relay concern rather than a mislabeled HTTP stream.
 
 
 ## Diagnostics & repair
@@ -71,6 +73,36 @@ npx tsx src/cli.ts repair normalize ./source.mp4 --width 1920 --height 1080 --fp
 ```
 
 Diagnostics combine FFprobe structure, a read-only FFmpeg decode scan, optional supplied stderr logs, and optional `freezedetect`. Repair outputs are staged transactionally, reprobed, and re-diagnosed.
+
+## Streaming & capture
+
+Camera to HTTP MPEG-TS:
+
+```bash
+npx tsx src/cli.ts stream camera \
+  --device /dev/video0 \
+  --input-format v4l2 \
+  --framerate 15 \
+  --video-size 320x240 \
+  --transport http \
+  --container mpegts \
+  --video-codec mpeg1video \
+  --video-bitrate 500k \
+  --audio-codec none \
+  --url http://localhost:8083/live
+```
+
+File to SRT:
+
+```bash
+npx tsx src/cli.ts stream file ./clip.mp4 \
+  --transport srt \
+  --url 'srt://receiver.example:9000?mode=caller'
+```
+
+The toolkit separates capture source, encoding, muxer/container, network transport, and destination. Supported direct transports are HTTP(S), RTMP(S), RTSP, SRT, UDP, and TCP. A `ws://`/`wss://` URL is rejected with guidance to use an explicit relay.
+
+See [Milestone 9 streaming architecture](docs/milestone-9/streaming-and-capture.md).
 
 ## Codex local environment
 
