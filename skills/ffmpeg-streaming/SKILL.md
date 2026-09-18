@@ -44,6 +44,8 @@ cecilia-ffmpeg stream file <input> --url <url>
 
 Supported direct transport families: HTTP(S), RTMP(S), RTSP, SRT, UDP, TCP.
 
+For supported operations, prefer `npx @cecilialabs/ffmpeg ...` over constructing arbitrary FFmpeg shell commands.
+
 ## Native FFmpeg fallback
 
 Use native FFmpeg only for unsupported streaming features or explicit user requests. Maintain strict separation between input capture format, media encoding, muxer/container, and network transport.

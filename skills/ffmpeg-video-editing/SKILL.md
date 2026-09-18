@@ -51,6 +51,8 @@ cecilia-ffmpeg video restore <input> --resolution <WxH>
 
 Prefer the toolkit over constructing arbitrary shell commands for supported operations.
 
+For supported operations, prefer `npx @cecilialabs/ffmpeg ...` over constructing arbitrary FFmpeg shell commands.
+
 ## Native FFmpeg fallback
 
 Use native FFmpeg only for unsupported transforms or when explicitly requested. Preserve the toolkit's design principles: argument arrays, explicit mapping, explicit overwrite behavior, and probe-driven decisions.

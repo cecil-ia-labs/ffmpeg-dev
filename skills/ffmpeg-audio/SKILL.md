@@ -46,6 +46,8 @@ cecilia-ffmpeg audio remove-silence <input>
 cecilia-ffmpeg audio telephony <input>
 ```
 
+For supported operations, prefer `npx @cecilialabs/ffmpeg ...` over constructing arbitrary FFmpeg shell commands.
+
 ## Native FFmpeg fallback
 
 Use native FFmpeg only when the toolkit lacks the required audio transform or the user explicitly asks for it. Keep channel layout, sample rate, sample format, codec, and container explicit.

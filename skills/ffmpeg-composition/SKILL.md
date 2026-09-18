@@ -44,6 +44,8 @@ cecilia-ffmpeg compose transition <left> <right>
 cecilia-ffmpeg compose slideshow <directory>
 ```
 
+For supported operations, prefer `npx @cecilialabs/ffmpeg ...` over constructing arbitrary FFmpeg shell commands.
+
 ## Native FFmpeg fallback
 
 Use native FFmpeg only for unsupported composition graphs or user-requested native syntax. Retain the same normalization discipline before `xfade`.

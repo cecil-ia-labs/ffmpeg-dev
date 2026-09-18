@@ -49,6 +49,8 @@ cecilia-ffmpeg repair timestamps <input>
 cecilia-ffmpeg repair normalize <input>
 ```
 
+For supported operations, prefer `npx @cecilialabs/ffmpeg ...` over constructing arbitrary FFmpeg shell commands.
+
 ## Native FFmpeg fallback
 
 Use native FFmpeg only for unsupported repair cases or when explicitly requested. Preserve the diagnosis and explain what the fallback is intended to fix.

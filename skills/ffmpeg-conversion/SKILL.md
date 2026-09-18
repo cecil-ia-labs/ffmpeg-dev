@@ -46,6 +46,8 @@ cecilia-ffmpeg convert batch <directory> --from <format> --to <format>
 
 Prefer toolkit profiles over ad-hoc per-file shell loops.
 
+For supported operations, prefer `npx @cecilialabs/ffmpeg ...` over constructing arbitrary FFmpeg shell commands.
+
 ## Native FFmpeg fallback
 
 Use native FFmpeg only for unsupported format pairs or explicitly requested native syntax. Do not duplicate batch traversal logic in shell; keep selection/output planning deterministic.
