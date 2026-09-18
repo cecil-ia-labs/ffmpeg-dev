@@ -22,3 +22,5 @@ export * from "./conversion/index.js";
 export * from "./composition/index.js";
 
 export * from "./diagnostics/index.js";
+
+export * from "./streaming/index.js";

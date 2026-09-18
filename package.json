@@ -1,6 +1,6 @@
 {
   "name": "@cecilialabs/ffmpeg",
-  "version": "0.6.0",
+  "version": "0.7.0",
   "description": "Agent-friendly TypeScript CLI and toolkit for FFmpeg and FFprobe media workflows.",
   "type": "module",
   "license": "MIT",
@@ -39,7 +39,7 @@
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "verify:foundation": "node scripts/verify-foundation.mjs",
-    "validate": "npm run verify:foundation && npm run verify:runtime && npm run verify:inspection && npm run verify:video && npm run verify:audio && npm run verify:conversion && npm run verify:composition && npm run verify:diagnostics && npm run check && npm run lint && npm run test && npm run build",
+    "validate": "npm run verify:foundation && npm run verify:runtime && npm run verify:inspection && npm run verify:video && npm run verify:audio && npm run verify:conversion && npm run verify:composition && npm run verify:diagnostics && npm run verify:streaming && npm run check && npm run lint && npm run test && npm run build",
     "prepublishOnly": "npm run validate",
     "verify:runtime": "node scripts/verify-runtime.mjs",
     "verify:inspection": "node scripts/verify-inspection.mjs",
@@ -50,7 +50,8 @@
     "verify:diagnostics": "node scripts/verify-diagnostics.mjs",
     "doctor": "tsx src/cli.ts doctor",
     "codex:setup": "node scripts/codex-environment-setup.mjs",
-    "codex:cleanup": "node scripts/codex-environment-cleanup.mjs"
+    "codex:cleanup": "node scripts/codex-environment-cleanup.mjs",
+    "verify:streaming": "node scripts/verify-streaming.mjs"
   },
   "keywords": [
     "ffmpeg",

@@ -1,5 +1,41 @@
 # Changelog
 
+## 0.7.0 — Milestone 9 — Streaming & Capture
+
+### Added
+
+- Real `stream camera` and `stream file <input>` commands.
+- Typed streaming domain separating source/capture, encoding, container, transport, and destination.
+- Direct HTTP/HTTPS, RTMP/RTMPS, RTSP, SRT, UDP, and TCP planning.
+- URL-scheme/transport compatibility validation and protocol-specific muxer defaults.
+- V4L2, AVFoundation, and DirectShow camera input formats.
+- Low-latency H.264 default plus MPEG-1 video support for legacy JSMpeg-style receivers.
+- AAC, stream-copy, and audio-drop policies.
+- FFprobe preflight for file sources and `-re` real-time pacing by default.
+- Dry-run planning that does not open camera devices or network destinations.
+- Milestone 9 unit, CLI, and dry-run integration tests.
+- `verify:streaming` and streaming report JSON Schema.
+- Milestone 9 architecture and legacy migration documentation.
+
+### Changed
+
+- Package/plugin version advanced to `0.7.0`.
+- Streaming commands are no longer placeholders.
+- `npm run validate` now includes the Milestone 9 streaming verifier.
+- The legacy `stream-to-websocket.sh` behavior is represented accurately as HTTP MPEG-TS output.
+
+### Policy
+
+- Direct WebSocket output is intentionally rejected. WebSocket/browser delivery must use an explicit relay rather than treating HTTP as WebSocket.
+- GitHub Actions remain deferred until the alpha version is complete.
+
+### Validation
+
+- Unit and integration test sources are included.
+- Dry-run integration tests are designed to require FFmpeg/FFprobe but no live network receiver or camera.
+- Final `npm run validate` is delegated to the configured local Codex Environment before merge.
+
+
 ## 0.6.0 — Milestone 8 — Diagnostics & Repair
 
 ### Added

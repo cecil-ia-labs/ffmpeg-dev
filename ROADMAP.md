@@ -693,7 +693,8 @@ Repairs should be chosen from observed media properties rather than applying arb
 
 # Milestone 9 — Streaming & Capture
 
-**Target:** `v0.7.0`
+**Target:** `v0.7.0`  
+**Status:** ✅ Complete
 
 ### Legacy script covered
 
@@ -703,17 +704,7 @@ stream-to-websocket.sh
 
 ### Correction
 
-The existing script must not be represented as WebSocket if its actual output transport is HTTP.
-
-Model independently:
-
-```text
-capture source
-media encoding
-container
-transport
-destination
-```
+The legacy script was not a direct WebSocket stream: it captured V4L2 video, encoded MPEG-1 video, muxed MPEG-TS, and wrote to an HTTP URL. Milestone 9 models those concerns independently.
 
 ### Commands
 
@@ -727,26 +718,44 @@ Example:
 ```bash
 npx @cecilialabs/ffmpeg stream camera \
   --device /dev/video0 \
+  --input-format v4l2 \
+  --framerate 15 \
+  --video-size 320x240 \
   --container mpegts \
   --transport http \
   --url http://localhost:8083/stream
 ```
 
-### Future transports
-
-Architecture should permit:
+### Implemented direct transports
 
 ```text
-HTTP
-RTMP
+HTTP / HTTPS
+RTMP / RTMPS
 RTSP
 SRT
 UDP
 TCP
-WebSocket relay
 ```
 
-without requiring major changes to capture or codec code.
+Direct WebSocket output is deliberately not claimed. Browser/WebSocket delivery requires an explicit relay service.
+
+### Architecture
+
+```text
+source/capture
+    ↓
+encoding
+    ↓
+container/muxer
+    ↓
+transport + destination
+```
+
+Camera input formats include Linux V4L2, macOS AVFoundation, and Windows DirectShow. File streaming uses FFprobe preflight and real-time input pacing by default.
+
+### Acceptance Criteria
+
+✅ Streaming transport is independent from capture/encoding, and the legacy HTTP output is no longer mislabeled as WebSocket.
 
 ---
 

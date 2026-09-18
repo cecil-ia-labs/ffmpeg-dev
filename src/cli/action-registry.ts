@@ -6,6 +6,7 @@ import { runAudioAddSilenceAction, runAudioAttachAction, runAudioDetectSilenceAc
 import { runConvertBatchAction, runConvertFileAction } from "./actions/milestone-6.js";
 import { runComposeConcatAction, runComposeSlideshowAction, runComposeTransitionAction } from "./actions/milestone-7.js";
 import { runDiagnoseAction, runRepairNormalizeAction, runRepairTimestampsAction } from "./actions/milestone-8.js";
+import { runStreamCameraAction, runStreamFileAction } from "./actions/milestone-9.js";
 
 export type CommandAction = (command: Command, positional: readonly unknown[]) => Promise<void> | void;
 
@@ -35,6 +36,8 @@ const ACTIONS: Readonly<Record<string, CommandAction>> = {
   "cecilia-ffmpeg diagnose": runDiagnoseAction,
   "cecilia-ffmpeg repair timestamps": runRepairTimestampsAction,
   "cecilia-ffmpeg repair normalize": runRepairNormalizeAction,
+  "cecilia-ffmpeg stream camera": runStreamCameraAction,
+  "cecilia-ffmpeg stream file": runStreamFileAction,
 };
 
 export function resolveCommandAction(path: string): CommandAction | undefined {

@@ -1,0 +1,33 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://cecilialabs.com/schemas/ffmpeg-media-toolkit/streaming-report.schema.json",
+  "title": "FFmpeg Media Toolkit Streaming Report",
+  "type": "object",
+  "required": ["planned", "plan", "execution", "warnings"],
+  "properties": {
+    "planned": { "type": "boolean" },
+    "plan": {
+      "type": "object",
+      "required": ["source", "destination", "encoding", "args", "invocation", "warnings"],
+      "properties": {
+        "source": { "type": "object" },
+        "destination": {
+          "type": "object",
+          "required": ["url", "transport", "container"],
+          "properties": {
+            "url": { "type": "string" },
+            "transport": { "enum": ["http", "rtmp", "rtsp", "srt", "udp", "tcp"] },
+            "container": { "enum": ["mpegts", "flv", "rtsp"] }
+          }
+        },
+        "encoding": { "type": "object" },
+        "args": { "type": "array", "items": { "type": "string" } },
+        "invocation": { "type": "string" },
+        "warnings": { "type": "array" }
+      }
+    },
+    "execution": { "type": "object" },
+    "sourceMedia": { "type": "object" },
+    "warnings": { "type": "array" }
+  }
+}
