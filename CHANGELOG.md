@@ -1,5 +1,42 @@
 # Changelog
 
+## 0.8.0 — Milestone 10 — Professional-Level Skills
+
+### Added
+
+- Seven professional agent skills: environment, video editing, audio, conversion, composition, streaming, and diagnostics.
+- Portable YAML front matter with precise activation descriptions for every skill.
+- Explicit “do not use” boundaries to reduce cross-domain activation ambiguity.
+- Required-input, preflight, toolkit-command, validation, recovery, safety, and deterministic-behavior sections in every skill.
+- One substantive domain reference document under each skill's `references/` directory.
+- `scripts/verify-skills.mjs` and `test/skills/skills.test.ts`.
+- Milestone 10 architecture documentation and completion checklist.
+
+### Changed
+
+- Package/plugin version advanced to `0.8.0`.
+- `npm run validate` now includes `verify:skills`.
+- `skills/README.md` now documents the installed professional skill set.
+
+### Policy
+
+- Implemented operations prefer `@cecilialabs/ffmpeg` over arbitrary FFmpeg shell construction.
+- Native FFmpeg is a fallback for unsupported capabilities or explicit native-command requests.
+- GitHub Actions remain deferred until the alpha version is complete.
+
+### Validation
+
+Run locally before merge:
+
+```bash
+npm run check
+npm run lint
+npm test
+npm run build
+npm run validate
+```
+
+
 ## 0.7.0 — Milestone 9 — Streaming & Capture
 
 ### Added

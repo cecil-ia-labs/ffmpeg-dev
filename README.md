@@ -1,7 +1,7 @@
 # FFmpeg Media Toolkit
 
-**Current milestone:** 9 — Streaming & Capture  
-**Version:** `0.7.0`
+**Current milestone:** 10 — Professional-Level Skills  
+**Version:** `0.8.0`
 
 FFmpeg Media Toolkit is a professional, agent-friendly TypeScript CLI and plugin foundation for deterministic FFmpeg/FFprobe media workflows.
 
@@ -15,9 +15,9 @@ FFmpeg Media Toolkit is a professional, agent-friendly TypeScript CLI and plugin
 - **Media engine:** FFmpeg + FFprobe
 - **Minimum supported FFmpeg:** `6.1`
 
-## Milestone 9 status
+## Milestone 10 status
 
-Milestone 9 adds typed network streaming and camera capture on top of the runtime, probe, video, audio, conversion, composition, and diagnostics foundations established in Milestones 2–8.
+Milestone 10 packages the implemented FFmpeg domains as seven professional-level agent skills. Each skill is independently usable, defines activation and exclusion boundaries, performs probe/capability preflight when relevant, prefers the typed toolkit over ad-hoc shell commands, and contains domain reference material.
 
 Implemented now:
 
@@ -62,6 +62,34 @@ Video, audio, conversion, and composition operations now include:
 
 Streaming commands are implemented in Milestone 9 for HTTP, RTMP, RTSP, SRT, UDP, and TCP destinations. Direct WebSocket output remains an explicit relay concern rather than a mislabeled HTTP stream.
 
+
+## Professional skills
+
+```text
+skills/
+├── ffmpeg-environment/
+├── ffmpeg-video-editing/
+├── ffmpeg-audio/
+├── ffmpeg-conversion/
+├── ffmpeg-composition/
+├── ffmpeg-streaming/
+└── ffmpeg-diagnostics/
+```
+
+Each skill contains a portable `SKILL.md` plus a `references/` directory. The core execution policy is:
+
+```text
+supported operation → prefer @cecilialabs/ffmpeg
+unsupported operation or explicit request → native FFmpeg fallback
+```
+
+Run the skill contract verifier with:
+
+```bash
+npm run verify:skills
+```
+
+See [Milestone 10 skill architecture](docs/milestone-10/professional-skills.md).
 
 ## Diagnostics & repair
 

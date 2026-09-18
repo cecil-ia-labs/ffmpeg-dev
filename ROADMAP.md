@@ -761,7 +761,8 @@ Camera input formats include Linux V4L2, macOS AVFoundation, and Windows DirectS
 
 # Milestone 10 — Professional-Level Skills
 
-**Target:** `v0.8.0`
+**Target:** `v0.8.0`  
+**Status:** ✅ Complete
 
 ### Skills
 
@@ -776,17 +777,11 @@ skills/
 └── ffmpeg-diagnostics/
 ```
 
-Each Skill should contain:
+Every skill contains a portable `SKILL.md` and substantive `references/` material.
 
-```text
-SKILL.md
-references/
-assets/        when useful
-```
+### Implemented workflow contract
 
-### Skill requirements
-
-Every Skill must define:
+Each Skill defines:
 
 - precise activation scope;
 - when **not** to use it;
@@ -817,9 +812,15 @@ the required capability or the user explicitly asks for
 the native FFmpeg invocation.
 ```
 
+### Quality
+
+- `scripts/verify-skills.mjs` validates skill structure and required workflow sections.
+- `test/skills/skills.test.ts` enforces the repository-level skill contract.
+- `npm run validate` includes `verify:skills`.
+
 ### Acceptance Criteria
 
-A Skill should be useful independently of prior conversation context.
+✅ Every Skill is independently useful without prior conversation context and routes supported work through the toolkit-first policy.
 
 ---
 

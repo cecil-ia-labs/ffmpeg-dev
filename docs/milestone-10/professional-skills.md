@@ -1,0 +1,70 @@
+# Milestone 10 — Professional-Level Skills
+
+Milestone 10 converts the toolkit's implemented domains into seven portable agent skills.
+
+## Skill architecture
+
+```text
+user intent
+   ↓
+skill activation boundary
+   ↓
+required-input check
+   ↓
+probe / environment preflight
+   ↓
+preferred @cecilialabs/ffmpeg command
+   ↓
+execution
+   ↓
+validation
+   ↓
+error recovery or native fallback
+```
+
+The skills are intentionally domain-oriented rather than one skill per CLI command. This keeps activation precise while preserving enough context to choose between related operations.
+
+## Installed skills
+
+| Skill | Owns |
+|---|---|
+| ffmpeg-environment | doctor, versions, capabilities, probe |
+| ffmpeg-video-editing | trim, speed, image-to-video, restore |
+| ffmpeg-audio | attach, silence, silence detection/removal, telephony |
+| ffmpeg-conversion | file and batch format conversion |
+| ffmpeg-composition | concat, transitions, slideshow |
+| ffmpeg-streaming | camera/file capture and transport planning |
+| ffmpeg-diagnostics | diagnose, timestamp repair, normalization repair |
+
+## Portable skill contract
+
+Each `SKILL.md` uses minimal portable front matter:
+
+```yaml
+---
+name: skill-name
+description: concise activation description
+---
+```
+
+The body contains explicit workflow sections rather than assuming hidden prompt context.
+
+## Toolkit-first policy
+
+When a requested operation is implemented by the package, the skill routes to:
+
+```bash
+npx @cecilialabs/ffmpeg ...
+```
+
+Native FFmpeg remains available when the toolkit has no matching capability or when the user explicitly requests native FFmpeg syntax.
+
+This avoids duplicating the CLI's tested argument-building, output safety, probe normalization, and error taxonomy in free-form shell commands.
+
+## Context economy
+
+Reference material is kept under each skill's `references/` directory. The main skill body carries the workflow and decision boundaries; detailed domain matrices live in references and can be loaded only when needed.
+
+## Validation
+
+`scripts/verify-skills.mjs` verifies the seven skill roots, required workflow sections, toolkit-first policy, and referenced documentation. Vitest adds a corresponding repository-level contract test.
