@@ -1,0 +1,43 @@
+FFmpeg Media Toolkit — Milestone 6 validation
+Version: 0.4.0
+
+$ npm run verify:foundation
+PASS — Foundation verification passed for @cecilialabs/ffmpeg@0.4.0
+
+$ npm run verify:runtime
+PASS — Runtime verification passed for @cecilialabs/ffmpeg@0.4.0
+
+$ npm run verify:inspection
+PASS — FFmpeg/FFprobe environment inspection
+FFmpeg: 7.1.5-0+deb13u1
+FFprobe: 7.1.5-0+deb13u1
+
+$ npm run verify:video
+PASS — Milestone 4 video foundation
+
+$ npm run verify:audio
+PASS — Milestone 5 audio verifier
+
+$ npm run verify:conversion
+PASS — Milestone 6 conversion verifier
+Routes: MP4->WebM, MP4->GIF, MP4->animated WebP, WebM->GIF, GIF->WebM, WebP->PNG
+
+$ tsc -p tsconfig.build.json --noEmit (temporary dependency interface shims)
+PASS
+
+$ tsc -p tsconfig.json --noEmit (temporary dependency/test interface shims)
+PASS
+
+Real implementation smoke test:
+MP4->WebM: vp9 + opus
+MP4->GIF: gif
+MP4->animated WebP: webp
+WebM->GIF: gif
+GIF->WebM: vp9
+WebP->PNG: png
+Batch: discovered=2 attempted=2 succeeded=2 failed=0 skipped=0
+Batch existing=skip: attempted=0 skipped=2
+Dry run: planned=true; source audio metadata preserved; FFmpeg transform not executed
+
+npm install / npm test:
+NOT RUN — npm registry timed out in the assembly environment.

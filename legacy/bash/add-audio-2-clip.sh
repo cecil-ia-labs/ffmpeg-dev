@@ -1,0 +1,1 @@
+eval ffmpeg -i content.mp4 -i content.mp3 -filter_complex " [1:0] apad " -shortest output.mp4

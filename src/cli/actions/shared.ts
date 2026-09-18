@@ -1,0 +1,83 @@
+import type { Command } from "commander";
+import { ZodError } from "zod";
+
+import {
+  createFailureEnvelope,
+  createProcessSignalController,
+  createResultContext,
+  createSuccessEnvelope,
+  exitCodeForError,
+  isToolkitRuntimeError,
+  ToolkitRuntimeError,
+} from "../../core/index.js";
+import type { CommandExecution, ToolkitWarning } from "../../types/contracts.js";
+import { validateGlobalCliOptions, type GlobalCliOptions } from "../global-options.js";
+
+export interface ActionPayload<T> {
+  data: T;
+  warnings?: readonly ToolkitWarning[];
+  execution?: CommandExecution;
+  exitCode?: number;
+}
+
+export function commandPath(command: Command): string {
+  const parts: string[] = [];
+  let current: Command | null = command;
+  while (current) {
+    if (current.name()) parts.push(current.name());
+    current = current.parent;
+  }
+  return parts.reverse().join(" ");
+}
+
+export async function executeAction<T>(
+  command: Command,
+  operation: (options: GlobalCliOptions, signal: AbortSignal) => Promise<ActionPayload<T>>,
+  renderHuman: (data: T) => string,
+): Promise<void> {
+  const options = validateGlobalCliOptions(command.optsWithGlobals());
+  const path = commandPath(command);
+  const context = createResultContext(path);
+  const signals = createProcessSignalController();
+
+  try {
+    const payload = await operation(options, signals.signal);
+    if (options.json) {
+      const envelope = createSuccessEnvelope(context, payload.data, {
+        ...(payload.warnings !== undefined ? { warnings: payload.warnings } : {}),
+        ...(payload.execution !== undefined ? { execution: payload.execution } : {}),
+      });
+      process.stdout.write(`${JSON.stringify(envelope, null, 2)}\n`);
+    } else if (!options.quiet) {
+      const rendered = renderHuman(payload.data);
+      if (rendered.length > 0) process.stdout.write(`${rendered}\n`);
+      for (const warning of payload.warnings ?? []) {
+        process.stderr.write(`warning [${warning.code}]: ${warning.message}\n`);
+      }
+    }
+    if (payload.exitCode !== undefined) process.exitCode = payload.exitCode;
+  } catch (error: unknown) {
+    const runtimeError = isToolkitRuntimeError(error)
+      ? error
+      : error instanceof ZodError
+        ? new ToolkitRuntimeError("E_USAGE_INVALID_ARGUMENT", "Invalid command options.", {
+            details: {
+              issues: error.issues.map((issue) => ({ path: issue.path.join("."), message: issue.message })),
+            },
+            cause: error,
+          })
+        : new ToolkitRuntimeError("E_INTERNAL_INVARIANT", "Unexpected command failure.", { cause: error });
+
+    if (options.json) {
+      process.stdout.write(`${JSON.stringify(createFailureEnvelope(context, runtimeError), null, 2)}\n`);
+    } else {
+      process.stderr.write(`${runtimeError.message}\n`);
+      if (options.verbose && runtimeError.details) {
+        process.stderr.write(`${JSON.stringify(runtimeError.details, null, 2)}\n`);
+      }
+    }
+    process.exitCode = exitCodeForError(runtimeError.code);
+  } finally {
+    signals.dispose();
+  }
+}

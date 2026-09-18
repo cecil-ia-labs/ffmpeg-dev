@@ -1,0 +1,103 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://cecilialabs.com/schemas/ffmpeg-media-toolkit/media-info.schema.json",
+  "title": "FFmpeg Media Toolkit MediaInfo",
+  "type": "object",
+  "required": ["source", "format", "streams", "video", "audio"],
+  "properties": {
+    "source": { "type": "string", "minLength": 1 },
+    "format": {
+      "type": "object",
+      "properties": {
+        "formatName": { "type": "string" },
+        "formatLongName": { "type": "string" },
+        "durationSeconds": { "type": "number", "minimum": 0 },
+        "sizeBytes": { "type": "number", "minimum": 0 },
+        "bitrate": { "type": "number", "minimum": 0 },
+        "tags": { "type": "object", "additionalProperties": { "type": "string" } }
+      },
+      "additionalProperties": false
+    },
+    "streams": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/stream" }
+    },
+    "video": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/videoStream" }
+    },
+    "audio": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/audioStream" }
+    }
+  },
+  "additionalProperties": false,
+  "$defs": {
+    "baseStream": {
+      "type": "object",
+      "required": ["index", "codecType"],
+      "properties": {
+        "index": { "type": "integer", "minimum": 0 },
+        "codecType": { "enum": ["video", "audio", "subtitle", "data", "attachment", "unknown"] },
+        "codecName": { "type": "string" },
+        "codecLongName": { "type": "string" },
+        "durationSeconds": { "type": "number" },
+        "timeBase": { "type": "string" },
+        "startTimeSeconds": { "type": "number" },
+        "bitrate": { "type": "number", "minimum": 0 },
+        "tags": { "type": "object", "additionalProperties": { "type": "string" } }
+      }
+    },
+    "videoStream": {
+      "allOf": [
+        { "$ref": "#/$defs/baseStream" },
+        {
+          "type": "object",
+          "properties": {
+            "codecType": { "const": "video" },
+            "width": { "type": "integer", "minimum": 1 },
+            "height": { "type": "integer", "minimum": 1 },
+            "pixelFormat": { "type": "string" },
+            "sampleAspectRatio": { "type": "string" },
+            "displayAspectRatio": { "type": "string" },
+            "averageFrameRate": { "type": "string" },
+            "realFrameRate": { "type": "string" },
+            "fieldOrder": { "type": "string" }
+          }
+        }
+      ]
+    },
+    "audioStream": {
+      "allOf": [
+        { "$ref": "#/$defs/baseStream" },
+        {
+          "type": "object",
+          "properties": {
+            "codecType": { "const": "audio" },
+            "sampleRate": { "type": "integer", "minimum": 1 },
+            "channels": { "type": "integer", "minimum": 1 },
+            "channelLayout": { "type": "string" },
+            "sampleFormat": { "type": "string" }
+          }
+        }
+      ]
+    },
+    "stream": {
+      "oneOf": [
+        { "$ref": "#/$defs/videoStream" },
+        { "$ref": "#/$defs/audioStream" },
+        {
+          "allOf": [
+            { "$ref": "#/$defs/baseStream" },
+            {
+              "type": "object",
+              "properties": {
+                "codecType": { "enum": ["subtitle", "data", "attachment", "unknown"] }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

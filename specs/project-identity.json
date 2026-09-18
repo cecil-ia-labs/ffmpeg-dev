@@ -1,0 +1,27 @@
+{
+  "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
+  "productDisplayName": "FFmpeg Media Toolkit",
+  "pluginName": "ffmpeg-media-toolkit",
+  "pluginInitialVersion": "0.1.0",
+  "npmPackage": "@cecilialabs/ffmpeg",
+  "binary": "cecilia-ffmpeg",
+  "language": "TypeScript",
+  "runtime": "Node.js >=22.0.0",
+  "recommendedNode": "24 LTS",
+  "minimumFFmpeg": "6.1",
+  "recommendedFFmpegAsOf2026-09-18": "9.0.1",
+  "mediaBinaries": [
+    "ffmpeg",
+    "ffprobe"
+  ],
+  "distribution": [
+    "Agent Plugin",
+    "npm CLI",
+    "Codex/ChatGPT Skills"
+  ],
+  "futureAdapters": [
+    "MCP"
+  ],
+  "license": "MIT",
+  "currentImplementationVersion": "0.6.0"
+}

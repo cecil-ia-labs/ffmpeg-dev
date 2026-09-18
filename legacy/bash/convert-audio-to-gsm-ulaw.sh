@@ -1,0 +1,1 @@
+eval ffmpeg -i input.wav -ar 8000 -c:a pcm_mulaw inx-test.gsm

@@ -1,0 +1,36 @@
+Milestone 7 validation summary
+
+Environment:
+Node.js: v22.16.0
+FFmpeg: 7.1.5-0+deb13u1
+FFprobe: 7.1.5-0+deb13u1
+
+Verifier results:
+Foundation verification passed for @cecilialabs/ffmpeg@0.5.0
+Runtime verification passed for @cecilialabs/ffmpeg@0.5.0
+Milestone 3 environment verifier: PASS
+Milestone 4 video foundation verified.
+Milestone 5 audio verifier: PASS
+Milestone 6 conversion verifier: PASS
+Milestone 7 composition verification passed.
+
+Strict TypeScript targeted validation:
+src/composition/*.ts: PASS with strict, exactOptionalPropertyTypes, noUncheckedIndexedAccess,
+noUnusedLocals, and noUnusedParameters.
+
+Real FFmpeg composition smoke test using mismatched source properties:
+A: 160x90 @ 24 fps + AAC
+B: 320x180 @ 30 fps + AAC
+
+transition   duration ~= 2.779s  resolution 160x90  audio streams 1
+concat fade  duration ~= 2.779s  resolution 160x90  audio streams 1
+concat none  duration ~= 3.029s  resolution 160x90  audio streams 1
+slideshow    duration = 1.000s   resolution 320x180  audio streams 0
+
+Compatibility finding:
+On FFmpeg 7.1.5, placing setpts=PTS-STARTPTS after fps can make xfade reject the
+input with: "The inputs needs to be a constant frame rate; current rate of 1/0 is invalid".
+The final normalization order applies setpts before fps and succeeds with mixed input FPS.
+
+npm registry access timed out in the assembly environment, so npm-dependent lint/Vitest/full
+package build were not executed here. Those commands remain part of npm run validate.

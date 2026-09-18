@@ -1,0 +1,20 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://cecilialabs.com/schemas/ffmpeg-media-toolkit/composition-report.schema.json",
+  "title": "FFmpeg Media Toolkit Composition Report",
+  "type": "object",
+  "required": ["operation", "sources", "output", "planned", "invocation", "execution", "warnings", "details"],
+  "properties": {
+    "operation": { "enum": ["concat", "transition", "slideshow"] },
+    "sources": { "type": "array", "minItems": 2, "items": { "type": "string" } },
+    "output": { "type": "string" },
+    "planned": { "type": "boolean" },
+    "invocation": { "type": "string" },
+    "warnings": { "type": "array" },
+    "details": { "type": "object" },
+    "inputMedia": { "type": "array" },
+    "outputMedia": { "type": "object" },
+    "execution": { "type": "object" }
+  },
+  "additionalProperties": true
+}

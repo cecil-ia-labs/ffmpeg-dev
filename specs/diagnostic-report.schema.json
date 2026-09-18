@@ -1,0 +1,28 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://cecilialabs.com/schemas/ffmpeg/diagnostic-report.schema.json",
+  "title": "FFmpeg Media Toolkit Diagnostic Report",
+  "type": "object",
+  "required": ["source", "planned", "media", "issues", "freezes", "warnings"],
+  "properties": {
+    "source": { "type": "string" },
+    "planned": { "type": "boolean" },
+    "media": { "$ref": "./media-info.schema.json" },
+    "issues": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["code", "severity", "message"],
+        "properties": {
+          "code": { "type": "string" },
+          "severity": { "enum": ["info", "warning", "error"] },
+          "message": { "type": "string" },
+          "streamIndex": { "type": "integer" },
+          "details": { "type": "object" }
+        }
+      }
+    },
+    "freezes": { "type": "array" },
+    "warnings": { "type": "array" }
+  }
+}

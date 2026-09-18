@@ -1,0 +1,159 @@
+{
+  "binary": "cecilia-ffmpeg",
+  "globalOptions": [
+    "output",
+    "overwrite",
+    "dry-run",
+    "json",
+    "quiet",
+    "verbose",
+    "ffmpeg-path",
+    "ffprobe-path",
+    "keep-temp"
+  ],
+  "commands": {
+    "doctor": {},
+    "probe": {
+      "args": [
+        "input"
+      ]
+    },
+    "environment": {
+      "subcommands": {
+        "capabilities": {},
+        "version": {},
+        "install": {
+          "status": "reserved"
+        }
+      }
+    },
+    "video": {
+      "subcommands": {
+        "trim-start": {
+          "args": [
+            "input"
+          ]
+        },
+        "trim-end": {
+          "args": [
+            "input"
+          ]
+        },
+        "trim": {
+          "args": [
+            "input"
+          ]
+        },
+        "speed": {
+          "args": [
+            "input"
+          ]
+        },
+        "from-image": {
+          "args": [
+            "input"
+          ]
+        },
+        "restore": {
+          "args": [
+            "input"
+          ]
+        }
+      }
+    },
+    "audio": {
+      "subcommands": {
+        "attach": {
+          "args": [
+            "video",
+            "audio"
+          ]
+        },
+        "silence": {},
+        "add-silence": {
+          "args": [
+            "video"
+          ]
+        },
+        "detect-silence": {
+          "args": [
+            "input"
+          ]
+        },
+        "remove-silence": {
+          "args": [
+            "input"
+          ]
+        },
+        "telephony": {
+          "args": [
+            "input"
+          ]
+        }
+      }
+    },
+    "convert": {
+      "subcommands": {
+        "file": {
+          "args": [
+            "input"
+          ]
+        },
+        "batch": {
+          "args": [
+            "directory"
+          ]
+        }
+      }
+    },
+    "compose": {
+      "subcommands": {
+        "concat": {
+          "args": [
+            "inputs..."
+          ]
+        },
+        "transition": {
+          "args": [
+            "left",
+            "right"
+          ]
+        },
+        "slideshow": {
+          "args": [
+            "directory"
+          ]
+        }
+      }
+    },
+    "diagnose": {
+      "args": [
+        "input"
+      ]
+    },
+    "repair": {
+      "subcommands": {
+        "timestamps": {
+          "args": [
+            "input"
+          ]
+        },
+        "normalize": {
+          "args": [
+            "input"
+          ]
+        }
+      }
+    },
+    "stream": {
+      "subcommands": {
+        "camera": {},
+        "file": {
+          "args": [
+            "input"
+          ]
+        }
+      }
+    }
+  }
+}

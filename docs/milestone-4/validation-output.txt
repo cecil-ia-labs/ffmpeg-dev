@@ -1,0 +1,73 @@
+Milestone 4 validation — 2026-09-18
+
+v22.16.0
+ffmpeg version 7.1.5-0+deb13u1 Copyright (c) 2000-2026 the FFmpeg developers
+ffprobe version 7.1.5-0+deb13u1 Copyright (c) 2007-2026 the FFmpeg developers
+
+Foundation verification passed for @cecilialabs/ffmpeg@0.2.0
+Checked 17 required files and 43 source files.
+Runtime verification passed for @cecilialabs/ffmpeg@0.2.0
+Checked 16 Milestone 2 files and runtime safety invariants.
+Milestone 3 environment verifier: PASS
+ffmpeg version 7.1.5-0+deb13u1 Copyright (c) 2000-2026 the FFmpeg developers
+ffprobe version 7.1.5-0+deb13u1 Copyright (c) 2007-2026 the FFmpeg developers
+fixture streams: 2
+Milestone 4 video foundation verified.
+
+{
+  "results": [
+    {
+      "operation": "trim-start",
+      "planned": false,
+      "width": 160,
+      "height": 90,
+      "duration": 1.222,
+      "audioStreams": 1
+    },
+    {
+      "operation": "trim-end",
+      "planned": false,
+      "width": 160,
+      "height": 90,
+      "duration": 1.2,
+      "audioStreams": 1
+    },
+    {
+      "operation": "trim",
+      "planned": false,
+      "width": 160,
+      "height": 90,
+      "duration": 0.722,
+      "audioStreams": 1
+    },
+    {
+      "operation": "speed",
+      "planned": false,
+      "width": 160,
+      "height": 90,
+      "duration": 0.809,
+      "audioStreams": 1
+    },
+    {
+      "operation": "from-image",
+      "planned": false,
+      "width": 160,
+      "height": 90,
+      "duration": 0.5,
+      "audioStreams": 0
+    },
+    {
+      "operation": "restore",
+      "planned": false,
+      "width": 320,
+      "height": 180,
+      "duration": 1.6,
+      "audioStreams": 1
+    }
+  ],
+  "dryRun": {
+    "planned": true,
+    "warning": "W_TRIM_KEYFRAME_DEPENDENT",
+    "outputExists": false
+  }
+}

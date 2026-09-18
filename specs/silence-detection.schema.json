@@ -1,0 +1,44 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://cecilialabs.example/schemas/ffmpeg-media-toolkit/silence-detection.schema.json",
+  "title": "FFmpeg Media Toolkit Silence Detection Result",
+  "type": "object",
+  "required": [
+    "operation",
+    "source",
+    "planned",
+    "noiseDb",
+    "minDuration",
+    "silences",
+    "totalSilenceDuration",
+    "warnings"
+  ],
+  "properties": {
+    "operation": { "const": "detect-silence" },
+    "source": { "type": "string", "minLength": 1 },
+    "planned": { "type": "boolean" },
+    "noiseDb": { "type": "number", "minimum": -120, "maximum": 0 },
+    "minDuration": { "type": "number", "exclusiveMinimum": 0 },
+    "silences": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/silenceInterval" }
+    },
+    "totalSilenceDuration": { "type": "number", "minimum": 0 },
+    "mediaDuration": { "type": "number", "minimum": 0 },
+    "nonSilentDuration": { "type": "number", "minimum": 0 },
+    "warnings": { "type": "array" }
+  },
+  "$defs": {
+    "silenceInterval": {
+      "type": "object",
+      "required": ["start", "end", "duration"],
+      "properties": {
+        "start": { "type": "number", "minimum": 0 },
+        "end": { "type": "number", "minimum": 0 },
+        "duration": { "type": "number", "minimum": 0 }
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": true
+}

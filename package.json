@@ -1,0 +1,83 @@
+{
+  "name": "@cecilialabs/ffmpeg",
+  "version": "0.6.0",
+  "description": "Agent-friendly TypeScript CLI and toolkit for FFmpeg and FFprobe media workflows.",
+  "type": "module",
+  "license": "MIT",
+  "author": "Cecil-IA Labs",
+  "engines": {
+    "node": ">=22.0.0"
+  },
+  "bin": {
+    "cecilia-ffmpeg": "./dist/cli.js"
+  },
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist/",
+    "assets/",
+    "skills/",
+    "specs/",
+    "plugin.json",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "dev": "tsx src/cli.ts",
+    "cli": "tsx src/cli.ts",
+    "build": "tsc -p tsconfig.build.json",
+    "check": "tsc -p tsconfig.json --noEmit",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "lint": "eslint .",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "verify:foundation": "node scripts/verify-foundation.mjs",
+    "validate": "npm run verify:foundation && npm run verify:runtime && npm run verify:inspection && npm run verify:video && npm run verify:audio && npm run verify:conversion && npm run verify:composition && npm run verify:diagnostics && npm run check && npm run lint && npm run test && npm run build",
+    "prepublishOnly": "npm run validate",
+    "verify:runtime": "node scripts/verify-runtime.mjs",
+    "verify:inspection": "node scripts/verify-inspection.mjs",
+    "verify:video": "node scripts/verify-video.mjs",
+    "verify:audio": "node scripts/verify-audio.mjs",
+    "verify:conversion": "node scripts/verify-conversion.mjs",
+    "verify:composition": "node scripts/verify-composition.mjs",
+    "verify:diagnostics": "node scripts/verify-diagnostics.mjs",
+    "doctor": "tsx src/cli.ts doctor",
+    "codex:setup": "node scripts/codex-environment-setup.mjs",
+    "codex:cleanup": "node scripts/codex-environment-cleanup.mjs"
+  },
+  "keywords": [
+    "ffmpeg",
+    "ffprobe",
+    "video",
+    "audio",
+    "media",
+    "cli",
+    "typescript",
+    "automation",
+    "agents"
+  ],
+  "dependencies": {
+    "commander": "^14.0.0",
+    "zod": "^4.1.5"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.34.0",
+    "@types/node": "^22.15.0",
+    "eslint": "^9.34.0",
+    "prettier": "^3.6.2",
+    "tsx": "^4.20.5",
+    "typescript": "^5.9.2",
+    "typescript-eslint": "^8.42.0",
+    "vitest": "^3.2.4"
+  },
+  "allowScripts": {
+    "esbuild@0.28.2": true
+  }
+}

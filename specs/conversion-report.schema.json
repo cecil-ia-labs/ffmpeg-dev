@@ -1,0 +1,31 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://cecilialabs.example/schemas/conversion-report.schema.json",
+  "title": "FFmpeg Media Toolkit Conversion Report",
+  "type": "object",
+  "required": [
+    "operation",
+    "source",
+    "sourceFormat",
+    "targetFormat",
+    "output",
+    "planned",
+    "invocation",
+    "execution",
+    "warnings",
+    "details"
+  ],
+  "properties": {
+    "operation": { "const": "convert-file" },
+    "source": { "type": "string" },
+    "sourceFormat": { "enum": ["mp4", "webm", "gif", "webp", "png"] },
+    "targetFormat": { "enum": ["mp4", "webm", "gif", "webp", "png"] },
+    "output": { "type": "string" },
+    "planned": { "type": "boolean" },
+    "invocation": { "type": "string" },
+    "execution": { "type": "object" },
+    "warnings": { "type": "array" },
+    "details": { "type": "object" }
+  },
+  "additionalProperties": true
+}

@@ -1,0 +1,47 @@
+import type { Command } from "commander";
+
+import {
+  createFailureEnvelope,
+  createResultContext,
+  exitCodeForError,
+  ToolkitRuntimeError,
+} from "../core/index.js";
+import { validateGlobalCliOptions } from "./global-options.js";
+import type { CommandSpec } from "./command-spec.js";
+
+function commandPath(command: Command): string {
+  const parts: string[] = [];
+  let current: Command | null = command;
+
+  while (current) {
+    if (current.name()) {
+      parts.push(current.name());
+    }
+    current = current.parent;
+  }
+
+  return parts.reverse().join(" ");
+}
+
+/**
+ * Leaf implementations arrive in their owning milestones. Until then this
+ * placeholder uses the same structured error/envelope infrastructure as the
+ * executable runtime.
+ */
+export function runPlaceholder(command: Command, spec: CommandSpec): void {
+  const options = validateGlobalCliOptions(command.optsWithGlobals());
+  const path = commandPath(command);
+  const message = `${path} is registered but is implemented in Milestone ${spec.implementationMilestone}.`;
+  const error = new ToolkitRuntimeError("E_OPERATION_UNSUPPORTED", message, {
+    details: { implementationMilestone: spec.implementationMilestone },
+  });
+
+  if (options.json) {
+    const envelope = createFailureEnvelope(createResultContext(path), error);
+    process.stdout.write(`${JSON.stringify(envelope, null, 2)}\n`);
+  } else {
+    process.stderr.write(`${message}\n`);
+  }
+
+  process.exitCode = exitCodeForError(error.code);
+}
