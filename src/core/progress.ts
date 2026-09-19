@@ -205,7 +205,7 @@ export function estimateProgressDuration(
   if (known.length === 0) return undefined;
 
   let seconds: number;
-  let source: ProgressDurationEstimate["source"];
+  let source: Exclude<ProgressDurationEstimate["source"], "explicit">;
   if (isComposition(args) && known.length > 1) {
     seconds = known.reduce((sum, value) => sum + value, 0) - transitionDuration(args);
     source = "composition";
@@ -220,7 +220,7 @@ export function estimateProgressDuration(
   if (factor !== undefined) seconds /= factor;
   if (!(seconds > 0)) return undefined;
 
-  return { seconds, source, estimated: source !== "explicit" };
+  return { seconds, source, estimated: true };
 }
 
 /** Incremental parser for FFmpeg `-progress pipe:N` key/value output. */
