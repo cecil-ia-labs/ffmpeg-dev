@@ -21,8 +21,12 @@ describe("Milestone 4 CLI options", () => {
 
   it("exposes speed and restore options", () => {
     expect(findCommand(["video", "speed"]).helpInformation()).toContain("--factor");
-    const restoreHelp = findCommand(["video", "restore"]).helpInformation();
-    expect(restoreHelp).toContain("--resolution");
-    expect(restoreHelp).toContain("--profile");
+    const upscaleHelp = findCommand(["video", "upscale"]).helpInformation();
+    expect(upscaleHelp).toContain("--resolution");
+    expect(upscaleHelp).toContain("--profile");
+    expect(upscaleHelp).toContain("--fit");
+    expect(upscaleHelp).toContain("--to");
+    const legacyRestoreHelp = findCommand(["video", "restore"]).helpInformation();
+    expect(legacyRestoreHelp).toContain("--resolution");
   });
 });

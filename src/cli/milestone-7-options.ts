@@ -47,7 +47,7 @@ export function configureMilestone7Options(command: Command, path: string): void
         .addOption(new Option("--fit <mode>", "image fit: contain, cover, or stretch").choices(["contain", "cover", "stretch"]).default("contain"))
         .addOption(new Option("--style <style>", "slideshow style").choices(["vertical-stack", "sequence"]).default("vertical-stack"))
         .addOption(new Option("--direction <direction>", "vertical-stack travel direction").choices(["up", "down"]).default("up"))
-        .option("--transition <name>", `sequence transition: none or ${TRANSITIONS}`, "fade")
+        .option("--transition <name>", `sequence transition: none or ${TRANSITIONS}`, "none")
         .option("--transition-duration <seconds>", "sequence transition duration", "0.75")
         .addOption(new Option("--to <format>", "slideshow output format").choices(["mp4", "webm", "gif", "webp"]).default("mp4"))
         .option("--include <pattern>", "include image glob; repeatable", collect, [])

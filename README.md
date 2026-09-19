@@ -1,7 +1,7 @@
 # FFmpeg Media Toolkit
 
-**Current milestone:** 13 — UX, Progress & Agent-Friendly Output  
-**Version:** `0.9.7`
+**Current milestone:** 13.5 — Media Capability Expansion & CLI Polish  
+**Version:** `0.9.8`
 
 FFmpeg Media Toolkit is a professional, agent-friendly TypeScript CLI and plugin foundation for deterministic FFmpeg/FFprobe media workflows.
 
@@ -15,9 +15,9 @@ FFmpeg Media Toolkit is a professional, agent-friendly TypeScript CLI and plugin
 - **Media engine:** FFmpeg + FFprobe
 - **Minimum supported FFmpeg:** `6.1`
 
-## Milestone 13 status
+## Milestone 13.5 status
 
-Milestone 13 adds structured FFmpeg progress, percentage/ETA derivation, TTY/non-TTY human rendering, stable error codes in human mode, and progress summaries inside the JSON result envelope. Machine consumers no longer need to scrape decorated FFmpeg statistics.
+Milestone 13.5 closes the remaining CLI/media capability gaps found during hands-on testing before the v1 documentation freeze: first-class image commands, JPEG/JPG and MP4 conversion targets, audio conversion, shared fit semantics, canonical video taxonomy, expanded slideshows/transitions, and more visible human TTY colors.
 
 Implemented now:
 
@@ -30,10 +30,15 @@ Implemented now:
 - `video trim <input>`;
 - `video speed <input>`;
 - `video from-image <input>`;
-- `video restore <input>`;
-- `audio attach <video> <audio>`;
+- `video upscale <input>`;
+- `video restore <input>` (compatibility alias);
+- `video attach-audio <video> <audio>`;
+- `video add-silence <video>`;
+- `image convert <input>`;
+- `image extract <input>`;
+- `audio attach <video> <audio>` (compatibility alias);
 - `audio silence`;
-- `audio add-silence <video>`;
+- `audio add-silence <video>` (compatibility alias);
 - `audio detect-silence <input>`;
 - `audio remove-silence <input>`;
 - `audio telephony <input>`;
@@ -62,6 +67,42 @@ Video, audio, conversion, and composition operations now include:
 
 Streaming commands are implemented in Milestone 9 for HTTP, RTMP, RTSP, SRT, UDP, and TCP destinations. Direct WebSocket output remains an explicit relay concern rather than a mislabeled HTTP stream.
 
+
+## Media capability expansion
+
+The pre-v1 CLI now uses a shared visual-fit vocabulary:
+
+```text
+--fit contain   preserve the full source and pad
+--fit cover     fill the frame and crop overflow
+--fit stretch   force exact dimensions
+```
+
+`--background` controls padding for `contain`.
+
+Expanded conversion formats:
+
+```text
+video: mp4, webm
+image: gif, webp, png, jpeg/jpg
+audio: wav, mp3, aac, m4a, flac, opus, ogg
+```
+
+Examples:
+
+```bash
+npx tsx src/cli.ts image convert ./photo.jpg --to webp --quality 85
+npx tsx src/cli.ts image extract ./clip.mp4 --at 12.5 --to jpeg
+npx tsx src/cli.ts convert file ./call.wav --to mp3 --audio-bitrate 128k
+npx tsx src/cli.ts video upscale ./source.mp4 --resolution 1920x1080 --fit cover --to mp4
+npx tsx src/cli.ts compose slideshow ./images --style sequence --transition zoomin --to webm
+```
+
+Composition now includes `zoomin` and an explicit custom `zoomout` transition. Slideshow supports vertical-stack and sequence styles, repeatable include/exclude patterns, transitions in sequence mode, and MP4/WebM/GIF/WebP outputs.
+
+Human TTY output uses a brighter restrained palette while `--no-color`, `NO_COLOR`, `FORCE_COLOR`, JSON, and non-TTY safety remain intact.
+
+See [Milestone 13.5 media capability expansion](docs/milestone-13-5/media-capability-expansion.md).
 
 ## UX, progress & agent output
 

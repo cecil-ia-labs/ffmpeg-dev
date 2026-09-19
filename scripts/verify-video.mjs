@@ -34,7 +34,7 @@ function versionAtLeast(version, minimum) {
 if (!versionAtLeast(pkg.version, "0.2.0")) throw new Error(`Expected package version >= 0.2.0, got ${pkg.version}`);
 
 const registry = await readFile("src/cli/action-registry.ts", "utf8");
-for (const command of ["video trim-start", "video trim-end", "video trim", "video speed", "video from-image", "video restore"]) {
+for (const command of ["video trim-start", "video trim-end", "video trim", "video speed", "video from-image", "video upscale", "video restore", "video attach-audio", "video add-silence"]) {
   if (!registry.includes(command)) throw new Error(`Missing Milestone 4 action: ${command}`);
 }
 

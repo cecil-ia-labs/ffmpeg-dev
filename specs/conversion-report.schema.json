@@ -16,16 +16,64 @@
     "details"
   ],
   "properties": {
-    "operation": { "const": "convert-file" },
-    "source": { "type": "string" },
-    "sourceFormat": { "enum": ["mp4", "webm", "gif", "webp", "png"] },
-    "targetFormat": { "enum": ["mp4", "webm", "gif", "webp", "png"] },
-    "output": { "type": "string" },
-    "planned": { "type": "boolean" },
-    "invocation": { "type": "string" },
-    "execution": { "type": "object" },
-    "warnings": { "type": "array" },
-    "details": { "type": "object" }
+    "operation": {
+      "const": "convert-file"
+    },
+    "source": {
+      "type": "string"
+    },
+    "sourceFormat": {
+      "enum": [
+        "mp4",
+        "webm",
+        "gif",
+        "webp",
+        "png",
+        "jpeg",
+        "wav",
+        "mp3",
+        "aac",
+        "m4a",
+        "flac",
+        "opus",
+        "ogg"
+      ]
+    },
+    "targetFormat": {
+      "enum": [
+        "mp4",
+        "webm",
+        "gif",
+        "webp",
+        "png",
+        "jpeg",
+        "wav",
+        "mp3",
+        "aac",
+        "m4a",
+        "flac",
+        "opus",
+        "ogg"
+      ]
+    },
+    "output": {
+      "type": "string"
+    },
+    "planned": {
+      "type": "boolean"
+    },
+    "invocation": {
+      "type": "string"
+    },
+    "execution": {
+      "type": "object"
+    },
+    "warnings": {
+      "type": "array"
+    },
+    "details": {
+      "type": "object"
+    }
   },
   "additionalProperties": true
 }

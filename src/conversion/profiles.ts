@@ -121,8 +121,8 @@ function videoFilter(options: ConversionTuningOptions, defaultFps?: number): str
     filters.push(...buildFitFilters({
       width: positiveInteger(options.width, options.width, "width"),
       height: positiveInteger(options.height, options.height, "height"),
-      fit: options.fit,
-      background: options.background,
+      ...(options.fit !== undefined ? { fit: options.fit } : {}),
+      ...(options.background !== undefined ? { background: options.background } : {}),
     }));
   } else if (options.width !== undefined) {
     const width = positiveInteger(options.width, options.width, "width");

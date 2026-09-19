@@ -11,7 +11,13 @@ describe("Milestone 7 CLI options", () => {
     const transition = compose?.commands.find((command) => command.name() === "transition");
     const slideshow = compose?.commands.find((command) => command.name() === "slideshow");
     expect(concat?.options.some((option) => option.long === "--transition-duration")).toBe(true);
+    expect(concat?.options.some((option) => option.long === "--fit")).toBe(true);
+    expect(concat?.options.some((option) => option.long === "--to")).toBe(true);
     expect(transition?.options.some((option) => option.long === "--offset")).toBe(true);
     expect(slideshow?.options.some((option) => option.long === "--direction")).toBe(true);
+    expect(slideshow?.options.some((option) => option.long === "--style")).toBe(true);
+    expect(slideshow?.options.some((option) => option.long === "--include")).toBe(true);
+    expect(slideshow?.options.some((option) => option.long === "--exclude")).toBe(true);
+    expect(slideshow?.options.some((option) => option.long === "--to")).toBe(true);
   });
 });

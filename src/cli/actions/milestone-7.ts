@@ -148,7 +148,7 @@ export async function runComposeSlideshowAction(command: Command, positional: re
       fit: z.enum(["contain", "cover", "stretch"]).default("contain"),
       style: z.enum(["vertical-stack", "sequence"]).default("vertical-stack"),
       direction: z.enum(["up", "down"]).default("up"),
-      transition: z.union([z.literal("none"), transitionName]).default("fade"),
+      transition: z.union([z.literal("none"), transitionName]).default("none"),
       transitionDuration: positiveNumber.default(0.75),
       to: z.enum(["mp4", "webm", "gif", "webp"]).default("mp4"),
       include: z.array(z.string()).default([]),

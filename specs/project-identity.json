@@ -23,7 +23,7 @@
     "MCP"
   ],
   "license": "MIT",
-  "currentImplementationVersion": "0.9.7",
+  "currentImplementationVersion": "0.9.8",
   "pluginManifest": "./plugin.json",
   "pluginAssets": "./assets",
   "skills": "./skills"

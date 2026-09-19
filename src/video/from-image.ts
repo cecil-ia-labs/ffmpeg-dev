@@ -21,8 +21,8 @@ export async function createVideoFromImage(input: string, request: VideoFromImag
     ...buildFitFilters({
       width,
       height,
-      fit: request.fit,
-      background: request.background,
+      ...(request.fit !== undefined ? { fit: request.fit } : {}),
+      ...(request.background !== undefined ? { background: request.background } : {}),
     }),
     "setsar=1",
     `format=${pixelFormat}`,

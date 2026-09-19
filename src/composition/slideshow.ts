@@ -105,8 +105,8 @@ function normalizeImageFilters(
     ...buildFitFilters({
       width,
       height,
-      fit: request.fit,
-      background: request.background,
+      ...(request.fit !== undefined ? { fit: request.fit } : {}),
+      ...(request.background !== undefined ? { background: request.background } : {}),
     }),
     "setsar=1",
     "setpts=PTS-STARTPTS",
@@ -211,7 +211,12 @@ export async function createSlideshow(directory: string, request: SlideshowReque
 
     images.forEach((_image, index) => {
       graph.add([`${index}:v`], [
-        ...buildFitFilters({ width, height, fit: request.fit, background }),
+        ...buildFitFilters({
+          width,
+          height,
+          ...(request.fit !== undefined ? { fit: request.fit } : {}),
+          background,
+        }),
         "setsar=1",
         `fps=${fps}`,
         "setpts=PTS-STARTPTS",

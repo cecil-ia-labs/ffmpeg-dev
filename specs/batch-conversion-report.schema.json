@@ -26,39 +26,148 @@
     "items"
   ],
   "properties": {
-    "operation": { "const": "convert-batch" },
-    "planned": { "type": "boolean" },
-    "directory": { "type": "string" },
-    "outputDirectory": { "type": "string" },
-    "sourceFormat": { "enum": ["mp4", "webm", "gif", "webp", "png"] },
-    "targetFormat": { "enum": ["mp4", "webm", "gif", "webp", "png"] },
-    "recursive": { "type": "boolean" },
-    "preserveHierarchy": { "type": "boolean" },
-    "parallelism": { "type": "integer", "minimum": 1 },
-    "failureMode": { "enum": ["continue-on-error", "fail-fast"] },
-    "existing": { "enum": ["error", "skip", "replace"] },
-    "discovered": { "type": "integer", "minimum": 0 },
-    "attempted": { "type": "integer", "minimum": 0 },
-    "succeeded": { "type": "integer", "minimum": 0 },
-    "failed": { "type": "integer", "minimum": 0 },
-    "skipped": { "type": "integer", "minimum": 0 },
-    "startedAt": { "type": "string" },
-    "finishedAt": { "type": "string" },
-    "durationMs": { "type": "number", "minimum": 0 },
+    "operation": {
+      "const": "convert-batch"
+    },
+    "planned": {
+      "type": "boolean"
+    },
+    "directory": {
+      "type": "string"
+    },
+    "outputDirectory": {
+      "type": "string"
+    },
+    "sourceFormat": {
+      "enum": [
+        "mp4",
+        "webm",
+        "gif",
+        "webp",
+        "png",
+        "jpeg",
+        "wav",
+        "mp3",
+        "aac",
+        "m4a",
+        "flac",
+        "opus",
+        "ogg"
+      ]
+    },
+    "targetFormat": {
+      "enum": [
+        "mp4",
+        "webm",
+        "gif",
+        "webp",
+        "png",
+        "jpeg",
+        "wav",
+        "mp3",
+        "aac",
+        "m4a",
+        "flac",
+        "opus",
+        "ogg"
+      ]
+    },
+    "recursive": {
+      "type": "boolean"
+    },
+    "preserveHierarchy": {
+      "type": "boolean"
+    },
+    "parallelism": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "failureMode": {
+      "enum": [
+        "continue-on-error",
+        "fail-fast"
+      ]
+    },
+    "existing": {
+      "enum": [
+        "error",
+        "skip",
+        "replace"
+      ]
+    },
+    "discovered": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "attempted": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "succeeded": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "failed": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "skipped": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "startedAt": {
+      "type": "string"
+    },
+    "finishedAt": {
+      "type": "string"
+    },
+    "durationMs": {
+      "type": "number",
+      "minimum": 0
+    },
     "items": {
       "type": "array",
       "items": {
         "type": "object",
-        "required": ["input", "relativeInput", "ok", "status", "warnings"],
+        "required": [
+          "input",
+          "relativeInput",
+          "ok",
+          "status",
+          "warnings"
+        ],
         "properties": {
-          "input": { "type": "string" },
-          "relativeInput": { "type": "string" },
-          "output": { "type": "string" },
-          "ok": { "type": "boolean" },
-          "status": { "enum": ["succeeded", "failed", "skipped"] },
-          "reason": { "type": "string" },
-          "warnings": { "type": "array" },
-          "error": { "type": ["object", "null"] }
+          "input": {
+            "type": "string"
+          },
+          "relativeInput": {
+            "type": "string"
+          },
+          "output": {
+            "type": "string"
+          },
+          "ok": {
+            "type": "boolean"
+          },
+          "status": {
+            "enum": [
+              "succeeded",
+              "failed",
+              "skipped"
+            ]
+          },
+          "reason": {
+            "type": "string"
+          },
+          "warnings": {
+            "type": "array"
+          },
+          "error": {
+            "type": [
+              "object",
+              "null"
+            ]
+          }
         },
         "additionalProperties": true
       }

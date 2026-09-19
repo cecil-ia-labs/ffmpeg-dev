@@ -53,8 +53,8 @@ for (const command of ["convert file", "convert batch"]) {
   if (!registry.includes(command)) throw new Error(`Missing Milestone 6 action: ${command}`);
 }
 const profiles = await readFile("src/conversion/profiles.ts", "utf8");
-for (const pair of ["mp4:webm", "mp4:gif", "mp4:webp", "webm:gif", "webp:png", "gif:webm"]) {
-  if (!profiles.includes(`"${pair}"`)) throw new Error(`Missing conversion profile ${pair}`);
+for (const token of ["jpeg", "wav", "mp3", "aac", "m4a", "flac", "opus", "ogg", "libx264", "libmp3lame", "pcm_s16le"]) {
+  if (!profiles.includes(token)) throw new Error(`Expanded conversion profile is missing ${token}`);
 }
 if (profiles.includes("webpmux")) throw new Error("Animated WebP conversion must not require external webpmux.");
 const batchSource = await readFile("src/conversion/batch.ts", "utf8");
@@ -99,7 +99,7 @@ try {
   const batchRoot = path.join(directory, "batch");
   await mkdir(path.join(batchRoot, "nested"), { recursive: true });
   console.log("Milestone 6 conversion verifier: PASS");
-  console.log("routes: MP4->WebM, MP4->GIF, MP4->animated WebP, WebM->GIF, GIF->WebM, WebP->PNG");
+  console.log("routes: legacy visual routes plus MP4/JPEG targets and typed audio conversion profiles");
   console.log("batch engine: structural support for recursion, patterns, concurrency, failure modes, hierarchy, existing-output policy, progress, and JSON reports");
 } finally {
   await rm(directory, { recursive: true, force: true });

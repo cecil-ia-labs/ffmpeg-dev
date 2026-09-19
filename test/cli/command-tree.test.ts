@@ -17,6 +17,10 @@ describe("command tree", () => {
 
     expect(commands).toContain("video trim-start");
     expect(commands).toContain("audio telephony");
+    expect(commands).toContain("video upscale");
+    expect(commands).toContain("video attach-audio");
+    expect(commands).toContain("image convert");
+    expect(commands).toContain("image extract");
     expect(commands).toContain("convert batch");
     expect(commands).toContain("compose concat");
     expect(commands).toContain("repair timestamps");

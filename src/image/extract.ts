@@ -47,7 +47,12 @@ export async function extractImage(input: string, request: ExtractImageRequest =
   const height = positiveInteger(request.height, "height");
   const filters: string[] = [];
   if (width !== undefined && height !== undefined) {
-    filters.push(...buildFitFilters({ width, height, fit: request.fit, background: request.background }));
+    filters.push(...buildFitFilters({
+      width,
+      height,
+      ...(request.fit !== undefined ? { fit: request.fit } : {}),
+      ...(request.background !== undefined ? { background: request.background } : {}),
+    }));
   } else if (width !== undefined) {
     filters.push(`scale=${width}:-2:flags=lanczos`);
   } else if (height !== undefined) {

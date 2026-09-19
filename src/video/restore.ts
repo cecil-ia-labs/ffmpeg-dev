@@ -24,8 +24,8 @@ export function buildRestoreFilter(
   const geometry = [...buildFitFilters({
     width,
     height,
-    fit: request.fit,
-    background: request.background,
+    ...(request.fit !== undefined ? { fit: request.fit } : {}),
+    ...(request.background !== undefined ? { background: request.background } : {}),
   }), "setsar=1"].join(",");
   if (profile === "balanced") return geometry;
   return [
