@@ -32,7 +32,7 @@ assert(runner.includes("deriveProgressEvent"), "FFmpeg runner must derive struct
 const shared = await text("src/cli/actions/shared.ts");
 assert(shared.includes("withProgressObserver"), "CLI actions must establish a progress context.");
 assert(shared.includes("CliProgressReporter"), "CLI actions must use the shared progress reporter.");
-assert(shared.includes("error ["), "Human failures must include stable error codes.");
+assert(shared.includes("colorizeError(runtimeError.code, runtimeError.message"), "Human failures must preserve stable runtime error codes through the formatter.");
 
 const program = await text("src/cli/program.ts");
 assert(program.includes("--no-progress"), "CLI must expose --no-progress.");
