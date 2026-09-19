@@ -41,7 +41,7 @@
 - [x] Manifest defines expected media properties.
 - [x] FFprobe verifies codec/stream/dimension/timing/audio properties.
 - [x] VFR is verified from actual frame timestamp deltas.
-- [x] Animated media requires multiple decoded frames.
+- [x] GIF requires multiple decoded frames; animated WebP requires `ANIM` plus multiple `ANMF` chunks to accommodate FFprobe 7.1 limitations.
 - [x] Missing required encoders fail explicitly.
 
 ## Legacy migration regression

@@ -66,7 +66,7 @@ speech-like audio with silence intervals
 
 `npm run verify:fixtures` regenerates the fixture set with `--force`, probes every output with FFprobe, and compares actual stream properties with the manifest.
 
-For VFR, verification additionally reads frame timestamps and requires at least two distinct positive timestamp deltas. Animated formats require multiple decoded video frames.
+For VFR, verification additionally reads frame timestamps and requires at least two distinct positive timestamp deltas. GIF requires multiple decoded frames. Animated WebP is validated through its RIFF `ANIM`/`ANMF` chunks because FFprobe 7.1 may identify the WebP codec while reporting zero decoded frame geometry for animated files.
 
 File existence alone is never considered a successful regression result.
 

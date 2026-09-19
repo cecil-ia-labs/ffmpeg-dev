@@ -10,7 +10,7 @@ npm run verify:fixtures
 npm run fixtures:clean
 ```
 
-`verify:fixtures` regenerates the complete matrix and validates stream/media properties with FFprobe. It does not treat file existence as sufficient.
+`verify:fixtures` regenerates the complete matrix and validates stream/media properties with FFprobe. It does not treat file existence as sufficient. Animated WebP additionally checks RIFF `ANIM`/`ANMF` chunks because FFprobe 7.1 can identify the codec while exposing incomplete animated-frame geometry.
 
 Generated files live under:
 
