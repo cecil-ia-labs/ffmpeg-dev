@@ -3,6 +3,7 @@ import { access, stat } from "node:fs/promises";
 import path from "node:path";
 
 import { renderCommandForDisplay } from "../core/command-result.js";
+import { registerProgressMedia } from "../core/progress-context.js";
 import { ToolkitRuntimeError } from "../core/errors.js";
 import { runFFprobe } from "../core/ffprobe-runner.js";
 import type { CommandExecution, MediaInfo } from "../types/contracts.js";
@@ -98,10 +99,12 @@ export async function probeMedia(input: string, options: ProbeMediaOptions = {})
     });
   }
 
+  const media = normalizeFFprobeJson(source, raw);
+  registerProgressMedia(media);
   return {
     source,
     planned: false,
-    media: normalizeFFprobeJson(source, raw),
+    media,
     invocation,
     execution,
   };

@@ -919,11 +919,12 @@ Generated binaries live in a Git-ignored directory; `test/fixtures/manifest.json
 
 # Milestone 13 — UX, Progress & Agent-Friendly Output
 
-**Target:** `v0.9.7`
+**Target:** `v0.9.7`  
+**Status:** ✅ Complete
 
 ### Features
 
-- progress parsing;
+- FFmpeg `-progress pipe:1` parsing;
 - percentage complete;
 - estimated remaining time;
 - processed frames;
@@ -931,17 +932,15 @@ Generated binaries live in a Git-ignored directory; `test/fixtures/manifest.json
 - speed multiplier;
 - structured errors;
 - human output;
-- JSON output.
+- JSON output;
+- TTY and non-TTY progress rendering;
+- `--no-progress` live-display control;
+- structured per-run progress summaries in the result envelope.
 
 Example:
 
 ```text
-Input      clip.mp4
-Duration   00:02:14.320
-Progress   67%
-Frame      2411
-Speed      3.7x
-ETA        00:00:12
+clip.mp4 | 67% | frame 2411 | 100.0 fps | 3.70x | ETA 00:00:12
 ```
 
 Agent mode:
@@ -952,9 +951,17 @@ npx @cecilialabs/ffmpeg video speed input.mp4 \
   --json
 ```
 
+### Output contract
+
+- human final results remain on stdout;
+- live progress/warnings/errors use stderr;
+- JSON mode emits one machine-readable envelope on stdout;
+- progress is structured into fields rather than terminal text;
+- multiple FFmpeg subprocesses are represented independently.
+
 ### Acceptance Criteria
 
-Machine output must not require scraping decorated CLI text.
+✅ Machine output does not require scraping decorated CLI text.
 
 ---
 

@@ -1,5 +1,42 @@
 # Changelog
 
+## 0.9.7 — Milestone 13 — UX, Progress & Agent-Friendly Output
+
+### Added
+
+- Async-scoped FFmpeg progress observer used by CLI actions.
+- Automatic `-progress pipe:1 -nostats` instrumentation for observable FFmpeg operations.
+- Structured progress fields for frame count, processing FPS, speed multiplier, processed time, percentage, ETA, and completion state.
+- Duration estimation from explicit output ranges, FFprobe preflight metadata, trim offsets, speed factors, and multi-input composition timelines.
+- TTY single-line progress rendering and coarse non-TTY progress checkpoints.
+- `--no-progress` global CLI option.
+- Structured progress summaries in the JSON result envelope.
+- Human errors now include stable toolkit error codes.
+- Milestone 13 unit/integration tests, `verify:ux`, documentation, and checklist.
+
+### Changed
+
+- Package/plugin version advanced to `0.9.7`.
+- `npm run validate` now includes `verify:ux`.
+- Output-envelope JSON Schema and public contracts now include optional progress summaries.
+- Batch conversion progress respects the global `--no-progress` setting.
+
+### Agent contract
+
+- `--json` keeps human progress off stdout and emits one result envelope.
+- Machine consumers can read typed progress fields instead of scraping FFmpeg terminal statistics.
+- Unbounded live streams omit percentage/ETA rather than fabricating a duration.
+- GitHub Actions remain deferred until alpha completion.
+
+### Validation
+
+Run locally before merge:
+
+```bash
+npm run validate
+```
+
+
 ## 0.9.5 — Milestone 12 — Test Suite & Media Fixtures
 
 ### Added

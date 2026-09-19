@@ -14,6 +14,26 @@ export interface FFmpegProgressSnapshot {
   raw: Readonly<Record<string, string>>;
 }
 
+export interface ProgressDurationEstimate {
+  seconds: number;
+  source: "explicit" | "probe" | "composition";
+  estimated: boolean;
+}
+
+export interface FFmpegProgressEvent {
+  runId: string;
+  state: "continue" | "end";
+  estimated: boolean;
+  source?: string;
+  frame?: number;
+  fps?: number;
+  speedMultiplier?: number;
+  processedSeconds?: number;
+  totalSeconds?: number;
+  percentage?: number;
+  etaSeconds?: number;
+}
+
 function optionalNumber(value: string | undefined): number | undefined {
   if (value === undefined || value === "N/A") return undefined;
   const parsed = Number(value);
@@ -48,6 +68,159 @@ function toSnapshot(values: Record<string, string>): FFmpegProgressSnapshot {
     progress: values["progress"] ?? "continue",
     raw: { ...values },
   };
+}
+
+export function parseClockSeconds(value: string | undefined): number | undefined {
+  if (!value) return undefined;
+  if (/^\d+(?:\.\d+)?$/.test(value)) {
+    const direct = Number(value);
+    return Number.isFinite(direct) ? direct : undefined;
+  }
+  const match = /^(\d+):(\d{2}):(\d{2}(?:\.\d+)?)$/.exec(value);
+  if (!match) return undefined;
+  const hours = Number(match[1]);
+  const minutes = Number(match[2]);
+  const seconds = Number(match[3]);
+  if (![hours, minutes, seconds].every(Number.isFinite)) return undefined;
+  return hours * 3600 + minutes * 60 + seconds;
+}
+
+export function parseSpeedMultiplier(value: string | undefined): number | undefined {
+  if (!value) return undefined;
+  const normalized = value.endsWith("x") ? value.slice(0, -1) : value;
+  const parsed = Number(normalized);
+  return Number.isFinite(parsed) && parsed > 0 ? parsed : undefined;
+}
+
+function processedSeconds(snapshot: FFmpegProgressSnapshot): number | undefined {
+  if (snapshot.outTimeUs !== undefined) return snapshot.outTimeUs / 1_000_000;
+  if (snapshot.outTimeMs !== undefined) return snapshot.outTimeMs / 1_000_000;
+  return parseClockSeconds(snapshot.outTime);
+}
+
+export function deriveProgressEvent(
+  runId: string,
+  snapshot: FFmpegProgressSnapshot,
+  options: {
+    source?: string;
+    duration?: ProgressDurationEstimate;
+  } = {},
+): FFmpegProgressEvent {
+  const processed = processedSeconds(snapshot);
+  const speedMultiplier = parseSpeedMultiplier(snapshot.speed);
+  const totalSeconds = options.duration?.seconds;
+  const ended = snapshot.progress === "end";
+  const percentage = totalSeconds !== undefined && processed !== undefined
+    ? (ended ? 100 : Math.max(0, Math.min(100, (processed / totalSeconds) * 100)))
+    : undefined;
+  const etaSeconds = ended
+    ? (totalSeconds !== undefined ? 0 : undefined)
+    : totalSeconds !== undefined && processed !== undefined && speedMultiplier !== undefined
+      ? Math.max(0, (totalSeconds - processed) / speedMultiplier)
+      : undefined;
+
+  return {
+    runId,
+    state: ended ? "end" : "continue",
+    estimated: options.duration?.estimated ?? false,
+    ...(options.source !== undefined ? { source: options.source } : {}),
+    ...(snapshot.frame !== undefined ? { frame: snapshot.frame } : {}),
+    ...(snapshot.fps !== undefined ? { fps: snapshot.fps } : {}),
+    ...(speedMultiplier !== undefined ? { speedMultiplier } : {}),
+    ...(processed !== undefined ? { processedSeconds: processed } : {}),
+    ...(totalSeconds !== undefined ? { totalSeconds } : {}),
+    ...(percentage !== undefined ? { percentage } : {}),
+    ...(etaSeconds !== undefined ? { etaSeconds } : {}),
+  };
+}
+
+export function inputSources(args: readonly string[]): string[] {
+  const sources: string[] = [];
+  for (let index = 0; index < args.length - 1; index += 1) {
+    if (args[index] === "-i") sources.push(args[index + 1]!);
+  }
+  return sources;
+}
+
+function outputScopedTime(args: readonly string[], option: "-t" | "-to"): number | undefined {
+  let lastInputIndex = -1;
+  for (let index = 0; index < args.length; index += 1) {
+    if (args[index] === "-i") lastInputIndex = index;
+  }
+  for (let index = args.length - 2; index > lastInputIndex; index -= 1) {
+    if (args[index] === option) return parseClockSeconds(args[index + 1]);
+  }
+  return undefined;
+}
+
+function firstSeekSeconds(args: readonly string[]): number | undefined {
+  const index = args.indexOf("-ss");
+  return index >= 0 ? parseClockSeconds(args[index + 1]) : undefined;
+}
+
+function speedFactor(args: readonly string[]): number | undefined {
+  for (const value of args) {
+    const match = /setpts=PTS\/([0-9]+(?:\.[0-9]+)?)/.exec(value);
+    if (match?.[1]) {
+      const parsed = Number(match[1]);
+      if (Number.isFinite(parsed) && parsed > 0) return parsed;
+    }
+  }
+  return undefined;
+}
+
+function transitionDuration(args: readonly string[]): number {
+  let total = 0;
+  for (const value of args) {
+    const matches = value.matchAll(/xfade=[^;\[]*?duration=([0-9]+(?:\.[0-9]+)?)/g);
+    for (const match of matches) total += Number(match[1] ?? 0);
+  }
+  return total;
+}
+
+function isComposition(args: readonly string[]): boolean {
+  return args.some((value) => value.includes("xfade=") || /concat=n=\d+/.test(value));
+}
+
+export function estimateProgressDuration(
+  args: readonly string[],
+  durationForSource: (source: string) => number | undefined,
+): ProgressDurationEstimate | undefined {
+  const explicitDuration = outputScopedTime(args, "-t");
+  if (explicitDuration !== undefined && explicitDuration > 0) {
+    return { seconds: explicitDuration, source: "explicit", estimated: false };
+  }
+
+  const explicitEnd = outputScopedTime(args, "-to");
+  if (explicitEnd !== undefined && explicitEnd > 0) {
+    const seek = firstSeekSeconds(args) ?? 0;
+    const seconds = explicitEnd - seek;
+    if (seconds > 0) return { seconds, source: "explicit", estimated: false };
+  }
+
+  const sources = inputSources(args);
+  const known = sources
+    .map((source) => durationForSource(source))
+    .filter((value): value is number => value !== undefined && Number.isFinite(value) && value > 0);
+  if (known.length === 0) return undefined;
+
+  let seconds: number;
+  let source: ProgressDurationEstimate["source"];
+  if (isComposition(args) && known.length > 1) {
+    seconds = known.reduce((sum, value) => sum + value, 0) - transitionDuration(args);
+    source = "composition";
+  } else {
+    seconds = known[0]!;
+    source = "probe";
+  }
+
+  const seek = firstSeekSeconds(args);
+  if (seek !== undefined && seek > 0) seconds = Math.max(0, seconds - seek);
+  const factor = speedFactor(args);
+  if (factor !== undefined) seconds /= factor;
+  if (!(seconds > 0)) return undefined;
+
+  return { seconds, source, estimated: source !== "explicit" };
 }
 
 /** Incremental parser for FFmpeg `-progress pipe:N` key/value output. */

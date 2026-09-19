@@ -12,6 +12,7 @@ export const globalCliOptionsSchema = z.object({
   json: z.boolean().default(false),
   quiet: z.boolean().default(false),
   verbose: z.boolean().default(false),
+  progress: z.boolean().default(true),
   ffmpegPath: z.string().min(1).optional(),
   ffprobePath: z.string().min(1).optional(),
   keepTemp: z.boolean().default(false),

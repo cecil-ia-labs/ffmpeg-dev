@@ -59,6 +59,9 @@
     },
     "execution": {
       "$ref": "#/$defs/execution"
+    },
+    "progress": {
+      "$ref": "#/$defs/progress"
     }
   },
   "allOf": [
@@ -183,6 +186,82 @@
         "stdoutTruncated",
         "stderrTruncated"
       ]
+    },
+    "progress": {
+      "type": "object",
+      "required": [
+        "runs",
+        "completedRuns"
+      ],
+      "properties": {
+        "runs": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/progressRun"
+          }
+        },
+        "completedRuns": {
+          "type": "integer",
+          "minimum": 0
+        }
+      },
+      "additionalProperties": false
+    },
+    "progressRun": {
+      "type": "object",
+      "required": [
+        "runId",
+        "state",
+        "estimated"
+      ],
+      "properties": {
+        "runId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "state": {
+          "enum": [
+            "continue",
+            "end"
+          ]
+        },
+        "estimated": {
+          "type": "boolean"
+        },
+        "source": {
+          "type": "string"
+        },
+        "totalSeconds": {
+          "type": "number",
+          "minimum": 0
+        },
+        "processedSeconds": {
+          "type": "number",
+          "minimum": 0
+        },
+        "percentage": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 100
+        },
+        "frame": {
+          "type": "number",
+          "minimum": 0
+        },
+        "fps": {
+          "type": "number",
+          "minimum": 0
+        },
+        "speedMultiplier": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        },
+        "etaSeconds": {
+          "type": "number",
+          "minimum": 0
+        }
+      },
+      "additionalProperties": false
     }
   },
   "additionalProperties": false

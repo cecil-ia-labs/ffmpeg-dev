@@ -1,2 +1,2 @@
-/** Package/plugin version for the Milestone 12 implementation. */
-export const VERSION = "0.9.5" as const;
+/** Package/plugin version for the Milestone 13 implementation. */
+export const VERSION = "0.9.7" as const;

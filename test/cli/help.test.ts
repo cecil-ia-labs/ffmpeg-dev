@@ -36,6 +36,7 @@ describe("CLI help", () => {
       "--json",
       "--quiet",
       "--verbose",
+      "--no-progress",
       "--ffmpeg-path",
       "--ffprobe-path",
       "--keep-temp",

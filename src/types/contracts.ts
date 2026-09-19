@@ -82,6 +82,25 @@ export interface CommandExecution {
   stderrTruncated: boolean;
 }
 
+export interface ProgressRunSummary {
+  runId: string;
+  state: "continue" | "end";
+  estimated: boolean;
+  source?: string;
+  totalSeconds?: number;
+  processedSeconds?: number;
+  percentage?: number;
+  frame?: number;
+  fps?: number;
+  speedMultiplier?: number;
+  etaSeconds?: number;
+}
+
+export interface ProgressSummary {
+  runs: ProgressRunSummary[];
+  completedRuns: number;
+}
+
 export interface ResultEnvelope<T = unknown> {
   schemaVersion: "1.0";
   ok: boolean;
@@ -94,6 +113,7 @@ export interface ResultEnvelope<T = unknown> {
   warnings: ToolkitWarning[];
   error?: Omit<ToolkitError, "cause"> | null;
   execution?: Omit<CommandExecution, "durationMs" | "stdout" | "stderr">;
+  progress?: ProgressSummary;
 }
 
 
@@ -261,6 +281,7 @@ export interface GlobalCliOptions {
   json: boolean;
   quiet: boolean;
   verbose: boolean;
+  progress: boolean;
   ffmpegPath?: string;
   ffprobePath?: string;
   keepTemp: boolean;
