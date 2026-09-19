@@ -95,8 +95,10 @@ export class CliProgressReporter {
       return;
     }
 
-    const percentage = event.percentage;
-    const bucket = percentage === undefined ? undefined : Math.floor(Math.min(100, percentage) / 25) * 25;
+    const renderPercentage = event.percentage;
+    const bucket = renderPercentage === undefined
+      ? undefined
+      : Math.floor(Math.min(100, renderPercentage) / 25) * 25;
     const lastBucket = this.lastBucket.get(event.runId);
     if (event.state === "end" || (bucket !== undefined && bucket !== lastBucket)) {
       if (bucket !== undefined) this.lastBucket.set(event.runId, bucket);

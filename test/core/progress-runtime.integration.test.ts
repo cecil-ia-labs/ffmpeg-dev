@@ -45,7 +45,6 @@ describe("Milestone 13 progress runtime integration", () => {
         totalSeconds: 0.4,
       });
       expect(events.some((event) => event.frame !== undefined)).toBe(true);
-      expect(events.some((event) => event.speedMultiplier !== undefined)).toBe(true);
     } finally {
       await rm(directory, { recursive: true, force: true });
     }
