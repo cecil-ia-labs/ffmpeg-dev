@@ -74,6 +74,14 @@ for (const fixture of manifest.fixtures) {
     assert(frameCount >= fixture.expected.framesMin, `${fixture.id}: expected at least ${fixture.expected.framesMin} video frames, got ${frameCount}`);
   }
 
+  if (fixture.expected.webpAnimationChunksMin) {
+    const bytes = await readFile(file);
+    const chunks = bytes.toString("latin1");
+    const animationFrames = chunks.match(/ANMF/g)?.length ?? 0;
+    assert(chunks.includes("ANIM"), `${fixture.id}: missing WebP ANIM chunk`);
+    assert(animationFrames >= fixture.expected.webpAnimationChunksMin, `${fixture.id}: expected at least ${fixture.expected.webpAnimationChunksMin} ANMF chunks, got ${animationFrames}`);
+  }
+
   if (fixture.expected.vfr) {
     const times = readFrameTimes(file);
     const deltas = times.slice(1).map((value, index) => Number((value - times[index]).toFixed(6))).filter((value) => value > 0);

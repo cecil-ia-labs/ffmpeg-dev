@@ -21,6 +21,7 @@ interface ManifestFixture {
     video?: ExpectedStream | false;
     audio?: ExpectedStream | false;
     framesMin?: number;
+    webpAnimationChunksMin?: number;
     vfr?: boolean;
   };
 }
@@ -41,7 +42,8 @@ describe("Milestone 12 FFprobe fixture matrix", () => {
   it("verifies media properties rather than only file existence", async () => {
     if (!available) return;
     for (const fixture of manifest) {
-      const report = await probeMedia(await fixturePath(fixture.id));
+      const file = await fixturePath(fixture.id);
+      const report = await probeMedia(file);
       const media = report.media;
       expect(media, fixture.id).toBeDefined();
       if (!media) continue;
@@ -51,6 +53,13 @@ describe("Milestone 12 FFprobe fixture matrix", () => {
 
       if (fixture.expected.audio === false) expect(media.audio, fixture.id).toHaveLength(0);
       else if (fixture.expected.audio) expect(media.audio[0], fixture.id).toMatchObject(fixture.expected.audio);
+
+      if (fixture.expected.webpAnimationChunksMin) {
+        const chunks = (await readFile(file)).toString("latin1");
+        const animationFrames = chunks.match(/ANMF/g)?.length ?? 0;
+        expect(chunks.includes("ANIM"), fixture.id).toBe(true);
+        expect(animationFrames, fixture.id).toBeGreaterThanOrEqual(fixture.expected.webpAnimationChunksMin);
+      }
 
       if (fixture.expected.vfr) {
         expect(media.video[0]?.averageFrameRate, fixture.id).toBeDefined();

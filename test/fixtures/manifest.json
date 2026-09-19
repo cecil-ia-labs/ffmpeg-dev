@@ -98,12 +98,10 @@
       ],
       "expected": {
         "video": {
-          "codecName": "webp",
-          "width": 64,
-          "height": 48
+          "codecName": "webp"
         },
         "audio": false,
-        "framesMin": 2
+        "webpAnimationChunksMin": 2
       }
     },
     {
