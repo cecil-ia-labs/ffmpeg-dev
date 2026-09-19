@@ -82,11 +82,11 @@ for (const file of ["assets/icon.svg", "assets/icon-dark.svg", "assets/logo.svg"
   const svg = await readFile(path.join(root, file), "utf8");
   assert(svg.includes("<svg"), `${file} is not SVG`);
   assert(!/<script\b/i.test(svg), `${file} must not contain scripts`);
-  assert(!/(?:href|src)\s*=\s*["\']https?:/i.test(svg), `${file} must not reference remote resources`);
+  assert(!/(?:href|src)\s*=\s*["']https?:/i.test(svg), `${file} must not reference remote resources`);
 }
 for (const file of ["assets/icon.svg", "assets/icon-dark.svg"]) {
   const svg = await readFile(path.join(root, file), "utf8");
-  assert(/viewBox=["\']0 0 128 128["\']/.test(svg), `${file} must use a 128×128 viewBox`);
+  assert(/viewBox=["']0 0 128 128["']/.test(svg), `${file} must use a 128×128 viewBox`);
 }
 
 for (const required of ["dist/", "assets/", "skills/", "specs/", "docs/", "plugin.json", "README.md", "LICENSE", "CHANGELOG.md"]) {

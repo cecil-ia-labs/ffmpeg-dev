@@ -95,9 +95,9 @@ describe("Milestone 11 plugin package", () => {
   it("uses scalable self-contained icon assets", async () => {
     for (const file of ["assets/icon.svg", "assets/icon-dark.svg"]) {
       const svg = await readFile(path.join(root, file), "utf8");
-      expect(svg).toMatch(/viewBox=["\']0 0 128 128["\']/);
+      expect(svg).toMatch(/viewBox=["']0 0 128 128["']/);
       expect(svg).not.toMatch(/<script\b/i);
-      expect(svg).not.toMatch(/(?:href|src)\s*=\s*["\']https?:/i);
+      expect(svg).not.toMatch(/(?:href|src)\s*=\s*["']https?:/i);
     }
   });
 });
