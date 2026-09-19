@@ -9,3 +9,5 @@ coverage/
 *.tsbuildinfo
 legacy/tmp/
 test/fixtures/generated/
+media/
+legacy/
