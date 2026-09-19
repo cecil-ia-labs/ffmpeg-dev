@@ -863,7 +863,8 @@ Skills are discovered from the fixed `skills/` directory. Branding, documentatio
 
 # Milestone 12 — Test Suite & Media Fixtures
 
-**Target:** `v0.9.5`
+**Target:** `v0.9.5`  
+**Status:** ✅ Complete
 
 ### Test layers
 
@@ -875,14 +876,14 @@ FFmpeg integration
 fixture-based regression
 ```
 
-### Fixture matrix
+### Reproducible fixture matrix
 
-Create compact fixtures representing:
+Compact media is generated locally from deterministic FFmpeg recipes and validated with FFprobe. The matrix covers:
 
 ```text
-MP4 H.264
-MP4 H.265
-WebM VP9
+MP4 H.264 + AAC
+MP4 H.265/HEVC + AAC
+WebM VP9 + Opus
 GIF
 animated WebP
 PNG
@@ -891,32 +892,28 @@ MP3
 AAC
 WAV PCM
 G.711 μ-law
-multiple frame rates
+24 fps / 30 fps CFR
 VFR
 missing audio
 missing video
-different timebases
-different resolutions
-different pixel formats
+1/1000 and 1/90000 timebases
+160×90 and 320×180 resolutions
+yuv420p and yuv444p
 ```
 
-### Required behavior
+Generated binaries live in a Git-ignored directory; `test/fixtures/manifest.json` is the checked-in property contract.
 
-Tests should verify media properties with FFprobe rather than merely checking whether an output file exists.
+### Regression behavior
 
-Example:
-
-```text
-Expected:
-resolution = 1920×1080
-fps = 30
-pixel_format = yuv420p
-audio codec = aac
-```
+- `verify:fixtures` regenerates the matrix and validates actual stream properties with FFprobe.
+- VFR is checked from frame timestamp deltas.
+- Animated fixtures require multiple video frames.
+- `verify:test-suite` checks all five test layers and compares the legacy migration map against the actual `legacy/bash/` directory.
+- Every one of the 21 migrated Bash scripts has an explicit equivalent integration-test case.
 
 ### Acceptance Criteria
 
-Every migrated Bash script must have at least one equivalent integration test.
+✅ Every migrated Bash script has at least one equivalent integration test, and fixture tests assert media properties rather than merely output existence.
 
 ---
 

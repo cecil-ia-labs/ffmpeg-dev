@@ -23,8 +23,10 @@
     "MCP"
   ],
   "license": "MIT",
-  "currentImplementationVersion": "0.9.0",
+  "currentImplementationVersion": "0.9.5",
   "pluginManifest": "./plugin.json",
   "pluginAssets": "./assets",
-  "skills": "./skills"
+  "skills": "./skills",
+  "testFixtureManifest": "./test/fixtures/manifest.json",
+  "legacyMigrationMap": "./test/fixtures/legacy-migration-map.json"
 }

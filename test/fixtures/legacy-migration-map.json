@@ -1,0 +1,90 @@
+{
+  "schemaVersion": 1,
+  "integrationTest": "test/regression/legacy-migrations.integration.test.ts",
+  "migrations": [
+    {
+      "legacy": "legacy/bash/add-audio-2-clip.sh",
+      "equivalent": "audio attach"
+    },
+    {
+      "legacy": "legacy/bash/add-silence-2-clip.sh",
+      "equivalent": "audio add-silence"
+    },
+    {
+      "legacy": "legacy/bash/concat-all-mp4-in-folder-with-fade.sh",
+      "equivalent": "compose concat --transition"
+    },
+    {
+      "legacy": "legacy/bash/concat-clips.sh",
+      "equivalent": "compose transition"
+    },
+    {
+      "legacy": "legacy/bash/convert-all-gif-in-folder-to-webm.sh",
+      "equivalent": "convert batch gif→webm"
+    },
+    {
+      "legacy": "legacy/bash/convert-all-mp4-in-folder-to-animated-webp.sh",
+      "equivalent": "convert batch mp4→webp"
+    },
+    {
+      "legacy": "legacy/bash/convert-all-mp4-in-folder-to-gif.sh",
+      "equivalent": "convert batch mp4→gif"
+    },
+    {
+      "legacy": "legacy/bash/convert-all-mp4-in-folder-to-webm.sh",
+      "equivalent": "convert batch mp4→webm"
+    },
+    {
+      "legacy": "legacy/bash/convert-all-webm-in-folder-to-gif.sh",
+      "equivalent": "convert batch webm→gif"
+    },
+    {
+      "legacy": "legacy/bash/convert-all-webp-in-folder-to-png.sh",
+      "equivalent": "convert batch webp→png"
+    },
+    {
+      "legacy": "legacy/bash/convert-audio-to-gsm-ulaw.sh",
+      "equivalent": "audio telephony mulaw"
+    },
+    {
+      "legacy": "legacy/bash/create-clip-from-image.sh",
+      "equivalent": "video from-image"
+    },
+    {
+      "legacy": "legacy/bash/create-silence-audio.sh",
+      "equivalent": "audio silence"
+    },
+    {
+      "legacy": "legacy/bash/crop-x-seconds-from-start.sh",
+      "equivalent": "video trim-start"
+    },
+    {
+      "legacy": "legacy/bash/fix-freezes-and-blocks.sh",
+      "equivalent": "repair normalize"
+    },
+    {
+      "legacy": "legacy/bash/increase-video-speed.sh",
+      "equivalent": "video speed"
+    },
+    {
+      "legacy": "legacy/bash/remove-silence-noises.sh",
+      "equivalent": "audio remove-silence"
+    },
+    {
+      "legacy": "legacy/bash/stack_vertical.sh",
+      "equivalent": "compose slideshow"
+    },
+    {
+      "legacy": "legacy/bash/stream-to-websocket.sh",
+      "equivalent": "stream camera HTTP relay plan"
+    },
+    {
+      "legacy": "legacy/bash/upscale-video-to-fhd.sh",
+      "equivalent": "video restore 1920x1080"
+    },
+    {
+      "legacy": "legacy/bash/upscale-video-to-hd.sh",
+      "equivalent": "video restore 1280x720"
+    }
+  ]
+}
