@@ -23,7 +23,7 @@ export function buildProgram(): Command {
   program
     .name("cecilia-ffmpeg")
     .description(
-      `${friendly ? "🎞️ " : ""}Agent-friendly TypeScript CLI for deterministic FFmpeg and FFprobe media workflows.`,
+      `${friendly ? "🎞️\t\b\b\b" : ""}Agent-friendly TypeScript CLI for deterministic FFmpeg and FFprobe media workflows.`,
     )
     .version(VERSION, "-V, --version", "display CLI version")
     .showHelpAfterError()

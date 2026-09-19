@@ -2,12 +2,14 @@ import { CLI_ICONS, iconForCommandPath } from "./icons.js";
 
 const ESC = "\u001b[";
 
-const codes = {
+export const codes = {
   reset: `${ESC}0m`,
   bold: `${ESC}1m`,
   dim: `${ESC}2m`,
+  // \033[38;2;0;210;255m
   brightBlue: `${ESC}94m`,
-  brightCyan: `${ESC}96m`,
+  brightCyan: `${ESC}38;2;0;210;255m${ESC}1m`,
+  // brightCyan: `${ESC}96m`,
   brightGreen: `${ESC}92m`,
   brightYellow: `${ESC}93m`,
   brightRed: `${ESC}91m`,
@@ -15,7 +17,7 @@ const codes = {
   brightWhite: `${ESC}97m`,
 } as const;
 
-function wrap(text: string, ...styles: string[]): string {
+export function wrap(text: string, ...styles: string[]): string {
   if (styles.length === 0) return text;
   return `${styles.join("")}${text}${codes.reset}`;
 }
@@ -111,7 +113,7 @@ export function colorizeHumanOutput(text: string, enabled: boolean): string {
       return `${icon} ${wrap(label, codes.bold, codes.brightYellow)}${wrap(value, codes.brightYellow)}`;
     }
     if (label === "Command:") {
-      return `${icon} ${wrap(label, codes.bold, codes.dim)}${wrap(value, codes.dim)}`;
+      return `${icon} ${wrap(label, codes.bold, codes.brightCyan)}${wrap(value, codes.brightCyan)}`;
     }
     if (["Transport:", "Container:", "Video:", "Audio:", "Format:", "Resolution:"].includes(label)) {
       return `${icon} ${wrap(label, codes.bold, codes.brightMagenta)}${wrap(value, codes.brightMagenta)}`;
@@ -121,7 +123,9 @@ export function colorizeHumanOutput(text: string, enabled: boolean): string {
     }
     return `${icon} ${wrap(label, codes.bold, codes.brightBlue)}${wrap(value, codes.brightWhite)}`;
   }).join("\n");
+
 }
+
 
 export function colorizeProgressLine(text: string, enabled: boolean): string {
   if (!enabled) return text;
@@ -135,7 +139,7 @@ export function colorizeProgressLine(text: string, enabled: boolean): string {
       if (part.includes("frame")) return wrap(part, codes.brightMagenta);
       return wrap(part, codes.bold, codes.brightWhite);
     })
-    .join(` ${wrap("│", codes.dim)} `);
+    .join(` ${wrap("│", codes.brightCyan)} `);
 }
 
 export function colorizeWarning(code: string, message: string, enabled: boolean): string {

@@ -6,8 +6,8 @@ import {
   exitCodeForError,
   ToolkitRuntimeError,
 } from "../core/index.js";
-import { validateGlobalCliOptions } from "./global-options.js";
 import type { CommandSpec } from "./command-spec.js";
+import { validateGlobalCliOptions } from "./global-options.js";
 
 function commandPath(command: Command): string {
   const parts: string[] = [];
@@ -16,6 +16,7 @@ function commandPath(command: Command): string {
   while (current) {
     if (current.name()) {
       parts.push(current.name());
+      // if (current.name()) parts.push(`${wrap(current.name(), codes.brightRed, )}`);
     }
     current = current.parent;
   }

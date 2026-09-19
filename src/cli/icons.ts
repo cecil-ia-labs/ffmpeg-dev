@@ -64,7 +64,7 @@ export function iconForCommandPath(path: string): string {
 }
 
 export function decorateCommandDescription(path: string, description: string): string {
-  return `${iconForCommandPath(path)} ${description}`;
+  return `${iconForCommandPath(path)}\t\b\b\b${description}`;
 }
 
 export function progressSourceIcon(source: string | undefined): string {
