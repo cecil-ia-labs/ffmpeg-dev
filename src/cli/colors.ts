@@ -5,21 +5,37 @@ const ESC = "\u001b[";
 export const codes = {
   reset: `${ESC}0m`,
   bold: `${ESC}1m`,
-  dim: `${ESC}2m`,
-  // \033[38;2;0;210;255m
-  brightBlue: `${ESC}94m`,
-  brightCyan: `${ESC}38;2;0;210;255m${ESC}1m`,
-  // brightCyan: `${ESC}96m`,
-  brightGreen: `${ESC}92m`,
-  brightYellow: `${ESC}93m`,
-  brightRed: `${ESC}91m`,
-  brightMagenta: `${ESC}95m`,
-  brightWhite: `${ESC}97m`,
+  cyan: `${ESC}38;2;0;210;255m`,
+  green: `${ESC}38;2;0;255;140m`,
+  yellow: `${ESC}93m`,
+  red: `${ESC}91m`,
+  magenta: `${ESC}95m`,
+  white: `${ESC}97m`,
 } as const;
 
 export function wrap(text: string, ...styles: string[]): string {
   if (styles.length === 0) return text;
   return `${styles.join("")}${text}${codes.reset}`;
+}
+
+function boldColor(text: string, color: string): string {
+  return wrap(text, codes.bold, color);
+}
+
+export function brandCyan(text: string): string {
+  return boldColor(text, codes.cyan);
+}
+
+export function brandGreen(text: string): string {
+  return boldColor(text, codes.green);
+}
+
+export function brandMagenta(text: string): string {
+  return boldColor(text, codes.magenta);
+}
+
+export function brandWhite(text: string): string {
+  return boldColor(text, codes.white);
 }
 
 export function colorEnabled(
@@ -94,7 +110,7 @@ export function colorizeHumanOutput(text: string, enabled: boolean): string {
 
   return text.split("\n").map((line, index) => {
     if (index === 0 && !line.includes(":")) {
-      return `${iconForHeader(line)} ${wrap(line, codes.bold, codes.brightCyan)}`;
+      return `${iconForHeader(line)} ${brandCyan(line)}`;
     }
 
     const separator = line.indexOf(":");
@@ -104,28 +120,26 @@ export function colorizeHumanOutput(text: string, enabled: boolean): string {
     const icon = labelIcon(label);
 
     if (label === "Output:" || label === "Result:" || label === "Succeeded:") {
-      return `${icon} ${wrap(label, codes.bold, codes.brightGreen)}${wrap(value, codes.brightGreen)}`;
+      return `${icon} ${brandGreen(label)}${brandGreen(value)}`;
     }
     if (label === "Failed:") {
-      return `${icon} ${wrap(label, codes.bold, codes.brightRed)}${wrap(value, codes.brightRed)}`;
+      return `${icon} ${boldColor(label, codes.red)}${boldColor(value, codes.red)}`;
     }
     if (label === "Skipped:") {
-      return `${icon} ${wrap(label, codes.bold, codes.brightYellow)}${wrap(value, codes.brightYellow)}`;
+      return `${icon} ${boldColor(label, codes.yellow)}${boldColor(value, codes.yellow)}`;
     }
     if (label === "Command:") {
-      return `${icon} ${wrap(label, codes.bold, codes.brightCyan)}${wrap(value, codes.brightCyan)}`;
+      return `${icon} ${brandCyan(label)}${brandCyan(value)}`;
     }
     if (["Transport:", "Container:", "Video:", "Audio:", "Format:", "Resolution:"].includes(label)) {
-      return `${icon} ${wrap(label, codes.bold, codes.brightMagenta)}${wrap(value, codes.brightMagenta)}`;
+      return `${icon} ${brandMagenta(label)}${brandMagenta(value)}`;
     }
     if (["Duration:", "Discovered:", "Attempted:", "Parallelism:"].includes(label)) {
-      return `${icon} ${wrap(label, codes.bold, codes.brightCyan)}${wrap(value, codes.brightWhite)}`;
+      return `${icon} ${brandCyan(label)}${brandWhite(value)}`;
     }
-    return `${icon} ${wrap(label, codes.bold, codes.brightBlue)}${wrap(value, codes.brightWhite)}`;
+    return `${icon} ${brandCyan(label)}${brandWhite(value)}`;
   }).join("\n");
-
 }
-
 
 export function colorizeProgressLine(text: string, enabled: boolean): string {
   if (!enabled) return text;
@@ -133,25 +147,25 @@ export function colorizeProgressLine(text: string, enabled: boolean): string {
   return text
     .split(" | ")
     .map((part) => {
-      if (part.includes("%")) return wrap(part, codes.bold, codes.brightGreen);
-      if (part.includes("ETA")) return wrap(part, codes.bold, codes.brightYellow);
-      if (part.includes("fps") || part.includes("x")) return wrap(part, codes.brightCyan);
-      if (part.includes("frame")) return wrap(part, codes.brightMagenta);
-      return wrap(part, codes.bold, codes.brightWhite);
+      if (part.includes("%")) return brandGreen(part);
+      if (part.includes("ETA")) return boldColor(part, codes.yellow);
+      if (part.includes("fps") || part.includes("x")) return brandCyan(part);
+      if (part.includes("frame")) return brandMagenta(part);
+      return brandWhite(part);
     })
-    .join(` ${wrap("│", codes.brightCyan)} `);
+    .join(` ${brandCyan("│")} `);
 }
 
 export function colorizeWarning(code: string, message: string, enabled: boolean): string {
   const prefix = `warning [${code}]`;
   return enabled
-    ? `${CLI_ICONS.warning} ${wrap(prefix, codes.bold, codes.brightYellow)}: ${wrap(message, codes.brightYellow)}`
+    ? `${CLI_ICONS.warning} ${boldColor(prefix, codes.yellow)}: ${boldColor(message, codes.yellow)}`
     : `${prefix}: ${message}`;
 }
 
 export function colorizeError(code: string, message: string, enabled: boolean): string {
   const prefix = `error [${code}]`;
   return enabled
-    ? `${CLI_ICONS.error} ${wrap(prefix, codes.bold, codes.brightRed)}: ${wrap(message, codes.brightRed)}`
+    ? `${CLI_ICONS.error} ${boldColor(prefix, codes.red)}: ${boldColor(message, codes.red)}`
     : `${prefix}: ${message}`;
 }

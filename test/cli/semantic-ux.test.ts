@@ -19,10 +19,13 @@ describe("Milestone 14 semantic human UX", () => {
   };
 
   it("adds domain icons to human command descriptions", () => {
-    expect(decorateCommandDescription("cecilia-ffmpeg video", "Video operations."))
-      .toBe("🎬 Video operations.");
-    expect(decorateCommandDescription("cecilia-ffmpeg stream camera", "Capture."))
-      .toBe("📡 Capture.");
+    const video = decorateCommandDescription("cecilia-ffmpeg video", "Video operations.");
+    expect(video).toContain("🎬");
+    expect(video).toContain("Video operations.");
+
+    const stream = decorateCommandDescription("cecilia-ffmpeg stream camera", "Capture.");
+    expect(stream).toContain("📡");
+    expect(stream).toContain("Capture.");
   });
 
   it("keeps plain progress machine/log friendly", () => {

@@ -5,6 +5,7 @@ import { colorEnabled } from "./colors.js";
 import type { CommandSpec } from "./command-spec.js";
 import { COMMAND_TREE } from "./command-spec.js";
 import { decorateCommandDescription } from "./icons.js";
+import { configureSemanticHelp } from "./help-style.js";
 import { configureMilestone4Options } from "./milestone-4-options.js";
 import { configureMilestone5Options } from "./milestone-5-options.js";
 import { configureMilestone6Options } from "./milestone-6-options.js";
@@ -18,9 +19,7 @@ function commandPath(command: Command): string {
   const parts: string[] = [];
   let current: Command | null = command;
   while (current) {
-    // let _c =`${wrap(line, codes.bold, codes.brightCyan)}`
     if (current.name()) parts.push(current.name());
-    // if (current.name()) parts.push(`${wrap(current.name(), codes.brightRed, )}`);
     current = current.parent;
 
   }
@@ -34,9 +33,10 @@ function friendlyHelpEnabled(): boolean {
 function registerSpec(parent: Command, spec: CommandSpec): void {
   const command = parent.command(spec.syntax);
   const path = commandPath(command);
-  // const path =`${wrap(commandPath(command), codes.bold, codes.brightCyan)}`
+  const friendly = friendlyHelpEnabled();
+  configureSemanticHelp(command, friendly);
   command.description(
-    friendlyHelpEnabled() ? decorateCommandDescription(path, spec.description) : spec.description,
+    friendly ? decorateCommandDescription(path, spec.description) : spec.description,
   );
 
   if (spec.children && spec.children.length > 0) {

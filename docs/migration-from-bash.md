@@ -1,6 +1,6 @@
 # Migration from Legacy Bash
 
-The original shell utilities are retained under `legacy/bash/` as historical behavioral references. The TypeScript toolkit does not execute them at runtime.
+The original shell utilities were used as historical behavioral references during migration and have now been removed from the distributable repository tree. Their stable script identifiers, migration map, regression tests, and semantic corrections remain documented here.
 
 ## Migration principles
 
@@ -57,4 +57,4 @@ The canonical command is `video upscale`. `video restore` is retained as a compa
 
 ## Regression guarantee
 
-Every one of the 21 legacy scripts is represented by an explicit integration-regression case. The structural verifier compares the migration map to the actual legacy directory.
+Every one of the 21 historical scripts is represented by an explicit integration-regression case. The structural verifier validates the 21 stable migration identifiers and their explicit regression cases without requiring the removed `legacy/` directory.

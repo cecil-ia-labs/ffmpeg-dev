@@ -4,6 +4,7 @@ import { ZodError } from "zod";
 import { VERSION } from "../version.js";
 import { colorEnabled } from "./colors.js";
 import { validateGlobalCliOptions } from "./global-options.js";
+import { configureSemanticHelp } from "./help-style.js";
 import { registerCommandTree } from "./register-command-tree.js";
 
 function formatZodError(error: ZodError): string {
@@ -19,6 +20,7 @@ function friendlyHelpEnabled(): boolean {
 export function buildProgram(): Command {
   const program = new Command();
   const friendly = friendlyHelpEnabled();
+  configureSemanticHelp(program, friendly);
 
   program
     .name("cecilia-ffmpeg")
