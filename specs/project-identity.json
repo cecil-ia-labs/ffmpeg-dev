@@ -26,7 +26,5 @@
   "currentImplementationVersion": "0.9.5",
   "pluginManifest": "./plugin.json",
   "pluginAssets": "./assets",
-  "skills": "./skills",
-  "testFixtureManifest": "./test/fixtures/manifest.json",
-  "legacyMigrationMap": "./test/fixtures/legacy-migration-map.json"
+  "skills": "./skills"
 }

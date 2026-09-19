@@ -17,7 +17,7 @@
 
 - Package/plugin version advanced to `0.9.5`.
 - `npm run validate` now verifies test topology and the complete media fixture matrix before TypeScript/lint/Vitest/build/package gates.
-- Project identity now references the fixture manifest and legacy migration map.
+- Project identity version advanced to `0.9.5`; test-only fixture contracts remain outside the distribution package.
 
 ### Regression guarantees
 
