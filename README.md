@@ -1,7 +1,7 @@
 # FFmpeg Media Toolkit
 
-**Current milestone:** 13.5 — Media Capability Expansion & CLI Polish  
-**Version:** `0.9.8`
+**Current milestone:** 14 — Documentation & Migration Guide  
+**Version:** `0.9.9`
 
 FFmpeg Media Toolkit is a professional, agent-friendly TypeScript CLI and plugin foundation for deterministic FFmpeg/FFprobe media workflows.
 
@@ -15,9 +15,9 @@ FFmpeg Media Toolkit is a professional, agent-friendly TypeScript CLI and plugin
 - **Media engine:** FFmpeg + FFprobe
 - **Minimum supported FFmpeg:** `6.1`
 
-## Milestone 13.5 status
+## Milestone 14 status
 
-Milestone 13.5 closes the remaining CLI/media capability gaps found during hands-on testing before the v1 documentation freeze: first-class image commands, JPEG/JPG and MP4 conversion targets, audio conversion, shared fit semantics, canonical video taxonomy, expanded slideshows/transitions, and more visible human TTY colors.
+Milestone 14 completes the public documentation layer for the pre-v1 CLI, adds a full 21-script Bash migration guide, synchronizes Skills with the canonical command taxonomy, and adds semantic emoji/icon UX for interactive human terminals while preserving clean JSON and non-TTY output.
 
 Implemented now:
 
@@ -68,6 +68,32 @@ Video, audio, conversion, and composition operations now include:
 Streaming commands are implemented in Milestone 9 for HTTP, RTMP, RTSP, SRT, UDP, and TCP destinations. Direct WebSocket output remains an explicit relay concern rather than a mislabeled HTTP stream.
 
 
+## Documentation
+
+The public CLI is now documented without requiring source inspection:
+
+- [Getting started](docs/getting-started.md)
+- [Installation](docs/installation.md)
+- [CLI reference](docs/cli-reference.md)
+- [Video](docs/video.md)
+- [Image](docs/image.md)
+- [Audio](docs/audio.md)
+- [Conversion](docs/conversion.md)
+- [Composition](docs/composition.md)
+- [Streaming](docs/streaming.md)
+- [Diagnostics & repair](docs/diagnostics.md)
+- [Batch processing](docs/batch-processing.md)
+- [Hardware acceleration status](docs/hardware-acceleration.md)
+- [Migration from Bash](docs/migration-from-bash.md)
+
+Interactive human output now uses semantic icons in addition to the stronger color palette:
+
+```text
+🎬 clip.mp4 | ▶️ 67% | 🎞️ 2411 frames | ⚡ 100.0 fps | 🚀 3.70x | ⌛ ETA 00:00:12
+```
+
+`--no-color` disables ANSI color and friendly semantic icons. `--json` remains machine-only and non-TTY progress remains plain.
+
 ## Media capability expansion
 
 The pre-v1 CLI now uses a shared visual-fit vocabulary:
@@ -116,7 +142,7 @@ Long-running CLI operations now use FFmpeg's machine-readable progress protocol:
 Human mode renders progress on stderr while keeping the final command result on stdout:
 
 ```text
-clip.mp4 | 67% | frame 2411 | 100.0 fps | 3.70x | ETA 00:00:12
+🎬 clip.mp4 | ▶️ 67% | 🎞️ 2411 frames | ⚡ 100.0 fps | 🚀 3.70x | ⌛ ETA 00:00:12
 ```
 
 Agent mode remains one JSON envelope on stdout:
@@ -404,12 +430,12 @@ npx tsx src/cli.ts video from-image ./poster.png \
 
 The input aspect ratio is preserved using scale + pad.
 
-### Restore / normalize / resize
+### Upscale / normalize / resize
 
 Balanced profile:
 
 ```bash
-npx tsx src/cli.ts video restore ./source.mp4 \
+npx tsx src/cli.ts video upscale ./source.mp4 \
   --resolution 1920x1080 \
   --profile balanced \
   --output ./restored.mp4
@@ -418,14 +444,14 @@ npx tsx src/cli.ts video restore ./source.mp4 \
 Aggressive profile:
 
 ```bash
-npx tsx src/cli.ts video restore ./source.mp4 \
+npx tsx src/cli.ts video upscale ./source.mp4 \
   --resolution 1920x1080 \
   --profile aggressive \
   --crf 14 \
   --preset slow
 ```
 
-The toolkit never treats `1280x720` as FHD or `720x404` as HD. Resolution semantics are explicit.
+The toolkit never treats `1280x720` as FHD or `720x404` as HD. Resolution semantics are explicit. `video restore` remains a compatibility alias for the canonical `video upscale` command.
 
 
 ## Audio processing
@@ -433,7 +459,7 @@ The toolkit never treats `1280x720` as FHD or `720x404` as HD. Resolution semant
 ### Attach or replace audio on video
 
 ```bash
-npx tsx src/cli.ts audio attach ./video.mp4 ./voice.wav \
+npx tsx src/cli.ts video attach-audio ./video.mp4 ./voice.wav \
   --mode replace \
   --output ./video.with-audio.mp4
 ```
@@ -457,7 +483,7 @@ If no output is supplied, the default is `./silence.wav`. Common layouts are inf
 ### Add a silent track to video
 
 ```bash
-npx tsx src/cli.ts audio add-silence ./video-without-audio.mp4 \
+npx tsx src/cli.ts video add-silence ./video-without-audio.mp4 \
   --output ./video-with-silent-audio.mp4
 ```
 
@@ -536,15 +562,12 @@ npx tsx src/cli.ts convert file ./clip.mp4 \
   --loop 0
 ```
 
-Initial conversion routes are:
+Supported conversion format vocabulary:
 
 ```text
-MP4 → WebM
-MP4 → GIF
-MP4 → animated WebP
-WebM → GIF
-WebP → PNG
-GIF → WebM
+video: mp4, webm
+image: gif, webp, png, jpeg/jpg
+audio: wav, mp3, aac, m4a, flac, opus, ogg
 ```
 
 ### Convert a folder
@@ -649,36 +672,46 @@ Composition normalizes geometry, constant frame rate, pixel format, timebase, an
 
 ```text
 cecilia-ffmpeg
-├── doctor                              # implemented M3
-├── probe <input>                       # implemented M3
+├── doctor
+├── probe <input>
 ├── environment
-│   ├── capabilities                    # implemented M3
-│   ├── version                         # implemented M3
-│   └── install                         # reserved by policy
-├── video                               # implemented M4
+│   ├── capabilities
+│   ├── version
+│   └── install                         # reserved
+├── video
 │   ├── trim-start <input>
 │   ├── trim-end <input>
 │   ├── trim <input>
 │   ├── speed <input>
 │   ├── from-image <input>
-│   └── restore <input>
-├── audio                               # implemented M5
-│   ├── attach <video> <audio>
+│   ├── upscale <input>                 # canonical
+│   ├── restore <input>                 # compatibility alias
+│   ├── attach-audio <video> <audio>
+│   └── add-silence <video>
+├── image
+│   ├── convert <input>
+│   └── extract <input>
+├── audio
+│   ├── attach <video> <audio>          # compatibility alias
 │   ├── silence
-│   ├── add-silence <video>
+│   ├── add-silence <video>             # compatibility alias
 │   ├── detect-silence <input>
 │   ├── remove-silence <input>
 │   └── telephony <input>
-├── convert                             # implemented M6
+├── convert
 │   ├── file <input>
 │   └── batch <directory>
-├── compose                             # implemented M7
+├── compose
 │   ├── concat <inputs...>
 │   ├── transition <left> <right>
 │   └── slideshow <directory>
-├── diagnose <input>                    # M8
-├── repair                              # M8
-└── stream                              # M9
+├── diagnose <input>
+├── repair
+│   ├── timestamps <input>
+│   └── normalize <input>
+└── stream
+    ├── camera
+    └── file <input>
 ```
 
 ## Global flags
@@ -690,6 +723,8 @@ cecilia-ffmpeg
 --json
 --quiet
 --verbose
+--no-progress
+--no-color
 --ffmpeg-path <path>
 --ffprobe-path <path>
 --keep-temp
@@ -705,6 +740,9 @@ npm run verify:video
 npm run verify:audio
 npm run verify:conversion
 npm run verify:composition
+npm run verify:ux
+npm run verify:media-expansion
+npm run verify:docs
 npm run check
 npm run lint
 npm test

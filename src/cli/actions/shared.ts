@@ -46,6 +46,7 @@ export async function executeAction<T>(
   const stderrColor = colorEnabled(options.color, process.stderr);
   const progress = new CliProgressReporter({
     enabled: options.progress && !options.quiet && !options.json,
+    friendly: stderrColor,
   });
 
   try {

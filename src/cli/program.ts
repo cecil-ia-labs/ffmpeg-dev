@@ -2,6 +2,7 @@ import { Command, Option } from "commander";
 import { ZodError } from "zod";
 
 import { VERSION } from "../version.js";
+import { colorEnabled } from "./colors.js";
 import { validateGlobalCliOptions } from "./global-options.js";
 import { registerCommandTree } from "./register-command-tree.js";
 
@@ -11,13 +12,18 @@ function formatZodError(error: ZodError): string {
     .join("; ");
 }
 
+function friendlyHelpEnabled(): boolean {
+  return !process.argv.includes("--no-color") && colorEnabled(true, process.stdout);
+}
+
 export function buildProgram(): Command {
   const program = new Command();
+  const friendly = friendlyHelpEnabled();
 
   program
     .name("cecilia-ffmpeg")
     .description(
-      "Agent-friendly TypeScript CLI for deterministic FFmpeg and FFprobe media workflows.",
+      `${friendly ? "🎞️ " : ""}Agent-friendly TypeScript CLI for deterministic FFmpeg and FFprobe media workflows.`,
     )
     .version(VERSION, "-V, --version", "display CLI version")
     .showHelpAfterError()
@@ -31,7 +37,7 @@ export function buildProgram(): Command {
     .addOption(new Option("--quiet", "suppress non-error human output").conflicts("verbose"))
     .addOption(new Option("--verbose", "emit diagnostic details to stderr").conflicts("quiet"))
     .option("--no-progress", "suppress live human progress display")
-    .option("--no-color", "disable ANSI colors in human output")
+    .option("--no-color", "disable ANSI colors and semantic icons in human output")
     .option("--ffmpeg-path <path>", "override FFmpeg binary resolution")
     .option("--ffprobe-path <path>", "override FFprobe binary resolution")
     .option("--keep-temp", "preserve temporary/intermediate artifacts for debugging", false);

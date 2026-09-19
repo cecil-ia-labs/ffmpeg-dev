@@ -2,12 +2,15 @@ import path from "node:path";
 
 import type { ProgressRunSummary, ProgressSummary } from "../types/contracts.js";
 import type { FFmpegProgressEvent } from "../core/progress.js";
+import { colorizeProgressLine } from "./colors.js";
+import { CLI_ICONS, progressSourceIcon } from "./icons.js";
 
 export type ProgressWriter = (text: string) => void;
 
 export interface CliProgressReporterOptions {
   enabled: boolean;
   isTTY?: boolean;
+  friendly?: boolean;
   write?: ProgressWriter;
   now?: () => number;
 }
@@ -31,19 +34,37 @@ function labelFor(event: FFmpegProgressEvent): string {
   return path.basename(event.source);
 }
 
-export function formatHumanProgress(event: FFmpegProgressEvent): string {
-  const parts = [labelFor(event)];
-  if (event.percentage !== undefined) parts.push(`${Math.round(event.percentage)}%`);
-  if (event.frame !== undefined) parts.push(`frame ${event.frame}`);
-  if (event.fps !== undefined) parts.push(`${event.fps.toFixed(1)} fps`);
-  if (event.speedMultiplier !== undefined) parts.push(`${event.speedMultiplier.toFixed(2)}x`);
-  if (event.etaSeconds !== undefined) parts.push(`ETA ${formatProgressDuration(event.etaSeconds)}`);
+export function formatHumanProgress(event: FFmpegProgressEvent, friendly = false): string {
+  const source = labelFor(event);
+  const parts = [friendly ? `${progressSourceIcon(event.source)} ${source}` : source];
+
+  if (event.percentage !== undefined) {
+    const status = event.state === "end" ? CLI_ICONS.completed : CLI_ICONS.progress;
+    parts.push(friendly ? `${status} ${Math.round(event.percentage)}%` : `${Math.round(event.percentage)}%`);
+  }
+  if (event.frame !== undefined) {
+    parts.push(friendly ? `${CLI_ICONS.frame} ${event.frame} frames` : `frame ${event.frame}`);
+  }
+  if (event.fps !== undefined) {
+    parts.push(friendly ? `${CLI_ICONS.fps} ${event.fps.toFixed(1)} fps` : `${event.fps.toFixed(1)} fps`);
+  }
+  if (event.speedMultiplier !== undefined) {
+    parts.push(friendly ? `${CLI_ICONS.speed} ${event.speedMultiplier.toFixed(2)}x` : `${event.speedMultiplier.toFixed(2)}x`);
+  }
+  if (event.etaSeconds !== undefined) {
+    parts.push(
+      friendly
+        ? `${CLI_ICONS.eta} ETA ${formatProgressDuration(event.etaSeconds)}`
+        : `ETA ${formatProgressDuration(event.etaSeconds)}`,
+    );
+  }
   return parts.join(" | ");
 }
 
 export class CliProgressReporter {
   private readonly enabled: boolean;
   private readonly isTTY: boolean;
+  private readonly friendly: boolean;
   private readonly write: ProgressWriter;
   private readonly now: () => number;
   private readonly runs = new Map<string, ProgressRunSummary>();
@@ -54,6 +75,7 @@ export class CliProgressReporter {
   constructor(options: CliProgressReporterOptions) {
     this.enabled = options.enabled;
     this.isTTY = options.isTTY ?? Boolean(process.stderr.isTTY);
+    this.friendly = options.friendly ?? this.isTTY;
     this.write = options.write ?? ((text) => process.stderr.write(text));
     this.now = options.now ?? (() => Date.now());
   }
@@ -86,7 +108,8 @@ export class CliProgressReporter {
       const last = this.lastRenderedAt.get(event.runId) ?? 0;
       if (event.state !== "end" && now - last < 125) return;
       this.lastRenderedAt.set(event.runId, now);
-      this.write(`\r\u001b[2K${formatHumanProgress(event)}`);
+      const line = formatHumanProgress(event, this.friendly);
+      this.write(`\r\u001b[2K${colorizeProgressLine(line, this.friendly)}`);
       this.ttyLineOpen = true;
       if (event.state === "end") {
         this.write("\n");
@@ -102,7 +125,7 @@ export class CliProgressReporter {
     const lastBucket = this.lastBucket.get(event.runId);
     if (event.state === "end" || (bucket !== undefined && bucket !== lastBucket)) {
       if (bucket !== undefined) this.lastBucket.set(event.runId, bucket);
-      this.write(`${formatHumanProgress(event)}\n`);
+      this.write(`${formatHumanProgress(event, false)}\n`);
     }
   };
 
