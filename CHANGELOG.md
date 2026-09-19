@@ -1,5 +1,39 @@
 # Changelog
 
+## 0.9.0 — Milestone 11 — Plugin Packaging & Assets
+
+### Added
+
+- Final portable `plugin.json` metadata for Agent Plugins 1.0.0.
+- Cecil-IA Labs extension namespace for branding, documentation, skill catalog, and npm identity metadata.
+- Original self-contained light/dark plugin icons, horizontal logo, and two SVG documentation-preview assets.
+- `specs/plugin-extension.schema.json` documenting the Cecil-IA Labs extension payload.
+- `scripts/verify-plugin.mjs` for manifest, containment, skill catalog, and asset validation.
+- `scripts/verify-package.mjs` for `npm pack --dry-run --json --ignore-scripts` tarball inspection.
+- `test/plugin/plugin-package.test.ts` and Milestone 11 packaging documentation/checklist.
+
+### Changed
+
+- Package/plugin version advanced to `0.9.0`.
+- npm package `files` allowlist now explicitly includes `docs/` and `CHANGELOG.md`.
+- `npm run validate` now runs static plugin verification before compile/test gates and tarball verification after build.
+- README, roadmap, project identity, and asset documentation updated for distributable plugin packaging.
+
+### Standards
+
+- The closed Agent Plugins 1.0.0 manifest schema is respected; skills remain in the standard fixed `skills/` discovery directory.
+- Branding/documentation metadata is placed under `extensions.com.cecilialabs.ffmpeg` instead of non-standard top-level fields.
+- GitHub Actions remain deferred until alpha completion.
+
+### Validation
+
+Run locally before merge:
+
+```bash
+npm run validate
+```
+
+
 ## 0.8.0 — Milestone 10 — Professional-Level Skills
 
 ### Added

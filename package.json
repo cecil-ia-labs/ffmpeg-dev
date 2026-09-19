@@ -1,6 +1,6 @@
 {
   "name": "@cecilialabs/ffmpeg",
-  "version": "0.8.0",
+  "version": "0.9.0",
   "description": "Agent-friendly TypeScript CLI and toolkit for FFmpeg and FFprobe media workflows.",
   "type": "module",
   "license": "MIT",
@@ -24,8 +24,10 @@
     "assets/",
     "skills/",
     "specs/",
+    "docs/",
     "plugin.json",
     "README.md",
+    "CHANGELOG.md",
     "LICENSE"
   ],
   "scripts": {
@@ -39,7 +41,7 @@
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "verify:foundation": "node scripts/verify-foundation.mjs",
-    "validate": "npm run verify:foundation && npm run verify:runtime && npm run verify:inspection && npm run verify:video && npm run verify:audio && npm run verify:conversion && npm run verify:composition && npm run verify:diagnostics && npm run verify:streaming && npm run verify:skills && npm run check && npm run lint && npm run test && npm run build",
+    "validate": "npm run verify:foundation && npm run verify:runtime && npm run verify:inspection && npm run verify:video && npm run verify:audio && npm run verify:conversion && npm run verify:composition && npm run verify:diagnostics && npm run verify:streaming && npm run verify:skills && npm run verify:plugin && npm run check && npm run lint && npm run test && npm run build && npm run verify:package",
     "prepublishOnly": "npm run validate",
     "verify:runtime": "node scripts/verify-runtime.mjs",
     "verify:inspection": "node scripts/verify-inspection.mjs",
@@ -52,7 +54,9 @@
     "codex:setup": "node scripts/codex-environment-setup.mjs",
     "codex:cleanup": "node scripts/codex-environment-cleanup.mjs",
     "verify:streaming": "node scripts/verify-streaming.mjs",
-    "verify:skills": "node scripts/verify-skills.mjs"
+    "verify:skills": "node scripts/verify-skills.mjs",
+    "verify:plugin": "node scripts/verify-plugin.mjs",
+    "verify:package": "node scripts/verify-package.mjs"
   },
   "keywords": [
     "ffmpeg",
