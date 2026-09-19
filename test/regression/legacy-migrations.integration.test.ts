@@ -144,7 +144,7 @@ describe("Milestone 12 legacy Bash migration regression", () => {
 
   it("legacy/bash/convert-all-webp-in-folder-to-png.sh → WebP to PNG batch", async () => {
     if (!available) return;
-    const report = await runBatch("animated-webp", "source.webp", "webp", "png");
+    const report = await runBatch("static-webp", "source.webp", "webp", "png");
     expect(report).toMatchObject({ succeeded: 1, failed: 0 });
     expect(firstOutputCodec(report)).toBe("png");
   }, 60_000);

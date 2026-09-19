@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "generatorVersion": 1,
+  "generatorVersion": 2,
   "generatedDirectory": "test/fixtures/generated",
   "fixtures": [
     {
@@ -87,6 +87,23 @@
         },
         "audio": false,
         "framesMin": 2
+      }
+    },
+    {
+      "id": "static-webp",
+      "file": "static.webp",
+      "traits": [
+        "webp",
+        "still-image",
+        "legacy-conversion-source"
+      ],
+      "expected": {
+        "video": {
+          "codecName": "webp",
+          "width": 64,
+          "height": 48
+        },
+        "audio": false
       }
     },
     {

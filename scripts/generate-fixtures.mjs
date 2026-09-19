@@ -105,6 +105,7 @@ run([
 ]);
 
 run(["-hide_banner", "-loglevel", "error", "-f", "lavfi", "-i", "testsrc2=size=64x48:rate=6:duration=0.8", "-an", "-c:v", "gif", "-y", output("animated.gif")]);
+run(["-hide_banner", "-loglevel", "error", "-f", "lavfi", "-i", "color=c=green:size=64x48:d=0.1", "-frames:v", "1", "-an", "-c:v", "libwebp", "-lossless", "1", "-f", "webp", "-y", output("static.webp")]);
 run(["-hide_banner", "-loglevel", "error", "-f", "lavfi", "-i", "testsrc2=size=64x48:rate=6:duration=0.8", "-an", "-c:v", "libwebp", "-lossless", "1", "-loop", "0", "-y", output("animated.webp")]);
 run(["-hide_banner", "-loglevel", "error", "-f", "lavfi", "-i", "color=c=red:size=64x48:d=0.1", "-frames:v", "1", "-c:v", "png", "-y", output("still.png")]);
 run(["-hide_banner", "-loglevel", "error", "-f", "lavfi", "-i", "color=c=blue:size=64x48:d=0.1", "-frames:v", "1", "-c:v", "mjpeg", "-q:v", "3", "-y", output("still.jpg")]);

@@ -41,6 +41,7 @@ MP4 H.264 + AAC
 MP4 H.265/HEVC + AAC
 WebM VP9 + Opus
 GIF
+static WebP
 animated WebP
 PNG
 JPEG
@@ -67,6 +68,8 @@ speech-like audio with silence intervals
 `npm run verify:fixtures` regenerates the fixture set with `--force`, probes every output with FFprobe, and compares actual stream properties with the manifest.
 
 For VFR, verification additionally reads frame timestamps and requires at least two distinct positive timestamp deltas. GIF requires multiple decoded frames. Animated WebP is validated through its RIFF `ANIM`/`ANMF` chunks because FFprobe 7.1 may identify the WebP codec while reporting zero decoded frame geometry for animated files.
+
+The legacy `convert-all-webp-in-folder-to-png.sh` regression intentionally uses the **static WebP** fixture. FFmpeg/FFprobe 7.1.x can identify an animated WebP container while its native decoder fails to expose a decodable first frame. Animated WebP remains covered independently as a container/animation regression so this compatibility limitation is not hidden.
 
 File existence alone is never considered a successful regression result.
 

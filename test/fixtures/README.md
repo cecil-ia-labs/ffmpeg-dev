@@ -12,6 +12,8 @@ npm run fixtures:clean
 
 `verify:fixtures` regenerates the complete matrix and validates stream/media properties with FFprobe. It does not treat file existence as sufficient. Animated WebP additionally checks RIFF `ANIM`/`ANMF` chunks because FFprobe 7.1 can identify the codec while exposing incomplete animated-frame geometry.
 
+The static WebP fixture is the decode/conversion source for WebP → PNG regression. The animated fixture is intentionally separate because FFmpeg 7.1.x has incomplete animated-WebP decode support.
+
 Generated files live under:
 
 ```text
@@ -28,6 +30,7 @@ The manifest at `test/fixtures/manifest.json` covers:
 - MP4 H.265/HEVC + AAC;
 - WebM VP9 + Opus;
 - GIF;
+- static WebP;
 - animated WebP;
 - PNG;
 - JPEG;

@@ -6,7 +6,7 @@
 
 - Reproducible FFmpeg fixture generator and Git-ignored generated fixture directory.
 - Checked-in fixture manifest describing expected codecs, streams, dimensions, frame rates, timebases, pixel formats, sample rates, and channels.
-- Fixture coverage for H.264, HEVC, VP9, GIF, animated WebP, PNG, JPEG, MP3, AAC, PCM WAV, G.711 μ-law, CFR/VFR, missing streams, multiple timebases, resolutions, and pixel formats.
+- Fixture coverage for H.264, HEVC, VP9, GIF, static WebP, animated WebP, PNG, JPEG, MP3, AAC, PCM WAV, G.711 μ-law, CFR/VFR, missing streams, multiple timebases, resolutions, and pixel formats.
 - FFprobe-backed fixture verification including VFR timestamp-delta checks.
 - Explicit legacy migration map for all 21 Bash scripts.
 - One equivalent integration regression case for every migrated Bash script.
@@ -24,6 +24,7 @@
 - Media tests verify FFprobe properties rather than treating output existence as success.
 - Legacy GIF→WebM is asserted as real VP9 WebM.
 - Legacy `gsm-ulaw` naming is guarded by an explicit G.711 μ-law versus GSM assertion.
+- WebP→PNG regression uses a static WebP decode fixture; animated WebP remains separately guarded through RIFF animation chunks because FFmpeg 7.1.x has incomplete animated-WebP decode support.
 - Legacy “WebSocket” capture is guarded as an HTTP MPEG-TS relay plan.
 - GitHub Actions remain deferred until alpha completion.
 

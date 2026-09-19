@@ -28,7 +28,7 @@ for (const legacy of legacyFiles) {
 const manifest = await readJson("test/fixtures/manifest.json");
 const ids = new Set(manifest.fixtures.map((fixture) => fixture.id));
 for (const id of [
-  "mp4-h264-aac", "mp4-h265-aac", "webm-vp9-opus", "gif", "animated-webp",
+  "mp4-h264-aac", "mp4-h265-aac", "webm-vp9-opus", "gif", "static-webp", "animated-webp",
   "png", "jpeg", "mp3", "aac", "wav-pcm", "wav-mulaw",
   "video-24fps", "video-30fps", "video-vfr", "video-only", "audio-only",
   "timebase-1k", "timebase-90k", "resolution-320x180", "pixfmt-yuv444p",

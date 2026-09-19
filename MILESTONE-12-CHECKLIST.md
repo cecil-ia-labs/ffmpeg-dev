@@ -18,7 +18,8 @@
 - [x] MP4 H.265/HEVC + AAC.
 - [x] WebM VP9 + Opus.
 - [x] GIF.
-- [x] Animated WebP.
+- [x] Static WebP for decode/conversion regression.
+- [x] Animated WebP for animation-container regression.
 - [x] PNG.
 - [x] JPEG.
 - [x] MP3.
@@ -50,6 +51,7 @@
 - [x] Every migrated Bash script has an explicit equivalent integration-test case.
 - [x] Incorrect legacy GIF→WebM semantics remain covered by a real VP9 WebM assertion.
 - [x] Legacy `gsm-ulaw` naming remains covered by an explicit `pcm_mulaw != gsm` assertion.
+- [x] Legacy WebP→PNG regression uses a decodable static WebP fixture; animated WebP remains independently validated.
 - [x] Legacy “WebSocket” streaming remains covered as an HTTP MPEG-TS relay plan.
 
 ## Tooling
