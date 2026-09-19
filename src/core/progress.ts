@@ -172,7 +172,7 @@ function speedFactor(args: readonly string[]): number | undefined {
 function transitionDuration(args: readonly string[]): number {
   let total = 0;
   for (const value of args) {
-    const matches = value.matchAll(/xfade=[^;\[]*?duration=([0-9]+(?:\.[0-9]+)?)/g);
+    const matches = value.matchAll(/xfade=[^;[]*?duration=([0-9]+(?:\.[0-9]+)?)/g);
     for (const match of matches) total += Number(match[1] ?? 0);
   }
   return total;
