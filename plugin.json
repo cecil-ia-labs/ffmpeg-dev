@@ -1,11 +1,14 @@
 {
   "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
   "name": "ffmpeg-media-toolkit",
-  "version": "0.8.0",
+  "version": "0.9.0",
   "description": "Professional FFmpeg and FFprobe workflows backed by a deterministic TypeScript CLI for media editing, conversion, composition, diagnostics, audio processing, and streaming.",
   "author": {
-    "name": "Cecil-IA Labs"
+    "name": "Cecil-IA Labs",
+    "url": "https://github.com/cecil-ia-labs"
   },
+  "homepage": "https://github.com/cecil-ia-labs/ffmpeg-dev#readme",
+  "repository": "https://github.com/cecil-ia-labs/ffmpeg-dev",
   "license": "MIT",
   "keywords": [
     "ffmpeg",
@@ -13,7 +16,62 @@
     "media",
     "video",
     "audio",
+    "streaming",
+    "agent-skills",
     "typescript",
     "cli"
-  ]
+  ],
+  "extensions": {
+    "com.cecilialabs.ffmpeg": {
+      "branding": {
+        "displayName": "FFmpeg Media Toolkit",
+        "icon": "./assets/icon.svg",
+        "iconDark": "./assets/icon-dark.svg",
+        "logo": "./assets/logo.svg",
+        "screenshots": [
+          "./assets/screenshots/cli-overview.svg",
+          "./assets/screenshots/skills-overview.svg"
+        ]
+      },
+      "documentation": {
+        "readme": "./README.md",
+        "skills": "./skills/README.md",
+        "packaging": "./docs/milestone-11/plugin-packaging.md"
+      },
+      "skillCatalog": [
+        {
+          "name": "ffmpeg-environment",
+          "path": "./skills/ffmpeg-environment/SKILL.md"
+        },
+        {
+          "name": "ffmpeg-video-editing",
+          "path": "./skills/ffmpeg-video-editing/SKILL.md"
+        },
+        {
+          "name": "ffmpeg-audio",
+          "path": "./skills/ffmpeg-audio/SKILL.md"
+        },
+        {
+          "name": "ffmpeg-conversion",
+          "path": "./skills/ffmpeg-conversion/SKILL.md"
+        },
+        {
+          "name": "ffmpeg-composition",
+          "path": "./skills/ffmpeg-composition/SKILL.md"
+        },
+        {
+          "name": "ffmpeg-streaming",
+          "path": "./skills/ffmpeg-streaming/SKILL.md"
+        },
+        {
+          "name": "ffmpeg-diagnostics",
+          "path": "./skills/ffmpeg-diagnostics/SKILL.md"
+        }
+      ],
+      "npm": {
+        "package": "@cecilialabs/ffmpeg",
+        "binary": "cecilia-ffmpeg"
+      }
+    }
+  }
 }

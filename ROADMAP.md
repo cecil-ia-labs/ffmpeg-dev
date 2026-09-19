@@ -826,7 +826,8 @@ the native FFmpeg invocation.
 
 # Milestone 11 — Plugin Packaging & Assets
 
-**Target:** `v0.9.0`
+**Target:** `v0.9.0`  
+**Status:** ✅ Complete
 
 ### Deliverables
 
@@ -837,39 +838,26 @@ assets/
 ├── icon-dark.svg
 ├── logo.svg
 └── screenshots/
+    ├── cli-overview.svg
+    └── skills-overview.svg
 ```
 
-### Plugin metadata
+### Portable plugin metadata
 
-Define:
+The Agent Plugins 1.0.0 manifest remains schema-conformant with standard top-level metadata for name, version, description, author, homepage, repository, license, keywords, and extensions.
 
-```text
-name
-version
-description
-skills
-branding
-documentation
-repository
-license
-```
+Skills are discovered from the fixed `skills/` directory. Branding, documentation, npm identity, and a descriptive skill catalog live under the Cecil-IA Labs extension namespace rather than non-standard top-level fields.
 
-### Asset requirements
+### Distribution validation
 
-Icons should work at:
-
-```text
-16×16
-32×32
-64×64
-128×128
-```
-
-and support both light and dark interfaces.
+- `verify:plugin` validates manifest shape, local-path containment, skill catalog parity, and SVG self-containment.
+- `verify:package` runs `npm pack --dry-run --json --ignore-scripts` after build and checks required tarball contents.
+- npm `files` explicitly includes `dist/`, `assets/`, `skills/`, `specs/`, `docs/`, plugin metadata, README, changelog, and license.
+- repository-only `legacy/`, `test/`, `scripts/`, and `node_modules/` are rejected if leaked into the package.
 
 ### Acceptance Criteria
 
-The plugin must install without relying on files outside its distribution package.
+✅ The plugin installs from a self-contained distribution package without relying on files outside that package.
 
 ---
 
