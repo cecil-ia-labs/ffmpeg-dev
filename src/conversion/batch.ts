@@ -232,9 +232,15 @@ export async function convertBatch(directoryInput: string, request: ConvertBatch
           ...(request.keepTemp !== undefined ? { keepTemp: request.keepTemp } : {}),
           ...(request.fps !== undefined ? { fps: request.fps } : {}),
           ...(request.width !== undefined ? { width: request.width } : {}),
+          ...(request.height !== undefined ? { height: request.height } : {}),
+          ...(request.fit !== undefined ? { fit: request.fit } : {}),
+          ...(request.background !== undefined ? { background: request.background } : {}),
           ...(request.quality !== undefined ? { quality: request.quality } : {}),
           ...(request.maxColors !== undefined ? { maxColors: request.maxColors } : {}),
           ...(request.loop !== undefined ? { loop: request.loop } : {}),
+          ...(request.audioBitrate !== undefined ? { audioBitrate: request.audioBitrate } : {}),
+          ...(request.sampleRate !== undefined ? { sampleRate: request.sampleRate } : {}),
+          ...(request.channels !== undefined ? { channels: request.channels } : {}),
         });
         results[index] = {
           input: item.input,

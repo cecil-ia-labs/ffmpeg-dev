@@ -4,3 +4,4 @@ export * from "./normalization.js";
 export * from "./concat.js";
 export * from "./transition.js";
 export * from "./slideshow.js";
+export * from "./transitions.js";

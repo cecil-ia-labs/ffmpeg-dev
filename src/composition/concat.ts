@@ -3,12 +3,8 @@ import { encodingArgs, resolveEncodingProfile } from "../video/encoding.js";
 import { FilterGraphBuilder } from "./filter-graph.js";
 import { deriveCompositionOutput, durationSeconds, executeComposition, inspectCompositionInput, requireVideoStreams, resolveCompositionFiles } from "./helpers.js";
 import { AUDIO_NORMALIZATION_FILTERS, resolveVideoNormalization, videoNormalizationFilters } from "./normalization.js";
-import type { CompositionAudioMode, CompositionReport, ConcatRequest, XfadeTransition } from "./types.js";
-
-const TRANSITIONS = new Set<XfadeTransition>([
-  "fade", "fadeblack", "fadewhite", "wipeleft", "wiperight", "slideup", "slidedown",
-  "circleopen", "circleclose", "dissolve", "pixelize", "distance",
-]);
+import { COMPOSITION_TRANSITIONS, xfadeFilter } from "./transitions.js";
+import type { CompositionAudioMode, CompositionReport, ConcatRequest } from "./types.js";
 
 function resolveAudioMode(requested: CompositionAudioMode | undefined, allHaveAudio: boolean): CompositionAudioMode {
   const mode = requested ?? "auto";
@@ -25,7 +21,7 @@ export async function concatMedia(inputs: readonly string[], request: ConcatRequ
   requireVideoStreams(media, sources);
 
   const transition = request.transition ?? "none";
-  if (transition !== "none" && !TRANSITIONS.has(transition)) {
+  if (transition !== "none" && !COMPOSITION_TRANSITIONS.has(transition)) {
     throw new ToolkitRuntimeError("E_USAGE_INVALID_ARGUMENT", `Unsupported transition: ${transition}`);
   }
   const transitionDuration = request.transitionDuration ?? 1;
@@ -70,7 +66,7 @@ export async function concatMedia(inputs: readonly string[], request: ConcatRequ
     }
 
     const offset = outputDuration - transitionDuration;
-    graph.addRaw(`[${videoOut}][${nextVideo}]xfade=transition=${transition}:duration=${transitionDuration}:offset=${Number(offset.toFixed(6))}[${currentVideoOut}]`);
+    graph.addRaw(`[${videoOut}][${nextVideo}]${xfadeFilter(transition, transitionDuration, offset)}[${currentVideoOut}]`);
     videoOut = currentVideoOut;
     if (audioOut !== undefined) {
       graph.addRaw(`[${audioOut}][${nextAudio}]acrossfade=d=${transitionDuration}:c1=tri:c2=tri[${currentAudioOut}]`);
@@ -89,7 +85,7 @@ export async function concatMedia(inputs: readonly string[], request: ConcatRequ
     outputDuration = durations.reduce((sum, value) => sum + value, 0);
   }
 
-  const output = deriveCompositionOutput(sources[0]!, "concat", request.output, request.cwd);
+  const output = deriveCompositionOutput(sources[0]!, "concat", request.output, request.cwd, request.to ?? "mp4");
   const encoding = resolveEncodingProfile(output);
   const args: string[] = [];
   for (const source of sources) args.push("-i", source);

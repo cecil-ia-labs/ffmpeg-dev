@@ -7,17 +7,25 @@ import {
   batchExitCode,
   convertBatch,
   convertFile,
+  normalizeConversionFormat,
   type BatchConversionReport,
   type ConversionFormat,
   type ConversionReport,
   type ConversionTuningOptions,
 } from "../../conversion/index.js";
 import { ToolkitRuntimeError } from "../../core/errors.js";
+import type { MediaFit } from "../../media/fit.js";
 import type { GlobalCliOptions } from "../global-options.js";
 import { executeAction } from "./shared.js";
 
-const sourceFormat = z.enum(["mp4", "webm", "gif", "webp"]);
-const targetFormat = z.enum(["webm", "gif", "webp", "png"]);
+const formatSchema = z.string().transform((value, context): ConversionFormat => {
+  const format = normalizeConversionFormat(value);
+  if (!format) {
+    context.addIssue({ code: "custom", message: `unsupported media format: ${value}` });
+    return z.NEVER;
+  }
+  return format;
+});
 const positiveInteger = z.coerce.number().int().positive();
 const quality = z.coerce.number().int().min(0).max(100);
 const maxColors = z.coerce.number().int().min(2).max(256);
@@ -51,20 +59,46 @@ function runtimeOptions(global: GlobalCliOptions, signal: AbortSignal) {
 interface TuningInput {
   fps?: number | undefined;
   width?: number | undefined;
+  height?: number | undefined;
+  fit?: MediaFit | undefined;
+  background?: string | undefined;
   quality?: number | undefined;
   maxColors?: number | undefined;
   loop?: number | undefined;
+  audioBitrate?: string | undefined;
+  sampleRate?: number | undefined;
+  channels?: number | undefined;
 }
 
 function tuningOptions(parsed: TuningInput): ConversionTuningOptions {
   return {
     ...(parsed.fps !== undefined ? { fps: parsed.fps } : {}),
     ...(parsed.width !== undefined ? { width: parsed.width } : {}),
+    ...(parsed.height !== undefined ? { height: parsed.height } : {}),
+    ...(parsed.fit !== undefined ? { fit: parsed.fit } : {}),
+    ...(parsed.background !== undefined ? { background: parsed.background } : {}),
     ...(parsed.quality !== undefined ? { quality: parsed.quality } : {}),
     ...(parsed.maxColors !== undefined ? { maxColors: parsed.maxColors } : {}),
     ...(parsed.loop !== undefined ? { loop: parsed.loop } : {}),
+    ...(parsed.audioBitrate !== undefined ? { audioBitrate: parsed.audioBitrate } : {}),
+    ...(parsed.sampleRate !== undefined ? { sampleRate: parsed.sampleRate } : {}),
+    ...(parsed.channels !== undefined ? { channels: parsed.channels } : {}),
   };
 }
+
+const tuningSchema = {
+  fps: positiveInteger.optional(),
+  width: positiveInteger.optional(),
+  height: positiveInteger.optional(),
+  fit: z.enum(["contain", "cover", "stretch"]).default("contain"),
+  background: z.string().min(1).default("black"),
+  quality: quality.optional(),
+  maxColors: maxColors.optional(),
+  loop: loop.optional(),
+  audioBitrate: z.string().min(1).optional(),
+  sampleRate: positiveInteger.optional(),
+  channels: positiveInteger.optional(),
+} as const;
 
 function renderConversionReport(report: ConversionReport): string {
   const lines = [
@@ -75,9 +109,17 @@ function renderConversionReport(report: ConversionReport): string {
     `Command: ${report.invocation}`,
   ];
   const video = report.outputMedia?.video[0];
+  const audio = report.outputMedia?.audio[0];
   if (video) {
     const resolution = video.width !== undefined && video.height !== undefined ? `${video.width}x${video.height}` : undefined;
     const details = [video.codecName, resolution].filter((value): value is string => value !== undefined);
+    if (details.length > 0) lines.push(`Result: ${details.join(", ")}`);
+  } else if (audio) {
+    const details = [
+      audio.codecName,
+      audio.sampleRate !== undefined ? `${audio.sampleRate} Hz` : undefined,
+      audio.channels !== undefined ? `${audio.channels} ch` : undefined,
+    ].filter((value): value is string => value !== undefined);
     if (details.length > 0) lines.push(`Result: ${details.join(", ")}`);
   }
   return lines.join("\n");
@@ -94,8 +136,6 @@ function renderBatchReport(report: BatchConversionReport): string {
     `Failed: ${report.failed}`,
     `Skipped: ${report.skipped}`,
     `Parallelism: ${report.parallelism}`,
-    `Failure mode: ${report.failureMode}`,
-    `Existing outputs: ${report.existing}`,
   ];
   if (report.failed > 0) {
     lines.push("Failures:");
@@ -109,13 +149,9 @@ function renderBatchReport(report: BatchConversionReport): string {
 export async function runConvertFileAction(command: Command, positional: readonly unknown[]): Promise<void> {
   await executeAction(command, async (global, signal) => {
     const parsed = z.object({
-      to: targetFormat,
-      from: sourceFormat.optional(),
-      fps: positiveInteger.optional(),
-      width: positiveInteger.optional(),
-      quality: quality.optional(),
-      maxColors: maxColors.optional(),
-      loop: loop.optional(),
+      to: formatSchema,
+      from: formatSchema.optional(),
+      ...tuningSchema,
     }).parse(localOptions(command));
 
     const report = await convertFile(positionalAt(positional, 0, "convert file", "an input file"), {
@@ -131,14 +167,12 @@ export async function runConvertFileAction(command: Command, positional: readonl
 export async function runConvertBatchAction(command: Command, positional: readonly unknown[]): Promise<void> {
   await executeAction(command, async (global, signal) => {
     if (global.output !== undefined) {
-      throw new ToolkitRuntimeError("E_CONFIG_CONFLICT", "Use --output-dir for batch conversion instead of the global --output option.", {
-        details: { output: global.output },
-      });
+      throw new ToolkitRuntimeError("E_CONFIG_CONFLICT", "Use --output-dir for batch conversion instead of the global --output option.");
     }
 
     const parsed = z.object({
-      from: sourceFormat,
-      to: targetFormat,
+      from: formatSchema,
+      to: formatSchema,
       recursive: z.boolean().default(false),
       include: z.array(z.string()).default([]),
       exclude: z.array(z.string()).default([]),
@@ -148,11 +182,7 @@ export async function runConvertBatchAction(command: Command, positional: readon
       outputDir: z.string().min(1).optional(),
       preserveHierarchy: z.boolean().default(true),
       existing: z.enum(["error", "skip", "replace"]).optional(),
-      fps: positiveInteger.optional(),
-      width: positiveInteger.optional(),
-      quality: quality.optional(),
-      maxColors: maxColors.optional(),
-      loop: loop.optional(),
+      ...tuningSchema,
     }).parse(localOptions(command));
 
     const existing = parsed.existing ?? (global.overwrite ? "replace" : "error");
@@ -189,5 +219,5 @@ export async function runConvertBatchAction(command: Command, positional: readon
 }
 
 export function isConversionFormat(value: string): value is ConversionFormat {
-  return sourceFormat.safeParse(value).success || targetFormat.safeParse(value).success;
+  return normalizeConversionFormat(value) !== undefined;
 }

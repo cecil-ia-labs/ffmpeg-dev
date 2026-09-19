@@ -1,3 +1,4 @@
+import { buildFitFilters } from "../media/fit.js";
 import { encodingArgs, resolveEncodingProfile } from "./encoding.js";
 import { executeVideoTransform, positiveFinite } from "./helpers.js";
 import { deriveOutputPath, resolveReadableFile } from "./io.js";
@@ -10,9 +11,22 @@ export async function createVideoFromImage(input: string, request: VideoFromImag
   const height = Math.trunc(positiveFinite(request.height ?? 1080, "height"));
   const fps = positiveFinite(request.fps ?? 30, "fps");
   const pixelFormat = request.pixelFormat ?? "yuv420p";
-  const output = deriveOutputPath(source, "clip", request.output, { ...(request.cwd !== undefined ? { ...(request.cwd !== undefined ? { cwd: request.cwd } : {}) } : {}), defaultExtension: ".mp4" });
+  const to = request.to ?? "mp4";
+  const output = deriveOutputPath(source, "clip", request.output, {
+    ...(request.cwd !== undefined ? { cwd: request.cwd } : {}),
+    defaultExtension: `.${to}`,
+  });
   const profile = resolveEncodingProfile(output);
-  const filter = `scale=${width}:${height}:force_original_aspect_ratio=decrease:flags=lanczos,pad=${width}:${height}:(ow-iw)/2:(oh-ih)/2:color=black,setsar=1,format=${pixelFormat}`;
+  const filter = [
+    ...buildFitFilters({
+      width,
+      height,
+      ...(request.fit !== undefined ? { fit: request.fit } : {}),
+      ...(request.background !== undefined ? { background: request.background } : {}),
+    }),
+    "setsar=1",
+    `format=${pixelFormat}`,
+  ].join(",");
 
   return await executeVideoTransform({
     operation: "from-image",
@@ -28,6 +42,15 @@ export async function createVideoFromImage(input: string, request: VideoFromImag
       ...encodingArgs(profile, false),
     ],
     runtime: request,
-    details: { duration, width, height, fps, pixelFormat },
+    details: {
+      duration,
+      width,
+      height,
+      fps,
+      pixelFormat,
+      fit: request.fit ?? "contain",
+      background: request.background ?? "black",
+      to,
+    },
   });
 }

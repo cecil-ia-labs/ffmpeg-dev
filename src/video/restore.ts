@@ -1,8 +1,9 @@
 import { ToolkitRuntimeError } from "../core/errors.js";
+import { buildFitFilters } from "../media/fit.js";
 import { encodingArgs, resolveEncodingProfile } from "./encoding.js";
 import { executeVideoTransform, inspectInput, positiveFinite, requireVideo } from "./helpers.js";
 import { deriveOutputPath, resolveReadableFile } from "./io.js";
-import type { RestoreProfile, RestoreVideoRequest, VideoOperationReport } from "./types.js";
+import type { RestoreProfile, RestoreVideoRequest, VideoOperation, VideoOperationReport } from "./types.js";
 
 function validateProfile(value: RestoreProfile | undefined): RestoreProfile {
   const profile = value ?? "balanced";
@@ -14,8 +15,18 @@ function validateProfile(value: RestoreProfile | undefined): RestoreProfile {
   return profile;
 }
 
-export function buildRestoreFilter(width: number, height: number, profile: RestoreProfile): string {
-  const geometry = `scale=${width}:${height}:force_original_aspect_ratio=decrease:flags=lanczos,pad=${width}:${height}:(ow-iw)/2:(oh-ih)/2:color=black,setsar=1`;
+export function buildRestoreFilter(
+  width: number,
+  height: number,
+  profile: RestoreProfile,
+  request: Pick<RestoreVideoRequest, "fit" | "background"> = {},
+): string {
+  const geometry = [...buildFitFilters({
+    width,
+    height,
+    ...(request.fit !== undefined ? { fit: request.fit } : {}),
+    ...(request.background !== undefined ? { background: request.background } : {}),
+  }), "setsar=1"].join(",");
   if (profile === "balanced") return geometry;
   return [
     "bwdif=mode=send_frame:parity=auto:deint=interlaced",
@@ -27,7 +38,11 @@ export function buildRestoreFilter(width: number, height: number, profile: Resto
   ].join(",");
 }
 
-export async function restoreVideo(input: string, request: RestoreVideoRequest): Promise<VideoOperationReport> {
+async function transformVideo(
+  operation: Extract<VideoOperation, "restore" | "upscale">,
+  input: string,
+  request: RestoreVideoRequest,
+): Promise<VideoOperationReport> {
   const source = await resolveReadableFile(input, request.cwd);
   const width = Math.trunc(positiveFinite(request.width, "width"));
   const height = Math.trunc(positiveFinite(request.height, "height"));
@@ -41,13 +56,17 @@ export async function restoreVideo(input: string, request: RestoreVideoRequest):
   const media = await inspectInput(source, request);
   requireVideo(media, source);
 
-  const output = deriveOutputPath(source, `restore-${width}x${height}`, request.output, { ...(request.cwd !== undefined ? { ...(request.cwd !== undefined ? { cwd: request.cwd } : {}) } : {}), defaultExtension: ".mp4" });
+  const to = request.to ?? "mp4";
+  const output = deriveOutputPath(source, `${operation}-${width}x${height}`, request.output, {
+    ...(request.cwd !== undefined ? { cwd: request.cwd } : {}),
+    defaultExtension: `.${to}`,
+  });
   const encoding = resolveEncodingProfile(output, { crf, preset });
-  const filter = buildRestoreFilter(width, height, profileName);
+  const filter = buildRestoreFilter(width, height, profileName, request);
   const hasAudio = media.audio.length > 0;
 
   return await executeVideoTransform({
-    operation: "restore",
+    operation,
     source,
     output,
     argsBeforeOutput: [
@@ -61,6 +80,25 @@ export async function restoreVideo(input: string, request: RestoreVideoRequest):
     ],
     runtime: request,
     inputMedia: media,
-    details: { width, height, profile: profileName, ...(fps !== undefined ? { fps } : {}), crf, preset },
+    details: {
+      width,
+      height,
+      profile: profileName,
+      ...(fps !== undefined ? { fps } : {}),
+      crf,
+      preset,
+      fit: request.fit ?? "contain",
+      background: request.background ?? "black",
+      to,
+    },
   });
+}
+
+export async function upscaleVideo(input: string, request: RestoreVideoRequest): Promise<VideoOperationReport> {
+  return await transformVideo("upscale", input, request);
+}
+
+/** @deprecated Use upscaleVideo(). Retained for v0.x CLI/API compatibility. */
+export async function restoreVideo(input: string, request: RestoreVideoRequest): Promise<VideoOperationReport> {
+  return await transformVideo("restore", input, request);
 }

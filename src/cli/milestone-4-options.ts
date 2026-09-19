@@ -1,4 +1,4 @@
-import type { Command } from "commander";
+import { Option, type Command } from "commander";
 
 export function configureMilestone4Options(command: Command, path: string): void {
   switch (path) {
@@ -23,15 +23,22 @@ export function configureMilestone4Options(command: Command, path: string): void
         .option("--duration <seconds>", "clip duration in seconds", "5")
         .option("--resolution <widthxheight>", "output resolution", "1920x1080")
         .option("--fps <fps>", "output frame rate", "30")
-        .option("--pixel-format <format>", "output pixel format", "yuv420p");
+        .option("--pixel-format <format>", "output pixel format", "yuv420p")
+        .addOption(new Option("--fit <mode>", "image fit: contain, cover, or stretch").choices(["contain", "cover", "stretch"]).default("contain"))
+        .option("--background <color>", "padding color for contain fit", "black")
+        .addOption(new Option("--to <format>", "video output format").choices(["mp4", "webm"]).default("mp4"));
       break;
     case "cecilia-ffmpeg video restore":
+    case "cecilia-ffmpeg video upscale":
       command
         .requiredOption("--resolution <widthxheight>", "target resolution")
-        .option("--profile <profile>", "restore profile: balanced or aggressive", "balanced")
+        .option("--profile <profile>", "upscale profile: balanced or aggressive", "balanced")
         .option("--fps <fps>", "optional output frame rate")
         .option("--crf <crf>", "encoder quality CRF")
-        .option("--preset <preset>", "encoder preset");
+        .option("--preset <preset>", "encoder preset")
+        .addOption(new Option("--fit <mode>", "frame fit: contain, cover, or stretch").choices(["contain", "cover", "stretch"]).default("contain"))
+        .option("--background <color>", "padding color for contain fit", "black")
+        .addOption(new Option("--to <format>", "video output format").choices(["mp4", "webm"]).default("mp4"));
       break;
     default:
       break;

@@ -965,9 +965,47 @@ npx @cecilialabs/ffmpeg video speed input.mp4 \
 
 ---
 
+# Milestone 13.5 — Media Capability Expansion & CLI Polish
+
+**Target:** `v0.9.8`  
+**Status:** ✅ Complete
+
+### Motivation
+
+Hands-on CLI testing after Milestone 13 exposed capability and taxonomy gaps that should be resolved before the public documentation/API freeze.
+
+### Added
+
+- JPEG/JPG conversion source and target support;
+- MP4 conversion target support;
+- audio conversion through the generic file/batch engine;
+- first-class `image convert` and `image extract`;
+- canonical `video upscale` with `video restore` retained as a compatibility alias;
+- canonical `video attach-audio` and `video add-silence` with legacy audio-domain aliases retained;
+- shared `contain|cover|stretch` fit semantics and configurable background;
+- MP4/WebM output selection for video/composition operations;
+- `zoomin` and explicit custom `zoomout` transitions;
+- slideshow `vertical-stack|sequence` styles;
+- slideshow transitions, include/exclude patterns, and MP4/WebM/GIF/WebP outputs;
+- more visible human TTY colors while keeping JSON/non-TTY ANSI-free.
+
+### Conversion formats
+
+```text
+video: mp4, webm
+image: gif, webp, png, jpeg/jpg
+audio: wav, mp3, aac, m4a, flac, opus, ogg
+```
+
+### Acceptance Criteria
+
+✅ The public command taxonomy and core format capabilities are stable enough for Milestone 14 to document without immediately redesigning the CLI.
+
+---
+
 # Milestone 14 — Documentation & Migration Guide
 
-**Target:** `v0.9.8`
+**Target:** `v0.9.9`
 
 ### Documentation
 

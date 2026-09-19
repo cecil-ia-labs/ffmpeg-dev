@@ -3,12 +3,8 @@ import { encodingArgs, resolveEncodingProfile } from "../video/encoding.js";
 import { FilterGraphBuilder } from "./filter-graph.js";
 import { deriveCompositionOutput, durationSeconds, executeComposition, inspectCompositionInput, requireVideoStreams, resolveCompositionFiles } from "./helpers.js";
 import { AUDIO_NORMALIZATION_FILTERS, resolveVideoNormalization, videoNormalizationFilters } from "./normalization.js";
-import type { CompositionAudioMode, CompositionReport, TransitionRequest, XfadeTransition } from "./types.js";
-
-const TRANSITIONS = new Set<XfadeTransition>([
-  "fade", "fadeblack", "fadewhite", "wipeleft", "wiperight", "slideup", "slidedown",
-  "circleopen", "circleclose", "dissolve", "pixelize", "distance",
-]);
+import { COMPOSITION_TRANSITIONS, xfadeFilter } from "./transitions.js";
+import type { CompositionAudioMode, CompositionReport, TransitionRequest } from "./types.js";
 
 function resolvedAudioMode(requested: CompositionAudioMode | undefined, allHaveAudio: boolean): CompositionAudioMode {
   const mode = requested ?? "auto";
@@ -24,7 +20,7 @@ export async function transitionMedia(leftInput: string, rightInput: string, req
   requireVideoStreams(media, sources);
 
   const transition = request.transition ?? "fade";
-  if (!TRANSITIONS.has(transition)) throw new ToolkitRuntimeError("E_USAGE_INVALID_ARGUMENT", `Unsupported transition: ${transition}`);
+  if (!COMPOSITION_TRANSITIONS.has(transition)) throw new ToolkitRuntimeError("E_USAGE_INVALID_ARGUMENT", `Unsupported transition: ${transition}`);
   const duration = request.duration ?? 1;
   if (!Number.isFinite(duration) || duration <= 0) throw new ToolkitRuntimeError("E_USAGE_INVALID_ARGUMENT", "transition duration must be positive.");
 
@@ -47,7 +43,7 @@ export async function transitionMedia(leftInput: string, rightInput: string, req
   const graph = new FilterGraphBuilder();
   graph.add(["0:v"], videoNormalizationFilters(normalization), "v0");
   graph.add(["1:v"], videoNormalizationFilters(normalization), "v1");
-  graph.addRaw(`[v0][v1]xfade=transition=${transition}:duration=${duration}:offset=${Number(offset.toFixed(6))}[vout]`);
+  graph.addRaw(`[v0][v1]${xfadeFilter(transition, duration, offset)}[vout]`);
 
   if (audioMode === "preserve") {
     graph.add(["0:a"], AUDIO_NORMALIZATION_FILTERS, "a0");
@@ -55,7 +51,7 @@ export async function transitionMedia(leftInput: string, rightInput: string, req
     graph.addRaw(`[a0][a1]acrossfade=d=${duration}:c1=tri:c2=tri[aout]`);
   }
 
-  const output = deriveCompositionOutput(sources[0]!, "transition", request.output, request.cwd);
+  const output = deriveCompositionOutput(sources[0]!, "transition", request.output, request.cwd, request.to ?? "mp4");
   const encoding = resolveEncodingProfile(output);
   const args = [
     "-i", sources[0]!, "-i", sources[1]!,

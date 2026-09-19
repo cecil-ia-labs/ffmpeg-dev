@@ -24,3 +24,5 @@ export * from "./composition/index.js";
 export * from "./diagnostics/index.js";
 
 export * from "./streaming/index.js";
+
+export * from "./image/index.js";

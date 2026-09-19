@@ -1,5 +1,45 @@
 # Changelog
 
+## 0.9.8 — Milestone 13.5 — Media Capability Expansion & CLI Polish
+
+### Added
+
+- First-class `image convert` and `image extract` commands.
+- JPEG/JPG source/target conversion support.
+- MP4 as a generic visual conversion target.
+- Audio conversion for WAV, MP3, AAC, M4A, FLAC, Opus, and Ogg through both file and batch engines.
+- Shared `contain`, `cover`, and `stretch` fit semantics with configurable background.
+- Canonical `video upscale`, `video attach-audio`, and `video add-silence` commands.
+- MP4/WebM output selection for applicable video and composition operations.
+- Native `zoomin` plus explicit custom `zoomout` transition.
+- Slideshow sequence mode with transitions, include/exclude patterns, and MP4/WebM/GIF/WebP outputs.
+- Brighter human TTY color palette.
+- `verify:media-expansion`, expanded unit/CLI/integration tests, and Milestone 13.5 documentation.
+
+### Compatibility
+
+- `video restore` remains available as a compatibility alias for the new canonical `video upscale`.
+- `audio attach` remains available alongside `video attach-audio`.
+- `audio add-silence` remains available alongside `video add-silence`.
+- Existing vertical-stack slideshow behavior remains the default style.
+- Existing `distance` continues to use FFmpeg's native transition; `zoomout` is not implemented as a dissolve alias.
+
+### Changed
+
+- Package/plugin version advanced to `0.9.8`.
+- Generic conversion now models video, image, and audio formats.
+- Composition normalization uses the shared fit engine.
+- Milestone 14 documentation target moved to `v0.9.9` after the pre-v1 capability expansion.
+
+### Validation
+
+Run locally before merge:
+
+```bash
+npm run validate
+```
+
+
 ## 0.9.7 — Milestone 13 — UX, Progress & Agent-Friendly Output
 
 ### Added

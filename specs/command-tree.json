@@ -7,6 +7,8 @@
     "json",
     "quiet",
     "verbose",
+    "no-progress",
+    "no-color",
     "ffmpeg-path",
     "ffprobe-path",
     "keep-temp"
@@ -57,6 +59,22 @@
         "restore": {
           "args": [
             "input"
+          ]
+        },
+        "upscale": {
+          "args": [
+            "input"
+          ]
+        },
+        "attach-audio": {
+          "args": [
+            "video",
+            "audio"
+          ]
+        },
+        "add-silence": {
+          "args": [
+            "video"
           ]
         }
       }
@@ -149,6 +167,20 @@
       "subcommands": {
         "camera": {},
         "file": {
+          "args": [
+            "input"
+          ]
+        }
+      }
+    },
+    "image": {
+      "subcommands": {
+        "convert": {
+          "args": [
+            "input"
+          ]
+        },
+        "extract": {
           "args": [
             "input"
           ]

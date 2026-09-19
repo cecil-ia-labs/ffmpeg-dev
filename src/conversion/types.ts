@@ -4,8 +4,12 @@ import type {
   MediaInfo,
   ToolkitWarning,
 } from "../types/contracts.js";
+import type { MediaFit } from "../media/fit.js";
 
-export type ConversionFormat = "mp4" | "webm" | "gif" | "webp" | "png";
+export type ConversionFormat =
+  | "mp4" | "webm"
+  | "gif" | "webp" | "png" | "jpeg"
+  | "wav" | "mp3" | "aac" | "m4a" | "flac" | "opus" | "ogg";
 export type BatchExistingStrategy = "error" | "skip" | "replace";
 export type BatchFailureMode = "continue-on-error" | "fail-fast";
 
@@ -24,9 +28,15 @@ export interface ConversionRuntimeOptions {
 export interface ConversionTuningOptions {
   fps?: number;
   width?: number;
+  height?: number;
+  fit?: MediaFit;
+  background?: string;
   quality?: number;
   maxColors?: number;
   loop?: number;
+  audioBitrate?: string;
+  sampleRate?: number;
+  channels?: number;
 }
 
 export interface ConvertFileRequest extends ConversionRuntimeOptions, ConversionTuningOptions {
