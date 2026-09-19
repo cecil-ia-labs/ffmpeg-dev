@@ -1,0 +1,382 @@
+{
+  "schemaVersion": 1,
+  "generatorVersion": 2,
+  "generatedDirectory": "test/fixtures/generated",
+  "fixtures": [
+    {
+      "id": "mp4-h264-aac",
+      "file": "mp4-h264-aac.mp4",
+      "traits": [
+        "mp4",
+        "h264",
+        "aac",
+        "yuv420p",
+        "160x90",
+        "24fps"
+      ],
+      "expected": {
+        "video": {
+          "codecName": "h264",
+          "width": 160,
+          "height": 90,
+          "pixelFormat": "yuv420p",
+          "averageFrameRate": "24/1"
+        },
+        "audio": {
+          "codecName": "aac",
+          "sampleRate": 48000,
+          "channels": 1
+        }
+      }
+    },
+    {
+      "id": "mp4-h265-aac",
+      "file": "mp4-h265-aac.mp4",
+      "traits": [
+        "mp4",
+        "h265",
+        "aac"
+      ],
+      "expected": {
+        "video": {
+          "codecName": "hevc",
+          "width": 160,
+          "height": 90,
+          "pixelFormat": "yuv420p"
+        },
+        "audio": {
+          "codecName": "aac",
+          "sampleRate": 48000,
+          "channels": 1
+        }
+      }
+    },
+    {
+      "id": "webm-vp9-opus",
+      "file": "webm-vp9-opus.webm",
+      "traits": [
+        "webm",
+        "vp9",
+        "opus"
+      ],
+      "expected": {
+        "video": {
+          "codecName": "vp9",
+          "width": 160,
+          "height": 90
+        },
+        "audio": {
+          "codecName": "opus",
+          "sampleRate": 48000,
+          "channels": 1
+        }
+      }
+    },
+    {
+      "id": "gif",
+      "file": "animated.gif",
+      "traits": [
+        "gif",
+        "animated"
+      ],
+      "expected": {
+        "video": {
+          "codecName": "gif",
+          "width": 64,
+          "height": 48
+        },
+        "audio": false,
+        "framesMin": 2
+      }
+    },
+    {
+      "id": "static-webp",
+      "file": "static.webp",
+      "traits": [
+        "webp",
+        "still-image",
+        "legacy-conversion-source"
+      ],
+      "expected": {
+        "video": {
+          "codecName": "webp",
+          "width": 64,
+          "height": 48
+        },
+        "audio": false
+      }
+    },
+    {
+      "id": "animated-webp",
+      "file": "animated.webp",
+      "traits": [
+        "webp",
+        "animated"
+      ],
+      "expected": {
+        "video": {
+          "codecName": "webp"
+        },
+        "audio": false,
+        "webpAnimationChunksMin": 2
+      }
+    },
+    {
+      "id": "png",
+      "file": "still.png",
+      "traits": [
+        "png",
+        "still-image"
+      ],
+      "expected": {
+        "video": {
+          "codecName": "png",
+          "width": 64,
+          "height": 48
+        },
+        "audio": false
+      }
+    },
+    {
+      "id": "jpeg",
+      "file": "still.jpg",
+      "traits": [
+        "jpeg",
+        "still-image"
+      ],
+      "expected": {
+        "video": {
+          "codecName": "mjpeg",
+          "width": 64,
+          "height": 48
+        },
+        "audio": false
+      }
+    },
+    {
+      "id": "mp3",
+      "file": "audio.mp3",
+      "traits": [
+        "mp3",
+        "audio-only"
+      ],
+      "expected": {
+        "video": false,
+        "audio": {
+          "codecName": "mp3",
+          "sampleRate": 44100,
+          "channels": 1
+        }
+      }
+    },
+    {
+      "id": "aac",
+      "file": "audio.aac",
+      "traits": [
+        "aac",
+        "audio-only"
+      ],
+      "expected": {
+        "video": false,
+        "audio": {
+          "codecName": "aac",
+          "sampleRate": 48000,
+          "channels": 1
+        }
+      }
+    },
+    {
+      "id": "wav-pcm",
+      "file": "audio-pcm.wav",
+      "traits": [
+        "wav",
+        "pcm",
+        "audio-only"
+      ],
+      "expected": {
+        "video": false,
+        "audio": {
+          "codecName": "pcm_s16le",
+          "sampleRate": 48000,
+          "channels": 1
+        }
+      }
+    },
+    {
+      "id": "wav-mulaw",
+      "file": "audio-mulaw.wav",
+      "traits": [
+        "wav",
+        "g711-mulaw",
+        "audio-only"
+      ],
+      "expected": {
+        "video": false,
+        "audio": {
+          "codecName": "pcm_mulaw",
+          "sampleRate": 8000,
+          "channels": 1
+        }
+      }
+    },
+    {
+      "id": "video-24fps",
+      "file": "video-24fps.mp4",
+      "traits": [
+        "24fps",
+        "video-only"
+      ],
+      "expected": {
+        "video": {
+          "codecName": "h264",
+          "width": 160,
+          "height": 90,
+          "averageFrameRate": "24/1"
+        },
+        "audio": false
+      }
+    },
+    {
+      "id": "video-30fps",
+      "file": "video-30fps.mp4",
+      "traits": [
+        "30fps",
+        "video-only"
+      ],
+      "expected": {
+        "video": {
+          "codecName": "h264",
+          "width": 160,
+          "height": 90,
+          "averageFrameRate": "30/1"
+        },
+        "audio": false
+      }
+    },
+    {
+      "id": "video-vfr",
+      "file": "video-vfr.mp4",
+      "traits": [
+        "vfr",
+        "video-only"
+      ],
+      "expected": {
+        "video": {
+          "codecName": "h264",
+          "width": 64,
+          "height": 48
+        },
+        "audio": false,
+        "vfr": true
+      }
+    },
+    {
+      "id": "video-only",
+      "file": "video-only.mp4",
+      "traits": [
+        "missing-audio",
+        "video-only"
+      ],
+      "expected": {
+        "video": {
+          "codecName": "h264",
+          "width": 160,
+          "height": 90
+        },
+        "audio": false
+      }
+    },
+    {
+      "id": "audio-only",
+      "file": "audio-only.wav",
+      "traits": [
+        "missing-video",
+        "audio-only"
+      ],
+      "expected": {
+        "video": false,
+        "audio": {
+          "codecName": "pcm_s16le",
+          "sampleRate": 48000,
+          "channels": 1
+        }
+      }
+    },
+    {
+      "id": "timebase-1k",
+      "file": "timebase-1k.mp4",
+      "traits": [
+        "timebase-1k"
+      ],
+      "expected": {
+        "video": {
+          "codecName": "h264",
+          "timeBase": "1/1000"
+        },
+        "audio": false
+      }
+    },
+    {
+      "id": "timebase-90k",
+      "file": "timebase-90k.mp4",
+      "traits": [
+        "timebase-90k"
+      ],
+      "expected": {
+        "video": {
+          "codecName": "h264",
+          "timeBase": "1/90000"
+        },
+        "audio": false
+      }
+    },
+    {
+      "id": "resolution-320x180",
+      "file": "resolution-320x180.mp4",
+      "traits": [
+        "resolution-320x180"
+      ],
+      "expected": {
+        "video": {
+          "codecName": "h264",
+          "width": 320,
+          "height": 180,
+          "pixelFormat": "yuv420p"
+        },
+        "audio": false
+      }
+    },
+    {
+      "id": "pixfmt-yuv444p",
+      "file": "pixfmt-yuv444p.mp4",
+      "traits": [
+        "pixel-format-yuv444p"
+      ],
+      "expected": {
+        "video": {
+          "codecName": "h264",
+          "width": 160,
+          "height": 90,
+          "pixelFormat": "yuv444p"
+        },
+        "audio": false
+      }
+    },
+    {
+      "id": "speech-with-silence",
+      "file": "speech-with-silence.wav",
+      "traits": [
+        "silence-regression",
+        "audio-only"
+      ],
+      "expected": {
+        "video": false,
+        "audio": {
+          "codecName": "pcm_s16le",
+          "sampleRate": 48000,
+          "channels": 1
+        }
+      }
+    }
+  ]
+}

@@ -1,7 +1,7 @@
 # FFmpeg Media Toolkit
 
-**Current milestone:** 11 — Plugin Packaging & Assets  
-**Version:** `0.9.0`
+**Current milestone:** 12 — Test Suite & Media Fixtures  
+**Version:** `0.9.5`
 
 FFmpeg Media Toolkit is a professional, agent-friendly TypeScript CLI and plugin foundation for deterministic FFmpeg/FFprobe media workflows.
 
@@ -15,9 +15,9 @@ FFmpeg Media Toolkit is a professional, agent-friendly TypeScript CLI and plugin
 - **Media engine:** FFmpeg + FFprobe
 - **Minimum supported FFmpeg:** `6.1`
 
-## Milestone 11 status
+## Milestone 12 status
 
-Milestone 11 finalizes the portable plugin distribution surface: Agent Plugins 1.0.0 manifest metadata, self-contained branding assets, explicit Cecil-IA Labs extension metadata, npm package containment verification, and dry-run tarball inspection.
+Milestone 12 formalizes the five test layers, adds a reproducible FFmpeg fixture matrix, validates actual media properties with FFprobe, and adds an explicit equivalent integration regression case for every migrated Bash script.
 
 Implemented now:
 
@@ -62,6 +62,34 @@ Video, audio, conversion, and composition operations now include:
 
 Streaming commands are implemented in Milestone 9 for HTTP, RTMP, RTSP, SRT, UDP, and TCP destinations. Direct WebSocket output remains an explicit relay concern rather than a mislabeled HTTP stream.
 
+
+## Test suite & media fixtures
+
+The regression system now has explicit coverage for:
+
+```text
+unit
+integration
+CLI
+FFmpeg integration
+fixture-based regression
+```
+
+Binary fixtures are generated locally from deterministic FFmpeg recipes:
+
+```bash
+npm run fixtures:generate
+npm run verify:fixtures
+npm run verify:test-suite
+```
+
+The generated directory `test/fixtures/generated/` is Git-ignored. `test/fixtures/manifest.json` is the source of truth for codec, stream, resolution, frame-rate, timebase, pixel-format, and audio expectations.
+
+The fixture matrix covers H.264, H.265/HEVC, VP9, GIF, animated WebP, PNG, JPEG, MP3, AAC, PCM WAV, G.711 μ-law, CFR/VFR timing, missing streams, multiple timebases, resolutions, and pixel formats.
+
+All 21 scripts under `legacy/bash/` are mapped to explicit cases in `test/regression/legacy-migrations.integration.test.ts`.
+
+See [Milestone 12 test architecture](docs/milestone-12/test-suite-and-fixtures.md).
 
 ## Plugin package
 
