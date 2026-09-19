@@ -1,7 +1,7 @@
 # FFmpeg Media Toolkit
 
-**Current milestone:** 12 — Test Suite & Media Fixtures  
-**Version:** `0.9.5`
+**Current milestone:** 13 — UX, Progress & Agent-Friendly Output  
+**Version:** `0.9.7`
 
 FFmpeg Media Toolkit is a professional, agent-friendly TypeScript CLI and plugin foundation for deterministic FFmpeg/FFprobe media workflows.
 
@@ -15,9 +15,9 @@ FFmpeg Media Toolkit is a professional, agent-friendly TypeScript CLI and plugin
 - **Media engine:** FFmpeg + FFprobe
 - **Minimum supported FFmpeg:** `6.1`
 
-## Milestone 12 status
+## Milestone 13 status
 
-Milestone 12 formalizes the five test layers, adds a reproducible FFmpeg fixture matrix, validates actual media properties with FFprobe, and adds an explicit equivalent integration regression case for every migrated Bash script.
+Milestone 13 adds structured FFmpeg progress, percentage/ETA derivation, TTY/non-TTY human rendering, stable error codes in human mode, and progress summaries inside the JSON result envelope. Machine consumers no longer need to scrape decorated FFmpeg statistics.
 
 Implemented now:
 
@@ -62,6 +62,33 @@ Video, audio, conversion, and composition operations now include:
 
 Streaming commands are implemented in Milestone 9 for HTTP, RTMP, RTSP, SRT, UDP, and TCP destinations. Direct WebSocket output remains an explicit relay concern rather than a mislabeled HTTP stream.
 
+
+## UX, progress & agent output
+
+Long-running CLI operations now use FFmpeg's machine-readable progress protocol:
+
+```text
+-progress pipe:1
+-nostats
+```
+
+Human mode renders progress on stderr while keeping the final command result on stdout:
+
+```text
+clip.mp4 | 67% | frame 2411 | 100.0 fps | 3.70x | ETA 00:00:12
+```
+
+Agent mode remains one JSON envelope on stdout:
+
+```bash
+npx @cecilialabs/ffmpeg video speed input.mp4 --factor 2 --json
+```
+
+The envelope can include structured per-run progress fields such as `percentage`, `frame`, `fps`, `speedMultiplier`, `etaSeconds`, and whether the total duration was estimated.
+
+Use `--no-progress` to suppress live human progress without disabling structured collection. Human TTY output uses restrained colors; `--no-color` or `NO_COLOR` disables them, and JSON output is always ANSI-free.
+
+See [Milestone 13 UX/progress architecture](docs/milestone-13/ux-progress-agent-output.md).
 
 ## Test suite & media fixtures
 

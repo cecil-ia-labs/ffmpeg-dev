@@ -174,7 +174,7 @@ export async function runConvertBatchAction(command: Command, positional: readon
       signal,
       keepTemp: global.keepTemp,
       ...tuningOptions(parsed),
-      ...(!global.json && !global.quiet
+      ...(global.progress && !global.json && !global.quiet
         ? {
             onProgress: (event: { completed: number; total: number; input: string; status: "succeeded" | "failed" | "skipped" }) => {
               process.stderr.write(`[${event.completed}/${event.total}] ${event.status}: ${event.input}\n`);

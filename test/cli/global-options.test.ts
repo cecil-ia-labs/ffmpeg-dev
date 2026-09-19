@@ -10,6 +10,8 @@ describe("global CLI option schema", () => {
       json: false,
       quiet: false,
       verbose: false,
+      progress: true,
+      color: true,
       keepTemp: false,
     });
   });

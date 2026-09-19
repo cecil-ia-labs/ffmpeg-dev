@@ -3,6 +3,7 @@ import { performance } from "node:perf_hooks";
 
 import type {
   CommandExecution,
+  ProgressSummary,
   ResultEnvelope,
   ToolkitWarning,
 } from "../types/contracts.js";
@@ -47,7 +48,7 @@ function timing(context: ResultContext): Pick<ResultEnvelope, "finishedAt" | "du
 export function createSuccessEnvelope<T>(
   context: ResultContext,
   data: T,
-  options: { warnings?: readonly ToolkitWarning[]; execution?: CommandExecution } = {},
+  options: { warnings?: readonly ToolkitWarning[]; execution?: CommandExecution; progress?: ProgressSummary } = {},
 ): ResultEnvelope<T> {
   return {
     schemaVersion: "1.0",
@@ -60,13 +61,14 @@ export function createSuccessEnvelope<T>(
     warnings: [...(options.warnings ?? [])],
     error: null,
     ...(options.execution !== undefined ? { execution: executionSummary(options.execution) } : {}),
+    ...(options.progress !== undefined ? { progress: options.progress } : {}),
   };
 }
 
 export function createFailureEnvelope(
   context: ResultContext,
   error: ToolkitRuntimeError,
-  options: { warnings?: readonly ToolkitWarning[]; execution?: CommandExecution } = {},
+  options: { warnings?: readonly ToolkitWarning[]; execution?: CommandExecution; progress?: ProgressSummary } = {},
 ): ResultEnvelope<never> {
   return {
     schemaVersion: "1.0",
@@ -78,5 +80,6 @@ export function createFailureEnvelope(
     warnings: [...(options.warnings ?? [])],
     error: toToolkitError(error),
     ...(options.execution !== undefined ? { execution: executionSummary(options.execution) } : {}),
+    ...(options.progress !== undefined ? { progress: options.progress } : {}),
   };
 }

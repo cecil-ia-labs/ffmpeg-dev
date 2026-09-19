@@ -2,6 +2,17 @@ import type { CommandExecution, FFmpegInvocation } from "../types/contracts.js";
 import { resolveBinary } from "./binary-resolver.js";
 import { renderCommandForDisplay, runCommand, type RunCommandOptions } from "./command-result.js";
 import { ToolkitRuntimeError } from "./errors.js";
+import {
+  currentProgressObserver,
+  nextProgressRunId,
+  progressMediaDuration,
+} from "./progress-context.js";
+import {
+  deriveProgressEvent,
+  estimateProgressDuration,
+  FFmpegProgressParser,
+  inputSources,
+} from "./progress.js";
 
 export interface FFmpegRunOptions extends RunCommandOptions {
   ffmpegPath?: string;
@@ -22,6 +33,13 @@ function executionDetails(execution: CommandExecution): Record<string, unknown> 
   };
 }
 
+function canInstrumentProgress(args: readonly string[], dryRun: boolean | undefined): boolean {
+  if (dryRun) return false;
+  if (args.includes("-progress")) return false;
+  // Avoid claiming stdout when the media payload itself is explicitly written there.
+  return args.at(-1) !== "-" && !args.includes("pipe:1");
+}
+
 export async function runFFmpeg(
   args: readonly string[],
   options: FFmpegRunOptions = {},
@@ -34,16 +52,65 @@ export async function runFFmpeg(
     env,
   });
 
+  const observer = currentProgressObserver();
+  const instrumentProgress = observer !== undefined && canInstrumentProgress(args, options.dryRun);
+  const effectiveArgs = instrumentProgress
+    ? ["-progress", "pipe:1", "-nostats", ...args]
+    : [...args];
+  const runId = instrumentProgress ? nextProgressRunId() : undefined;
+  const source = instrumentProgress ? inputSources(args)[0] : undefined;
+  const duration = instrumentProgress
+    ? estimateProgressDuration(args, progressMediaDuration)
+    : undefined;
+  const parser = instrumentProgress ? new FFmpegProgressParser() : undefined;
+
+  const emit = (chunk: string): void => {
+    if (!observer || !parser || !runId) return;
+    for (const snapshot of parser.push(chunk)) {
+      try {
+        observer(deriveProgressEvent(runId, snapshot, {
+          ...(source !== undefined ? { source } : {}),
+          ...(duration !== undefined ? { duration } : {}),
+        }));
+      } catch {
+        // Progress display/collection must never make a media operation fail.
+      }
+    }
+  };
+
   const invocation: FFmpegInvocation = {
     binary,
-    args: [...args],
+    args: effectiveArgs,
     ...(options.cwd !== undefined ? { cwd: options.cwd } : {}),
     env,
   };
 
   let execution: CommandExecution;
   try {
-    execution = await runCommand(invocation, options);
+    execution = await runCommand(invocation, {
+      ...options,
+      ...(instrumentProgress
+        ? {
+            onStdout: (chunk: string) => {
+              options.onStdout?.(chunk);
+              emit(chunk);
+            },
+          }
+        : {}),
+    });
+
+    if (observer && parser && runId) {
+      for (const snapshot of parser.flush()) {
+        try {
+          observer(deriveProgressEvent(runId, snapshot, {
+            ...(source !== undefined ? { source } : {}),
+            ...(duration !== undefined ? { duration } : {}),
+          }));
+        } catch {
+          // Progress display/collection must never make a media operation fail.
+        }
+      }
+    }
   } catch (error: unknown) {
     if (
       error instanceof ToolkitRuntimeError &&

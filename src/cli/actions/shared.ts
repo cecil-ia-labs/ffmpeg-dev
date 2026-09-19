@@ -9,8 +9,11 @@ import {
   exitCodeForError,
   isToolkitRuntimeError,
   ToolkitRuntimeError,
+  withProgressObserver,
 } from "../../core/index.js";
 import type { CommandExecution, ToolkitWarning } from "../../types/contracts.js";
+import { colorEnabled, colorizeError, colorizeHumanOutput, colorizeWarning } from "../colors.js";
+import { CliProgressReporter } from "../progress-renderer.js";
 import { validateGlobalCliOptions, type GlobalCliOptions } from "../global-options.js";
 
 export interface ActionPayload<T> {
@@ -39,20 +42,32 @@ export async function executeAction<T>(
   const path = commandPath(command);
   const context = createResultContext(path);
   const signals = createProcessSignalController();
+  const stdoutColor = colorEnabled(options.color, process.stdout);
+  const stderrColor = colorEnabled(options.color, process.stderr);
+  const progress = new CliProgressReporter({
+    enabled: options.progress && !options.quiet && !options.json,
+  });
 
   try {
-    const payload = await operation(options, signals.signal);
+    const payload = await withProgressObserver(progress.onEvent, async () =>
+      await operation(options, signals.signal),
+    );
+    progress.finish();
+    const progressSummary = progress.summary();
     if (options.json) {
       const envelope = createSuccessEnvelope(context, payload.data, {
         ...(payload.warnings !== undefined ? { warnings: payload.warnings } : {}),
         ...(payload.execution !== undefined ? { execution: payload.execution } : {}),
+        ...(progressSummary !== undefined ? { progress: progressSummary } : {}),
       });
       process.stdout.write(`${JSON.stringify(envelope, null, 2)}\n`);
     } else if (!options.quiet) {
       const rendered = renderHuman(payload.data);
-      if (rendered.length > 0) process.stdout.write(`${rendered}\n`);
+      if (rendered.length > 0) {
+        process.stdout.write(`${colorizeHumanOutput(rendered, stdoutColor)}\n`);
+      }
       for (const warning of payload.warnings ?? []) {
-        process.stderr.write(`warning [${warning.code}]: ${warning.message}\n`);
+        process.stderr.write(`${colorizeWarning(warning.code, warning.message, stderrColor)}\n`);
       }
     }
     if (payload.exitCode !== undefined) process.exitCode = payload.exitCode;
@@ -68,10 +83,14 @@ export async function executeAction<T>(
           })
         : new ToolkitRuntimeError("E_INTERNAL_INVARIANT", "Unexpected command failure.", { cause: error });
 
+    progress.finish();
+    const failureProgressSummary = progress.summary();
     if (options.json) {
-      process.stdout.write(`${JSON.stringify(createFailureEnvelope(context, runtimeError), null, 2)}\n`);
+      process.stdout.write(`${JSON.stringify(createFailureEnvelope(context, runtimeError, {
+        ...(failureProgressSummary !== undefined ? { progress: failureProgressSummary } : {}),
+      }), null, 2)}\n`);
     } else {
-      process.stderr.write(`${runtimeError.message}\n`);
+      process.stderr.write(`${colorizeError(runtimeError.code, runtimeError.message, stderrColor)}\n`);
       if (options.verbose && runtimeError.details) {
         process.stderr.write(`${JSON.stringify(runtimeError.details, null, 2)}\n`);
       }

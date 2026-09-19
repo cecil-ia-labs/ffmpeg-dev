@@ -10,7 +10,12 @@ import {
 describe("result envelopes", () => {
   it("creates schema-stable success output", () => {
     const context = createResultContext("test command", "req-1");
-    const result = createSuccessEnvelope(context, { value: 42 });
+    const result = createSuccessEnvelope(context, { value: 42 }, {
+      progress: {
+        completedRuns: 1,
+        runs: [{ runId: "ffmpeg-1", state: "end", estimated: true, percentage: 100 }],
+      },
+    });
     expect(result).toMatchObject({
       schemaVersion: "1.0",
       ok: true,
@@ -18,6 +23,10 @@ describe("result envelopes", () => {
       requestId: "req-1",
       data: { value: 42 },
       error: null,
+      progress: {
+        completedRuns: 1,
+        runs: [{ runId: "ffmpeg-1", state: "end", percentage: 100 }],
+      },
     });
   });
 
