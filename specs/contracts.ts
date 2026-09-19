@@ -282,6 +282,7 @@ export interface GlobalCliOptions {
   quiet: boolean;
   verbose: boolean;
   progress: boolean;
+  color: boolean;
   ffmpegPath?: string;
   ffprobePath?: string;
   keepTemp: boolean;

@@ -26,6 +26,8 @@ error [E_MEDIA_INCOMPATIBLE]: Input media is incompatible with this operation.
 
 Use `--no-progress` to suppress the live human display. Progress collection remains available to the result envelope.
 
+Human stdout/stderr uses restrained ANSI color only when attached to a TTY. `--no-color` disables it explicitly; `NO_COLOR` and `FORCE_COLOR` are also honored. JSON output is never colorized.
+
 ### Agent / JSON mode
 
 ```bash

@@ -36,6 +36,11 @@ assert(shared.includes("error ["), "Human failures must include stable error cod
 
 const program = await text("src/cli/program.ts");
 assert(program.includes("--no-progress"), "CLI must expose --no-progress.");
+assert(program.includes("--no-color"), "CLI must expose --no-color.");
+
+const colors = await text("src/cli/colors.ts");
+assert(colors.includes("NO_COLOR"), "Human color output must honor NO_COLOR.");
+assert(colors.includes("FORCE_COLOR"), "Human color output must honor FORCE_COLOR.");
 
 const schema = JSON.parse(await text("specs/output-envelope.schema.json"));
 assert(schema.properties?.progress?.$ref === "#/$defs/progress", "JSON envelope schema must expose structured progress.");

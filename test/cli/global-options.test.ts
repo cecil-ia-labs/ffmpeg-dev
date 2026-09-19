@@ -11,6 +11,7 @@ describe("global CLI option schema", () => {
       quiet: false,
       verbose: false,
       progress: true,
+      color: true,
       keepTemp: false,
     });
   });

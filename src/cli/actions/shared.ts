@@ -12,6 +12,7 @@ import {
   withProgressObserver,
 } from "../../core/index.js";
 import type { CommandExecution, ToolkitWarning } from "../../types/contracts.js";
+import { colorEnabled, colorizeError, colorizeHumanOutput, colorizeWarning } from "../colors.js";
 import { CliProgressReporter } from "../progress-renderer.js";
 import { validateGlobalCliOptions, type GlobalCliOptions } from "../global-options.js";
 
@@ -41,6 +42,8 @@ export async function executeAction<T>(
   const path = commandPath(command);
   const context = createResultContext(path);
   const signals = createProcessSignalController();
+  const stdoutColor = colorEnabled(options.color, process.stdout);
+  const stderrColor = colorEnabled(options.color, process.stderr);
   const progress = new CliProgressReporter({
     enabled: options.progress && !options.quiet && !options.json,
   });
@@ -60,9 +63,11 @@ export async function executeAction<T>(
       process.stdout.write(`${JSON.stringify(envelope, null, 2)}\n`);
     } else if (!options.quiet) {
       const rendered = renderHuman(payload.data);
-      if (rendered.length > 0) process.stdout.write(`${rendered}\n`);
+      if (rendered.length > 0) {
+        process.stdout.write(`${colorizeHumanOutput(rendered, stdoutColor)}\n`);
+      }
       for (const warning of payload.warnings ?? []) {
-        process.stderr.write(`warning [${warning.code}]: ${warning.message}\n`);
+        process.stderr.write(`${colorizeWarning(warning.code, warning.message, stderrColor)}\n`);
       }
     }
     if (payload.exitCode !== undefined) process.exitCode = payload.exitCode;
@@ -85,7 +90,7 @@ export async function executeAction<T>(
         ...(failureProgressSummary !== undefined ? { progress: failureProgressSummary } : {}),
       }), null, 2)}\n`);
     } else {
-      process.stderr.write(`error [${runtimeError.code}]: ${runtimeError.message}\n`);
+      process.stderr.write(`${colorizeError(runtimeError.code, runtimeError.message, stderrColor)}\n`);
       if (options.verbose && runtimeError.details) {
         process.stderr.write(`${JSON.stringify(runtimeError.details, null, 2)}\n`);
       }

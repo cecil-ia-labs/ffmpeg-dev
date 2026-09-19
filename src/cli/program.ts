@@ -31,6 +31,7 @@ export function buildProgram(): Command {
     .addOption(new Option("--quiet", "suppress non-error human output").conflicts("verbose"))
     .addOption(new Option("--verbose", "emit diagnostic details to stderr").conflicts("quiet"))
     .option("--no-progress", "suppress live human progress display")
+    .option("--no-color", "disable ANSI colors in human output")
     .option("--ffmpeg-path <path>", "override FFmpeg binary resolution")
     .option("--ffprobe-path <path>", "override FFprobe binary resolution")
     .option("--keep-temp", "preserve temporary/intermediate artifacts for debugging", false);

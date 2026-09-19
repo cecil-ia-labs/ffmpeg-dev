@@ -86,7 +86,7 @@ npx @cecilialabs/ffmpeg video speed input.mp4 --factor 2 --json
 
 The envelope can include structured per-run progress fields such as `percentage`, `frame`, `fps`, `speedMultiplier`, `etaSeconds`, and whether the total duration was estimated.
 
-Use `--no-progress` to suppress live human progress without disabling structured collection.
+Use `--no-progress` to suppress live human progress without disabling structured collection. Human TTY output uses restrained colors; `--no-color` or `NO_COLOR` disables them, and JSON output is always ANSI-free.
 
 See [Milestone 13 UX/progress architecture](docs/milestone-13/ux-progress-agent-output.md).
 

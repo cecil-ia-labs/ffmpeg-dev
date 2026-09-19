@@ -37,6 +37,9 @@
 - [x] `--no-progress` suppresses live progress.
 - [x] `--quiet` suppresses normal human output/progress.
 - [x] Human errors include stable toolkit error codes.
+- [x] Restrained TTY color for human stdout/warnings/errors.
+- [x] `--no-color`, `NO_COLOR`, and `FORCE_COLOR` support.
+- [x] JSON/non-TTY output remains free of ANSI color.
 
 ## Agent output
 

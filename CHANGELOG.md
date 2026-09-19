@@ -12,6 +12,7 @@
 - `--no-progress` global CLI option.
 - Structured progress summaries in the JSON result envelope.
 - Human errors now include stable toolkit error codes.
+- Restrained TTY color for human stdout, warnings, and errors with `--no-color`, `NO_COLOR`, and `FORCE_COLOR` support.
 - Milestone 13 unit/integration tests, `verify:ux`, documentation, and checklist.
 
 ### Changed
