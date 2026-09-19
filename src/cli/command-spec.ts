@@ -54,7 +54,19 @@ export const COMMAND_TREE: readonly CommandSpec[] = [
       { syntax: "trim <input>", description: "Extract a temporal range.", implementationMilestone: 4 },
       { syntax: "speed <input>", description: "Change video playback speed.", implementationMilestone: 4 },
       { syntax: "from-image <input>", description: "Create a video clip from a still image.", implementationMilestone: 4 },
-      { syntax: "restore <input>", description: "Normalize, resize, or restore video output.", implementationMilestone: 4 },
+      { syntax: "upscale <input>", description: "Resize/upscale video with configurable fit and restoration profile.", implementationMilestone: 13 },
+      { syntax: "restore <input>", description: "Compatibility alias for video upscale.", implementationMilestone: 4 },
+      { syntax: "attach-audio <video> <audio>", description: "Attach or replace audio on video.", implementationMilestone: 13 },
+      { syntax: "add-silence <video>", description: "Add a silent audio track to video.", implementationMilestone: 13 },
+    ],
+  },
+  {
+    syntax: "image",
+    description: "Convert still/animated images or extract frames from video.",
+    implementationMilestone: 13,
+    children: [
+      { syntax: "convert <input>", description: "Convert one image to another image format.", implementationMilestone: 13 },
+      { syntax: "extract <input>", description: "Extract a still image from a video timestamp.", implementationMilestone: 13 },
     ],
   },
   {

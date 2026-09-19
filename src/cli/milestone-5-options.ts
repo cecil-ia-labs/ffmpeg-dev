@@ -3,6 +3,7 @@ import type { Command } from "commander";
 export function configureMilestone5Options(command: Command, path: string): void {
   switch (path) {
     case "cecilia-ffmpeg audio attach":
+    case "cecilia-ffmpeg video attach-audio":
       command
         .option("--mode <mode>", "audio attach mode: replace or append", "replace")
         .option("--video-mode <mode>", "video handling: auto, copy, or encode", "auto")
@@ -16,6 +17,7 @@ export function configureMilestone5Options(command: Command, path: string): void
         .option("--channel-layout <layout>", "explicit FFmpeg channel layout");
       break;
     case "cecilia-ffmpeg audio add-silence":
+    case "cecilia-ffmpeg video add-silence":
       command
         .option("--sample-rate <hz>", "silent-track sample rate", "48000")
         .option("--channels <count>", "silent-track channel count", "2")

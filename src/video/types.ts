@@ -1,3 +1,4 @@
+import type { MediaFit } from "../media/fit.js";
 import type { CommandExecution, MediaInfo, ToolkitWarning, TrimMode } from "../types/contracts.js";
 
 export type VideoOperation =
@@ -6,8 +7,10 @@ export type VideoOperation =
   | "trim"
   | "speed"
   | "from-image"
-  | "restore";
+  | "restore"
+  | "upscale";
 
+export type VideoOutputFormat = "mp4" | "webm";
 export type SpeedAudioMode = "sync" | "drop";
 export type RestoreProfile = "balanced" | "aggressive";
 
@@ -64,6 +67,9 @@ export interface VideoFromImageRequest extends VideoRuntimeOptions {
   height?: number;
   fps?: number;
   pixelFormat?: string;
+  fit?: MediaFit;
+  background?: string;
+  to?: VideoOutputFormat;
 }
 
 export interface RestoreVideoRequest extends VideoRuntimeOptions {
@@ -73,4 +79,7 @@ export interface RestoreVideoRequest extends VideoRuntimeOptions {
   fps?: number;
   crf?: number;
   preset?: string;
+  fit?: MediaFit;
+  background?: string;
+  to?: VideoOutputFormat;
 }

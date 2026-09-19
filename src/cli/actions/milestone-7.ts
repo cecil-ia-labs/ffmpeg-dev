@@ -3,11 +3,12 @@ import { z } from "zod";
 
 import {
   concatMedia,
-  createVerticalStackSlideshow,
+  createSlideshow,
   transitionMedia,
   type CompositionReport,
 } from "../../composition/index.js";
 import { ToolkitRuntimeError } from "../../core/errors.js";
+import type { MediaFit } from "../../media/fit.js";
 import type { GlobalCliOptions } from "../global-options.js";
 import { executeAction } from "./shared.js";
 
@@ -17,13 +18,15 @@ const nonNegative = z.coerce.number().min(0);
 const audioMode = z.enum(["auto", "preserve", "drop"]);
 const transitionName = z.enum([
   "fade", "fadeblack", "fadewhite", "wipeleft", "wiperight", "slideup", "slidedown",
-  "circleopen", "circleclose", "dissolve", "pixelize", "distance",
+  "circleopen", "circleclose", "dissolve", "pixelize", "distance", "zoomin", "zoomout",
 ]);
 
 interface NormalizeInput {
   width?: number | undefined;
   height?: number | undefined;
   fps?: number | undefined;
+  fit?: MediaFit | undefined;
+  background?: string | undefined;
 }
 
 function normalizationOptions(parsed: NormalizeInput) {
@@ -31,6 +34,8 @@ function normalizationOptions(parsed: NormalizeInput) {
     ...(parsed.width !== undefined ? { width: parsed.width } : {}),
     ...(parsed.height !== undefined ? { height: parsed.height } : {}),
     ...(parsed.fps !== undefined ? { fps: parsed.fps } : {}),
+    ...(parsed.fit !== undefined ? { fit: parsed.fit } : {}),
+    ...(parsed.background !== undefined ? { background: parsed.background } : {}),
   };
 }
 
@@ -77,15 +82,22 @@ function renderReport(report: CompositionReport): string {
   return lines.join("\n");
 }
 
+const normalizeSchema = {
+  width: positiveInteger.optional(),
+  height: positiveInteger.optional(),
+  fps: positiveInteger.optional(),
+  fit: z.enum(["contain", "cover", "stretch"]).default("contain"),
+  background: z.string().min(1).default("black"),
+  to: z.enum(["mp4", "webm"]).default("mp4"),
+} as const;
+
 export async function runComposeConcatAction(command: Command, positional: readonly unknown[]): Promise<void> {
   await executeAction(command, async (global, signal) => {
     const parsed = z.object({
       transition: z.union([z.literal("none"), transitionName]).default("none"),
       transitionDuration: positiveNumber.default(1),
-      width: positiveInteger.optional(),
-      height: positiveInteger.optional(),
-      fps: positiveInteger.optional(),
       audio: audioMode.default("auto"),
+      ...normalizeSchema,
     }).parse(command.opts());
     const report = await concatMedia(variadicStrings(positional, "compose concat"), {
       ...runtimeOptions(global, signal),
@@ -93,6 +105,7 @@ export async function runComposeConcatAction(command: Command, positional: reado
       transition: parsed.transition,
       transitionDuration: parsed.transitionDuration,
       audio: parsed.audio,
+      to: parsed.to,
     });
     return { data: report, warnings: report.warnings, execution: report.execution };
   }, renderReport);
@@ -104,10 +117,8 @@ export async function runComposeTransitionAction(command: Command, positional: r
       transition: transitionName.default("fade"),
       duration: positiveNumber.default(1),
       offset: nonNegative.optional(),
-      width: positiveInteger.optional(),
-      height: positiveInteger.optional(),
-      fps: positiveInteger.optional(),
       audio: audioMode.default("auto"),
+      ...normalizeSchema,
     }).parse(command.opts());
     const report = await transitionMedia(
       positionalString(positional, 0, "compose transition", "a left input"),
@@ -119,6 +130,7 @@ export async function runComposeTransitionAction(command: Command, positional: r
         duration: parsed.duration,
         ...(parsed.offset !== undefined ? { offset: parsed.offset } : {}),
         audio: parsed.audio,
+        to: parsed.to,
       },
     );
     return { data: report, warnings: report.warnings, execution: report.execution };
@@ -133,12 +145,20 @@ export async function runComposeSlideshowAction(command: Command, positional: re
       fps: positiveInteger.default(30),
       duration: positiveNumber.default(10),
       background: z.string().min(1).default("black"),
+      fit: z.enum(["contain", "cover", "stretch"]).default("contain"),
+      style: z.enum(["vertical-stack", "sequence"]).default("vertical-stack"),
       direction: z.enum(["up", "down"]).default("up"),
+      transition: z.union([z.literal("none"), transitionName]).default("fade"),
+      transitionDuration: positiveNumber.default(0.75),
+      to: z.enum(["mp4", "webm", "gif", "webp"]).default("mp4"),
+      include: z.array(z.string()).default([]),
+      exclude: z.array(z.string()).default([]),
       intro: z.boolean().default(true),
       outro: z.boolean().default(false),
       recursive: z.boolean().default(false),
     }).parse(command.opts());
-    const report = await createVerticalStackSlideshow(
+
+    const report = await createSlideshow(
       positionalString(positional, 0, "compose slideshow", "an image directory"),
       {
         ...runtimeOptions(global, signal),
@@ -147,7 +167,14 @@ export async function runComposeSlideshowAction(command: Command, positional: re
         fps: parsed.fps,
         duration: parsed.duration,
         background: parsed.background,
+        fit: parsed.fit,
+        style: parsed.style,
         direction: parsed.direction,
+        transition: parsed.transition,
+        transitionDuration: parsed.transitionDuration,
+        to: parsed.to,
+        includes: parsed.include,
+        excludes: parsed.exclude,
         includeIntro: parsed.intro,
         includeOutro: parsed.outro,
         recursive: parsed.recursive,

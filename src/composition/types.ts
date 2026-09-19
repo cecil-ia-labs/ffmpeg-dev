@@ -1,7 +1,10 @@
+import type { MediaFit } from "../media/fit.js";
 import type { CommandExecution, MediaInfo, ToolkitWarning } from "../types/contracts.js";
 
 export type CompositionOperation = "concat" | "transition" | "slideshow";
 export type CompositionAudioMode = "auto" | "drop" | "preserve";
+export type CompositionVideoFormat = "mp4" | "webm";
+export type SlideshowOutputFormat = CompositionVideoFormat | "gif" | "webp";
 export type XfadeTransition =
   | "fade"
   | "fadeblack"
@@ -14,8 +17,11 @@ export type XfadeTransition =
   | "circleclose"
   | "dissolve"
   | "pixelize"
-  | "distance";
+  | "distance"
+  | "zoomin"
+  | "zoomout";
 export type SlideshowDirection = "up" | "down";
+export type SlideshowStyle = "vertical-stack" | "sequence";
 
 export interface CompositionRuntimeOptions {
   output?: string;
@@ -34,12 +40,15 @@ export interface NormalizeCompositionOptions {
   height?: number;
   fps?: number;
   pixelFormat?: string;
+  fit?: MediaFit;
+  background?: string;
 }
 
 export interface ConcatRequest extends CompositionRuntimeOptions, NormalizeCompositionOptions {
   transition?: "none" | XfadeTransition;
   transitionDuration?: number;
   audio?: CompositionAudioMode;
+  to?: CompositionVideoFormat;
 }
 
 export interface TransitionRequest extends CompositionRuntimeOptions, NormalizeCompositionOptions {
@@ -47,6 +56,7 @@ export interface TransitionRequest extends CompositionRuntimeOptions, NormalizeC
   duration?: number;
   offset?: number;
   audio?: CompositionAudioMode;
+  to?: CompositionVideoFormat;
 }
 
 export interface SlideshowRequest extends CompositionRuntimeOptions {
@@ -55,10 +65,17 @@ export interface SlideshowRequest extends CompositionRuntimeOptions {
   fps?: number;
   duration?: number;
   background?: string;
+  fit?: MediaFit;
   direction?: SlideshowDirection;
   includeIntro?: boolean;
   includeOutro?: boolean;
   recursive?: boolean;
+  includes?: readonly string[];
+  excludes?: readonly string[];
+  style?: SlideshowStyle;
+  transition?: "none" | XfadeTransition;
+  transitionDuration?: number;
+  to?: SlideshowOutputFormat;
 }
 
 export interface CompositionReport {

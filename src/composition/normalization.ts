@@ -1,4 +1,5 @@
 import { ToolkitRuntimeError } from "../core/errors.js";
+import { buildFitFilters } from "../media/fit.js";
 import type { MediaInfo } from "../types/contracts.js";
 import type { NormalizeCompositionOptions } from "./types.js";
 
@@ -7,6 +8,8 @@ export interface ResolvedVideoNormalization {
   height: number;
   fps: number;
   pixelFormat: string;
+  fit: "contain" | "cover" | "stretch";
+  background: string;
 }
 
 function positiveInteger(value: number | undefined, fallback: number | undefined, name: string): number {
@@ -32,14 +35,15 @@ export function resolveVideoNormalization(
     height: positiveInteger(options.height, first.height, "height"),
     fps: positiveInteger(options.fps, 30, "fps"),
     pixelFormat: options.pixelFormat ?? "yuv420p",
+    fit: options.fit ?? "contain",
+    background: options.background ?? "black",
   };
 }
 
 export function videoNormalizationFilters(normalization: ResolvedVideoNormalization): string[] {
-  const { width, height, fps, pixelFormat } = normalization;
+  const { width, height, fps, pixelFormat, fit, background } = normalization;
   return [
-    `scale=${width}:${height}:force_original_aspect_ratio=decrease`,
-    `pad=${width}:${height}:(ow-iw)/2:(oh-ih)/2`,
+    ...buildFitFilters({ width, height, fit, background }),
     "setpts=PTS-STARTPTS",
     `fps=${fps}`,
     `format=${pixelFormat}`,

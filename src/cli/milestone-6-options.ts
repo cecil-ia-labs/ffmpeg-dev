@@ -4,27 +4,35 @@ function collect(value: string, previous: string[]): string[] {
   return [...previous, value];
 }
 
+const FORMATS = "mp4, webm, gif, webp, png, jpeg/jpg, wav, mp3, aac, m4a, flac, opus, or ogg";
+
 function addConversionTuningOptions(command: Command): void {
   command
-    .option("--fps <fps>", "target frame rate for animated/image conversion")
-    .option("--width <pixels>", "resize output to this width while preserving aspect ratio")
+    .option("--fps <fps>", "target frame rate for animated/video conversion")
+    .option("--width <pixels>", "target visual width")
+    .option("--height <pixels>", "target visual height")
+    .addOption(new Option("--fit <mode>", "visual fit: contain, cover, or stretch").choices(["contain", "cover", "stretch"]).default("contain"))
+    .option("--background <color>", "padding color used by --fit contain", "black")
     .option("--quality <value>", "WebP quality from 0 to 100")
     .option("--max-colors <count>", "GIF palette size from 2 to 256")
-    .option("--loop <count>", "animation loop count; 0 means infinite");
+    .option("--loop <count>", "animation loop count; 0 means infinite")
+    .option("--audio-bitrate <rate>", "audio bitrate, for example 128k or 192k")
+    .option("--sample-rate <hz>", "audio output sample rate")
+    .option("--channels <count>", "audio output channel count");
 }
 
 export function configureMilestone6Options(command: Command, path: string): void {
   switch (path) {
     case "cecilia-ffmpeg convert file":
       command
-        .requiredOption("--to <format>", "target format: webm, gif, webp, or png")
-        .option("--from <format>", "explicit source format: mp4, webm, gif, or webp");
+        .requiredOption("--to <format>", `target format: ${FORMATS}`)
+        .option("--from <format>", `explicit source format: ${FORMATS}`);
       addConversionTuningOptions(command);
       break;
     case "cecilia-ffmpeg convert batch":
       command
-        .requiredOption("--from <format>", "source extension/format selector: mp4, webm, gif, or webp")
-        .requiredOption("--to <format>", "target format: webm, gif, webp, or png")
+        .requiredOption("--from <format>", `source extension/format selector: ${FORMATS}`)
+        .requiredOption("--to <format>", `target format: ${FORMATS}`)
         .option("--recursive", "scan subdirectories recursively", false)
         .option("--include <pattern>", "include glob pattern; repeatable", collect, [])
         .option("--exclude <pattern>", "exclude glob pattern; repeatable", collect, [])

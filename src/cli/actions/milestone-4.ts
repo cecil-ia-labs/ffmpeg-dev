@@ -6,6 +6,7 @@ import {
   changeVideoSpeed,
   createVideoFromImage,
   restoreVideo,
+  upscaleVideo,
   trimVideoEnd,
   trimVideoRange,
   trimVideoStart,
@@ -142,6 +143,9 @@ export async function runVideoFromImageAction(command: Command, positional: read
       resolution: resolutionSchema,
       fps: positiveNumber.default(30),
       pixelFormat: z.string().min(1).default("yuv420p"),
+      fit: z.enum(["contain", "cover", "stretch"]).default("contain"),
+      background: z.string().min(1).default("black"),
+      to: z.enum(["mp4", "webm"]).default("mp4"),
     }).parse(localOptions(command));
     const report = await createVideoFromImage(inputAt(positional, "video from-image"), {
       duration: parsed.duration,
@@ -149,6 +153,9 @@ export async function runVideoFromImageAction(command: Command, positional: read
       height: parsed.resolution.height,
       fps: parsed.fps,
       pixelFormat: parsed.pixelFormat,
+      fit: parsed.fit,
+      background: parsed.background,
+      to: parsed.to,
       ...(global.output !== undefined ? { output: global.output } : {}),
       overwrite: global.overwrite,
       dryRun: global.dryRun,
@@ -162,7 +169,11 @@ export async function runVideoFromImageAction(command: Command, positional: read
   }, renderVideoReport);
 }
 
-export async function runVideoRestoreAction(command: Command, positional: readonly unknown[]): Promise<void> {
+async function runVideoScaleAction(
+  command: Command,
+  positional: readonly unknown[],
+  canonical: boolean,
+): Promise<void> {
   await executeAction(command, async (global, signal) => {
     const parsed = z.object({
       resolution: resolutionSchema,
@@ -170,14 +181,21 @@ export async function runVideoRestoreAction(command: Command, positional: readon
       fps: positiveNumber.optional(),
       crf: z.coerce.number().finite().min(0).max(63).optional(),
       preset: z.string().min(1).optional(),
+      fit: z.enum(["contain", "cover", "stretch"]).default("contain"),
+      background: z.string().min(1).default("black"),
+      to: z.enum(["mp4", "webm"]).default("mp4"),
     }).parse(localOptions(command));
-    const report = await restoreVideo(inputAt(positional, "video restore"), {
+    const operation = canonical ? upscaleVideo : restoreVideo;
+    const report = await operation(inputAt(positional, canonical ? "video upscale" : "video restore"), {
       width: parsed.resolution.width,
       height: parsed.resolution.height,
       profile: parsed.profile,
       ...(parsed.fps !== undefined ? { fps: parsed.fps } : {}),
       ...(parsed.crf !== undefined ? { crf: parsed.crf } : {}),
       ...(parsed.preset !== undefined ? { preset: parsed.preset } : {}),
+      fit: parsed.fit,
+      background: parsed.background,
+      to: parsed.to,
       ...(global.output !== undefined ? { output: global.output } : {}),
       overwrite: global.overwrite,
       dryRun: global.dryRun,
@@ -189,4 +207,13 @@ export async function runVideoRestoreAction(command: Command, positional: readon
     });
     return { data: report, warnings: report.warnings, execution: report.execution };
   }, renderVideoReport);
+}
+
+export async function runVideoUpscaleAction(command: Command, positional: readonly unknown[]): Promise<void> {
+  await runVideoScaleAction(command, positional, true);
+}
+
+/** Compatibility alias for pre-v1 CLI users. */
+export async function runVideoRestoreAction(command: Command, positional: readonly unknown[]): Promise<void> {
+  await runVideoScaleAction(command, positional, false);
 }

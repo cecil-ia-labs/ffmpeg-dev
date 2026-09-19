@@ -51,10 +51,10 @@ export function durationSeconds(media: MediaInfo, source: string): number {
   return duration;
 }
 
-export function deriveCompositionOutput(source: string, suffix: string, explicit?: string, cwd?: string): string {
+export function deriveCompositionOutput(source: string, suffix: string, explicit?: string, cwd?: string, format: "mp4" | "webm" = "mp4"): string {
   if (explicit !== undefined) return path.resolve(cwd ?? process.cwd(), explicit);
   const parsed = path.parse(source);
-  return path.join(parsed.dir, `${parsed.name}.${suffix}.mp4`);
+  return path.join(parsed.dir, `${parsed.name}.${suffix}.${format}`);
 }
 
 export async function executeComposition(options: {
