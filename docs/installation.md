@@ -106,7 +106,7 @@ prepack -> npm run build
 Publication retains the existing quality gate:
 
 ```text
-prepublishOnly -> npm run validate
+prepublishOnly -> npm run validate:release
 ```
 
 Repository maintainers also have `scripts/publish-npm.sh`, which is intentionally excluded from the npm package. Its release flow is:
@@ -116,7 +116,7 @@ clean master
   -> origin/master parity
   -> npm authentication
   -> duplicate-version check
-  -> npm run validate
+  -> npm run validate:release
   -> npm pack
   -> tarball inspection
   -> npm publish
