@@ -118,6 +118,34 @@
         "fallback": "software",
         "runtimeProbe": true
       }
+    },
+    "com.openai": {
+      "interface": {
+        "displayName": "FFmpeg Media Toolkit",
+        "shortDescription": "FFmpeg workflows for agents",
+        "longDescription": "Professional, deterministic FFmpeg and FFprobe workflows for ChatGPT and Codex. Inspect media, edit video and audio, convert formats, compose clips and slideshows, diagnose and repair media, plan streaming workflows, and author reusable YAML pipelines. The included Skills prefer the typed @cecilialabs/ffmpeg toolkit when executable tooling is available, with FFprobe preflight, explicit overwrite protection, transactional outputs, structured errors, and optional hardware acceleration. Executable workflows require Node.js 22+ and FFmpeg/FFprobe 6.1+; environments without command execution can still use the plugin to plan commands and author deterministic pipelines.",
+        "developerName": "Cecil-IA Labs",
+        "category": "Developer Tools",
+        "capabilities": [
+          "Inspect media with FFprobe",
+          "Edit video and synchronize audio",
+          "Convert video, image, and audio formats",
+          "Compose clips, transitions, and slideshows",
+          "Diagnose and repair media issues",
+          "Plan live capture and streaming workflows",
+          "Author and validate declarative YAML pipelines",
+          "Select supported hardware acceleration"
+        ],
+        "websiteURL": "https://github.com/cecil-ia-labs/ffmpeg-dev",
+        "defaultPrompt": [
+          "Inspect this media file and explain its streams, codecs, timing, and compatibility.",
+          "Trim this video, resize it to 1920x1080, and convert the result to H.264 MP4.",
+          "Create a reusable YAML pipeline that trims, speeds up, normalizes, and converts a video."
+        ],
+        "brandColor": "#0B1220",
+        "composerIcon": "./assets/icon.svg",
+        "logo": "./assets/icon.svg"
+      }
     }
   }
 }
