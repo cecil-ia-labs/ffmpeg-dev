@@ -1,6 +1,8 @@
+import { hardwareFilterSuffix, hardwareGlobalArgs } from "../hardware/index.js";
 import { buildFitFilters } from "../media/fit.js";
 import { encodingArgs, resolveEncodingProfile } from "./encoding.js";
 import { executeVideoTransform, positiveFinite } from "./helpers.js";
+import { resolveVideoHardware, hardwareReportDetails } from "./hardware.js";
 import { deriveOutputPath, resolveReadableFile } from "./io.js";
 import type { VideoFromImageRequest, VideoOperationReport } from "./types.js";
 
@@ -17,6 +19,7 @@ export async function createVideoFromImage(input: string, request: VideoFromImag
     defaultExtension: `.${to}`,
   });
   const profile = resolveEncodingProfile(output);
+  const hardware = await resolveVideoHardware(to, request);
   const filter = [
     ...buildFitFilters({
       width,
@@ -26,6 +29,16 @@ export async function createVideoFromImage(input: string, request: VideoFromImag
     }),
     "setsar=1",
     `format=${pixelFormat}`,
+    ...hardwareFilterSuffix(hardware ?? {
+      requested: "software",
+      resolved: "software",
+      codec: to === "mp4" ? "h264" : "vp9",
+      encoder: profile.videoCodec,
+      softwareEncoder: profile.videoCodec,
+      runtimeVerified: true,
+      fallback: false,
+      attempts: [],
+    }),
   ].join(",");
 
   return await executeVideoTransform({
@@ -33,13 +46,14 @@ export async function createVideoFromImage(input: string, request: VideoFromImag
     source,
     output,
     argsBeforeOutput: [
+      ...(hardware === undefined ? [] : hardwareGlobalArgs(hardware)),
       "-loop", "1",
       "-framerate", String(fps),
       "-i", source,
       "-t", String(duration),
       "-vf", filter,
       "-r", String(fps),
-      ...encodingArgs(profile, false),
+      ...encodingArgs(profile, false, hardware),
     ],
     runtime: request,
     details: {
@@ -51,6 +65,8 @@ export async function createVideoFromImage(input: string, request: VideoFromImag
       fit: request.fit ?? "contain",
       background: request.background ?? "black",
       to,
+      ...hardwareReportDetails(hardware),
     },
+    ...(hardware?.warning !== undefined ? { warnings: [hardware.warning] } : {}),
   });
 }
