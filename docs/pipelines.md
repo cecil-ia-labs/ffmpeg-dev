@@ -25,16 +25,17 @@ steps:
       factor: 1.25
       audio: sync
 
-  - resize:
-      width: 1920
-      height: 1080
-      fit: contain
-      hardware: auto
-
   - audio:
       normalize: true
       sampleRate: 48000
       channels: 2
+
+  - resize:
+      width: 1920
+      height: 1080
+      fit: contain
+      to: mp4
+      hardware: auto
 
 output:
   path: final.mp4
@@ -137,7 +138,7 @@ The same conversion formats exposed by `convert file` are accepted.
     hardwareStrict: false
 ```
 
-Hardware selection reuses the v1.2 runtime-probed selector.
+Hardware selection reuses the v1.2 runtime-probed selector. Hardware policy applies to the specific step that declares it. For example, if a WebM input is resized to an intermediate WebM file, `hardware: auto` evaluates VP9 backends and will not choose H.264 NVENC. When the final target is MP4/H.264 and hardware encoding is desired, make the hardware-aware resize/conversion the final encoding step or declare `to: mp4` explicitly.
 
 ## Output contract
 
