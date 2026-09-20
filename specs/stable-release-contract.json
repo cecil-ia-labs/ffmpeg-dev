@@ -1,13 +1,15 @@
 {
   "schemaVersion": 1,
-  "release": "1.0.0",
+  "release": "1.1.0",
   "package": {
     "name": "@cecilialabs/ffmpeg",
     "binary": "cecilia-ffmpeg",
     "export": ".",
     "node": ">=22.0.0",
     "license": "MIT",
-    "access": "public"
+    "access": "public",
+    "mcpBinary": "cecilia-ffmpeg-mcp",
+    "mcpExport": "./mcp"
   },
   "plugin": {
     "name": "ffmpeg-media-toolkit"
@@ -56,5 +58,21 @@
     "ffmpeg-composition",
     "ffmpeg-streaming",
     "ffmpeg-diagnostics"
-  ]
+  ],
+  "mcp": {
+    "protocol": "2026-07-28",
+    "sdk": "@modelcontextprotocol/server@^2.0.0",
+    "transport": "stdio",
+    "tools": [
+      "media_probe",
+      "media_trim",
+      "media_convert",
+      "media_concat",
+      "media_attach_audio",
+      "media_remove_silence",
+      "media_generate_silence",
+      "media_restore",
+      "media_diagnose"
+    ]
+  }
 }

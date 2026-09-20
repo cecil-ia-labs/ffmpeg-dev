@@ -34,6 +34,7 @@ function localPaths(extension) {
     extension.documentation?.readme,
     extension.documentation?.skills,
     extension.documentation?.packaging,
+    extension.documentation?.mcp,
     ...(extension.skillCatalog ?? []).map((entry) => entry.path),
   ].filter((value) => typeof value === "string");
 }
@@ -67,6 +68,10 @@ assert(extension && typeof extension === "object", "Missing com.cecilialabs.ffmp
 assert(extension.branding?.displayName === "FFmpeg Media Toolkit", "Unexpected branding display name");
 assert(extension.npm?.package === "@cecilialabs/ffmpeg", "Unexpected npm package identity");
 assert(extension.npm?.binary === "cecilia-ffmpeg", "Unexpected CLI binary identity");
+assert(extension.mcp?.binary === "cecilia-ffmpeg-mcp", "Unexpected MCP binary identity");
+assert(extension.mcp?.transport === "stdio", "Milestone 16 MCP transport must be stdio");
+assert(extension.mcp?.protocol === "2026-07-28", "Unexpected MCP protocol revision");
+assert(Array.isArray(extension.mcp?.tools) && extension.mcp.tools.length === 9, "Unexpected MCP tool catalog");
 
 for (const relative of localPaths(extension)) await assertContained(relative);
 

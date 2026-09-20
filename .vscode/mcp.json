@@ -1,0 +1,12 @@
+{
+    "servers": {
+        "ceciliaFfmpeg": {
+            "args": [
+                "${workspaceFolder}/dist/mcp.js"
+            ],
+            "command": "node",
+            "cwd": "${workspaceFolder}",
+            "type": "stdio"
+        }
+    }
+}

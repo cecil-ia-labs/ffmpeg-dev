@@ -16,6 +16,7 @@ const requiredDocs = [
   "docs/getting-started.md",
   "docs/installation.md",
   "docs/cli-reference.md",
+  "docs/mcp.md",
   "docs/video.md",
   "docs/image.md",
   "docs/audio.md",
@@ -69,7 +70,7 @@ const hardware = await text("docs/hardware-acceleration.md");
 assert(hardware.includes("not yet an automatic encoding policy"), "Hardware docs must not claim future automatic hardware selection as current.");
 
 const readme = await text("README.md");
-for (const relative of ["getting-started.md", "cli-reference.md", "migration-from-bash.md"]) {
+for (const relative of ["getting-started.md", "cli-reference.md", "mcp.md", "migration-from-bash.md"]) {
   assert(readme.includes(relative), `README documentation index is missing ${relative}`);
 }
 

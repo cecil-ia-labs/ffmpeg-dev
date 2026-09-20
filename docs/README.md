@@ -5,6 +5,7 @@
 - [Getting started](getting-started.md)
 - [Installation](installation.md)
 - [CLI reference](cli-reference.md)
+- [MCP server](mcp.md)
 
 ## Media domains
 
@@ -27,4 +28,4 @@
 - [UX/progress architecture](development/ux-progress-agent-output.md)
 - [Media capability expansion](development/media-capability-expansion.md)
 
-The public documentation describes the supported pre-v1 surface. Future roadmap features are marked explicitly and should not be inferred as implemented.
+The public documentation describes the stable CLI plus the v1.1 MCP adapter surface. Future roadmap features are marked explicitly and should not be inferred as implemented.

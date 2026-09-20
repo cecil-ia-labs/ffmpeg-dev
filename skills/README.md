@@ -30,3 +30,21 @@ Use native FFmpeg only when:
 2. the user explicitly asks for the native FFmpeg invocation.
 
 All skills require explicit input/output intent, probe-driven decisions when media properties matter, deterministic behavior, and validation of produced artifacts.
+
+
+## MCP-enabled hosts
+
+v1.1.0 also exposes a local stdio MCP server through `cecilia-ffmpeg-mcp`. In a host with that server connected, supported media work may use the corresponding MCP tools instead of constructing CLI commands manually.
+
+The policy remains unchanged at the capability level:
+
+```text
+supported toolkit capability
+    -> prefer the toolkit surface available to the host
+       (MCP tool, TypeScript API, or cecilia-ffmpeg CLI)
+
+unsupported capability or explicit native request
+    -> native FFmpeg fallback
+```
+
+The MCP tools and CLI are sibling adapters over the same typed domain implementation; Skills should not assume they are separate media engines.
