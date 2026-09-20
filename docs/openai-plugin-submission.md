@@ -1,6 +1,6 @@
 # OpenAI Plugin Directory Submission — v1.3.0
 
-This document is the publication dossier for the public OpenAI Plugin Directory submission of **FFmpeg Media Toolkit v1.3.0**.
+This document is the publication dossier for the public OpenAI Plugin Directory submission of **Cecil-IA Labs FFmpeg v1.3.0**.
 
 ## Submission type
 
@@ -12,9 +12,9 @@ The local MCP implementation remains part of the npm package and repository. A f
 
 ## Package identity
 
-- Package name: `ffmpeg-media-toolkit`
+- Package name: `cecilialabs-ffmpeg`
 - Plugin version: `1.3.0`
-- Display name: **FFmpeg Media Toolkit**
+- Display name: **Cecil-IA Labs FFmpeg**
 - Developer: **Cecil-IA Labs**
 - Category: **Developer Tools**
 - npm package: `@cecilialabs/ffmpeg@1.3.0`
@@ -200,7 +200,7 @@ Expected behavior:
 
 ## Release notes
 
-First public OpenAI Plugin Directory submission for FFmpeg Media Toolkit v1.3.0.
+First public OpenAI Plugin Directory submission for Cecil-IA Labs FFmpeg v1.3.0.
 
 Highlights:
 
@@ -230,13 +230,13 @@ npm run pack:openai-plugin
 The upload artifact is:
 
 ```text
-.openai-pack/ffmpeg-media-toolkit-openai-v1.3.0.zip
+.openai-pack/cecilialabs-ffmpeg-openai-v1.3.0.zip
 ```
 
 The ZIP intentionally contains one top-level plugin directory and only the files required by the Skills-only publication:
 
 ```text
-ffmpeg-media-toolkit/
+cecilialabs-ffmpeg/
 ├── plugin.json
 ├── LICENSE
 ├── assets/
@@ -262,7 +262,7 @@ Before pressing **Submit for review**:
 - [ ] Confirm the selected developer/company identity is verified.
 - [ ] Confirm the submitter has **Apps Management: Write** permission.
 - [ ] Choose **Skills only**.
-- [ ] Upload `.openai-pack/ffmpeg-media-toolkit-openai-v1.3.0.zip`.
+- [ ] Upload `.openai-pack/cecilialabs-ffmpeg-openai-v1.3.0.zip`.
 - [ ] Confirm all eight Skills are discovered.
 - [ ] Confirm every Skill passes OpenAI usage-safety and technical-safety scans.
 - [ ] Confirm the directory listing matches the metadata above.
