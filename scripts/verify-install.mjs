@@ -1,4 +1,4 @@
-import { mkdtemp, mkdir, rm, writeFile } from "node:fs/promises";
+import { mkdtemp, mkdir, readFile, rm, writeFile } from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
 import process from "node:process";
@@ -7,6 +7,8 @@ import { fileURLToPath } from "node:url";
 
 const root = fileURLToPath(new URL("../", import.meta.url));
 const npmBinary = process.platform === "win32" ? "npm.cmd" : "npm";
+const packageJson = JSON.parse(await readFile(path.join(root, "package.json"), "utf8"));
+const expectedVersion = packageJson.version;
 
 function run(command, args, cwd) {
   const result = spawnSync(command, args, {
@@ -62,8 +64,8 @@ try {
     ["exec", "--offline", "--", "cecilia-ffmpeg", "--version"],
     installDir,
   ).stdout.trim();
-  if (version !== "1.0.0") {
-    throw new Error("Clean-install CLI version mismatch: expected 1.0.0, received " + version);
+  if (version !== expectedVersion) {
+    throw new Error("Clean-install CLI version mismatch: expected " + expectedVersion + ", received " + version);
   }
 
   const help = run(
@@ -80,10 +82,22 @@ try {
     [
       "--input-type=module",
       "-e",
-      'import("@cecilialabs/ffmpeg").then((m) => { if (m.VERSION !== "1.0.0") process.exit(2); })',
+      'import("@cecilialabs/ffmpeg").then((m) => { if (m.VERSION !== ' + JSON.stringify(expectedVersion) + ') process.exit(2); })',
     ],
     installDir,
   );
+
+  if (packageJson.exports?.["./mcp"] !== undefined) {
+    run(
+      process.execPath,
+      [
+        "--input-type=module",
+        "-e",
+        'import("@cecilialabs/ffmpeg/mcp").then((m) => { if (typeof m.createMediaMcpServer !== "function") process.exit(3); })',
+      ],
+      installDir,
+    );
+  }
 
   console.log("Clean npm tarball installation: PASS");
   console.log("Platform: " + process.platform + "/" + process.arch);
