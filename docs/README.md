@@ -19,9 +19,11 @@
 
 ## Architecture / compatibility
 
+- [Development and architecture notes](development/README.md)
+
 - [Hardware acceleration status](hardware-acceleration.md)
 - [Migration from legacy Bash](migration-from-bash.md)
-- [Milestone 13 UX/progress architecture](milestone-13/ux-progress-agent-output.md)
-- [Milestone 13.5 media capability expansion](milestone-13-5/media-capability-expansion.md)
+- [UX/progress architecture](development/ux-progress-agent-output.md)
+- [Media capability expansion](development/media-capability-expansion.md)
 
 The public documentation describes the supported pre-v1 surface. Future roadmap features are marked explicitly and should not be inferred as implemented.

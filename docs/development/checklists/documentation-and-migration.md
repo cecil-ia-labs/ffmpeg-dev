@@ -1,7 +1,7 @@
-# Milestone 14 — Documentation & Migration Guide — Checklist
+# Documentation & Migration Guide — Completion Checklist
 
 **Target:** `v0.9.9`  
-**Status:** Implemented; local validation required before merge
+**Status:** ✅ Complete — ready for final validation and merge
 
 ## Documentation
 
@@ -61,7 +61,11 @@
 - [x] Package/plugin/project version advanced to `0.9.9`.
 - [x] README, roadmap, changelog, and Skills updated.
 - [x] GitHub Actions remain deferred until alpha completion.
-- [ ] Run `npm run validate` in the configured Local Environment before merge.
+- [x] Implementation, documentation, migration mapping, Skills synchronization, and semantic UX are complete.
+
+## Final merge gate
+
+- [ ] Run `npm run validate` in the configured Local Environment after the repository reorganization.
 
 ## Acceptance criterion
 

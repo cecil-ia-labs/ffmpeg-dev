@@ -1,6 +1,6 @@
 # FFmpeg Media Toolkit
 
-**Current milestone:** 14 — Documentation & Migration Guide  
+**Release status:** `0.9.9` — Documentation & Migration Guide complete  
 **Version:** `0.9.9`
 
 FFmpeg Media Toolkit is a professional, agent-friendly TypeScript CLI and plugin foundation for deterministic FFmpeg/FFprobe media workflows.
@@ -15,9 +15,9 @@ FFmpeg Media Toolkit is a professional, agent-friendly TypeScript CLI and plugin
 - **Media engine:** FFmpeg + FFprobe
 - **Minimum supported FFmpeg:** `6.1`
 
-## Milestone 14 status
+## Release status
 
-Milestone 14 completes the public documentation layer for the pre-v1 CLI, adds a full 21-script Bash migration guide, synchronizes Skills with the canonical command taxonomy, and adds semantic emoji/icon UX for interactive human terminals while preserving clean JSON and non-TTY output.
+The v0.9.9 documentation and migration phase is complete and ready for the final validation gate before merge. It provides the public documentation layer for the pre-v1 CLI, a full 21-script Bash migration guide, synchronized Skills, and semantic emoji/icon UX for interactive human terminals while preserving clean JSON and non-TTY output.
 
 Implemented now:
 
@@ -65,7 +65,7 @@ Video, audio, conversion, and composition operations now include:
 - MP4/MOV/MKV H.264 + AAC output profiles;
 - WebM VP9 + Opus output profiles.
 
-Streaming commands are implemented in Milestone 9 for HTTP, RTMP, RTSP, SRT, UDP, and TCP destinations. Direct WebSocket output remains an explicit relay concern rather than a mislabeled HTTP stream.
+Streaming commands support HTTP, RTMP, RTSP, SRT, UDP, and TCP destinations. Direct WebSocket output remains an explicit relay concern rather than a mislabeled HTTP stream.
 
 
 ## Documentation
@@ -128,7 +128,7 @@ Composition now includes `zoomin` and an explicit custom `zoomout` transition. S
 
 Human TTY output uses a brighter restrained palette while `--no-color`, `NO_COLOR`, `FORCE_COLOR`, JSON, and non-TTY safety remain intact.
 
-See [Milestone 13.5 media capability expansion](docs/milestone-13-5/media-capability-expansion.md).
+See [media capability expansion notes](docs/development/media-capability-expansion.md).
 
 ## UX, progress & agent output
 
@@ -155,7 +155,7 @@ The envelope can include structured per-run progress fields such as `percentage`
 
 Use `--no-progress` to suppress live human progress without disabling structured collection. Human TTY output uses restrained colors; `--no-color` or `NO_COLOR` disables them, and JSON output is always ANSI-free.
 
-See [Milestone 13 UX/progress architecture](docs/milestone-13/ux-progress-agent-output.md).
+See [UX/progress architecture](docs/development/ux-progress-agent-output.md).
 
 ## Test suite & media fixtures
 
@@ -181,9 +181,9 @@ The generated directory `test/fixtures/generated/` is Git-ignored. `test/fixture
 
 The fixture matrix covers H.264, H.265/HEVC, VP9, GIF, animated WebP, PNG, JPEG, MP3, AAC, PCM WAV, G.711 μ-law, CFR/VFR timing, missing streams, multiple timebases, resolutions, and pixel formats.
 
-All 21 scripts under `legacy/bash/` are mapped to explicit cases in `test/regression/legacy-migrations.integration.test.ts`.
+All 21 historical Bash script identifiers in `test/fixtures/legacy-migration-map.json` are mapped to explicit cases in `test/regression/legacy-migrations.integration.test.ts`.
 
-See [Milestone 12 test architecture](docs/milestone-12/test-suite-and-fixtures.md).
+See [test-suite and fixture architecture](docs/development/test-suite-and-fixtures.md).
 
 ## Plugin package
 
@@ -217,7 +217,7 @@ npm run verify:package
 
 `verify:package` executes `npm pack --dry-run --json --ignore-scripts` and confirms that runtime, skills, plugin metadata, docs, and assets are present while repository-only test/legacy/script paths are excluded.
 
-See [Milestone 11 packaging architecture](docs/milestone-11/plugin-packaging.md).
+See [plugin packaging architecture](docs/development/plugin-packaging.md).
 
 ## Professional skills
 
@@ -245,7 +245,7 @@ Run the skill contract verifier with:
 npm run verify:skills
 ```
 
-See [Milestone 10 skill architecture](docs/milestone-10/professional-skills.md).
+See [professional Skills architecture](docs/development/professional-skills.md).
 
 ## Diagnostics & repair
 
@@ -286,7 +286,7 @@ npx tsx src/cli.ts stream file ./clip.mp4 \
 
 The toolkit separates capture source, encoding, muxer/container, network transport, and destination. Supported direct transports are HTTP(S), RTMP(S), RTSP, SRT, UDP, and TCP. A `ws://`/`wss://` URL is rejected with guidance to use an explicit relay.
 
-See [Milestone 9 streaming architecture](docs/milestone-9/streaming-and-capture.md).
+See [streaming architecture](docs/development/streaming-and-capture.md).
 
 ## Codex local environment
 
@@ -510,7 +510,7 @@ npx tsx src/cli.ts audio remove-silence ./speech.wav \
   --output ./speech.cleaned.wav
 ```
 
-Milestone 5 deliberately limits this command to audio-only inputs. Removing elapsed time from audiovisual media requires synchronized timeline editing and is reserved for a future composition/timeline workflow.
+The current safety model deliberately limits this command to audio-only inputs. Removing elapsed time from audiovisual media requires synchronized timeline editing and is reserved for a future composition/timeline workflow.
 
 ### Telephony transcoding
 
@@ -653,7 +653,7 @@ and promotes it to the requested final path only after successful execution and 
 
 Use `--overwrite` explicitly when replacement is intended.
 
-## Milestone 7 composition examples
+## Composition examples
 
 ```bash
 npx @cecilialabs/ffmpeg compose concat a.mp4 b.mp4 \
@@ -757,10 +757,10 @@ Original Bash utilities remain under `legacy/bash/` for provenance and regressio
 Milestone migration mappings are documented in:
 
 ```text
-docs/milestone-4/legacy-migration.md
-docs/milestone-5/legacy-migration.md
-docs/milestone-6/legacy-migration.md
-docs/milestone-7/legacy-migration.md
+docs/development/video-migration.md
+docs/development/audio-migration.md
+docs/development/conversion-migration.md
+docs/development/composition-migration.md
 ```
 
 ## Roadmap

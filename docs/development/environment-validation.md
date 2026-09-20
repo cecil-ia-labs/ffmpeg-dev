@@ -114,7 +114,7 @@ audio sample format: fltp
 The complete captured validation object is stored in:
 
 ```text
-docs/milestone-3/validation-output.txt
+docs/development/environment-validation-output.txt
 ```
 
 ## Dry-run validation

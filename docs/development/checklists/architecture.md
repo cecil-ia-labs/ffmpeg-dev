@@ -6,23 +6,23 @@
 | Requirement | Status | Evidence |
 |---|---:|---|
 | Define package naming and plugin identity | ✅ | `specs/project-identity.json` |
-| Establish repository structure | ✅ | `docs/milestone-0/architecture.md` |
-| Define supported Node.js version | ✅ | `docs/milestone-0/platform-runtime-policy.md` |
-| Define minimum supported FFmpeg version | ✅ | `docs/milestone-0/platform-runtime-policy.md` |
-| Define CLI command hierarchy | ✅ | `docs/milestone-0/cli-specification.md`, `specs/command-tree.json` |
+| Establish repository structure | ✅ | `docs/development/architecture.md` |
+| Define supported Node.js version | ✅ | `docs/development/platform-runtime-policy.md` |
+| Define minimum supported FFmpeg version | ✅ | `docs/development/platform-runtime-policy.md` |
+| Define CLI command hierarchy | ✅ | `docs/development/cli-specification.md`, `specs/command-tree.json` |
 | Define TypeScript public interfaces | ✅ | `specs/contracts.ts` |
-| Define error taxonomy | ✅ | `docs/milestone-0/errors-exit-codes-logging.md`, `specs/error-codes.json` |
+| Define error taxonomy | ✅ | `docs/development/errors-exit-codes-logging.md`, `specs/error-codes.json` |
 | Define JSON output contract | ✅ | `specs/output-envelope.schema.json`, `specs/contracts.ts` |
-| Define logging conventions | ✅ | `docs/milestone-0/errors-exit-codes-logging.md` |
-| Define command exit codes | ✅ | `docs/milestone-0/errors-exit-codes-logging.md` |
-| Define overwrite behavior | ✅ | `docs/milestone-0/io-overwrite-temp-policy.md` |
-| Define temporary-file lifecycle | ✅ | `docs/milestone-0/io-overwrite-temp-policy.md` |
-| Define batch execution semantics | ✅ | `docs/milestone-0/batch-semantics.md` |
-| Define supported operating systems | ✅ | `docs/milestone-0/platform-runtime-policy.md` |
-| Catalog all existing Bash scripts | ✅ | `docs/milestone-0/legacy-script-catalog.md` |
-| Map each Bash script to its semantic command | ✅ | `docs/milestone-0/legacy-script-catalog.md` |
-| Identify incorrect/misleading legacy names | ✅ | `docs/milestone-0/legacy-script-catalog.md` |
-| Identify legacy behavior that must not be reproduced literally | ✅ | `docs/milestone-0/migration-rules.md` |
+| Define logging conventions | ✅ | `docs/development/errors-exit-codes-logging.md` |
+| Define command exit codes | ✅ | `docs/development/errors-exit-codes-logging.md` |
+| Define overwrite behavior | ✅ | `docs/development/io-overwrite-temp-policy.md` |
+| Define temporary-file lifecycle | ✅ | `docs/development/io-overwrite-temp-policy.md` |
+| Define batch execution semantics | ✅ | `docs/development/batch-semantics.md` |
+| Define supported operating systems | ✅ | `docs/development/platform-runtime-policy.md` |
+| Catalog all existing Bash scripts | ✅ | `docs/development/legacy-script-catalog.md` |
+| Map each Bash script to its semantic command | ✅ | `docs/development/legacy-script-catalog.md` |
+| Identify incorrect/misleading legacy names | ✅ | `docs/development/legacy-script-catalog.md` |
+| Identify legacy behavior that must not be reproduced literally | ✅ | `docs/development/migration-rules.md` |
 
 ## Milestone 0 acceptance criterion
 
