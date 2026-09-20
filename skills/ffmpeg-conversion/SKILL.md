@@ -35,6 +35,18 @@ Identify:
 
 Probe source media when encoding decisions depend on audio/video presence. In batches, discover the selection before conversion and surface empty selections or output collisions explicitly.
 
+## Toolkit surface selection
+
+Use the highest-level toolkit surface available to the host:
+
+1. In an MCP-enabled host, prefer `media_convert` for supported single-file conversion.
+2. For directory batch conversion, use the global `cecilia-ffmpeg` binary because batch conversion is not an MCP tool in v1.2.
+3. If the global binary is unavailable, use:
+   `npm exec --yes --package=@cecilialabs/ffmpeg -- cecilia-ffmpeg <command>`.
+4. Use native FFmpeg only for unsupported format pairs or an explicit native-command request.
+
+For MP4/H.264 and WebM/VP9 targets, the CLI and `media_convert` also accept the v1.2 hardware policy: `software`, `auto`, `nvenc`, `qsv`, `vaapi`, or `videotoolbox` where codec/backend support exists.
+
 ## Preferred toolkit commands
 
 ```bash
@@ -44,7 +56,7 @@ cecilia-ffmpeg convert batch <directory> --from <format> --to <format>
 
 Prefer toolkit profiles over ad-hoc per-file shell loops.
 
-For supported operations, prefer `npx @cecilialabs/ffmpeg ...` over constructing arbitrary FFmpeg shell commands.
+For supported operations, prefer the toolkit surface selected above over constructing arbitrary FFmpeg shell commands.
 
 ## Native FFmpeg fallback
 
