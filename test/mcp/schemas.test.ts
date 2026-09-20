@@ -39,6 +39,21 @@ describe("Milestone 16 MCP server surface", () => {
       dry_run: true,
       verbose: false,
       keep_temp: false,
+      hardware: "software",
+      hardware_strict: false,
+    });
+
+    const accelerated = mediaConvertInputSchema.parse({
+      input: "clip.mp4",
+      to: "mp4",
+      hardware: "auto",
+      hardware_device: "/dev/dri/renderD128",
+      hardware_strict: true,
+    });
+    expect(accelerated).toMatchObject({
+      hardware: "auto",
+      hardware_device: "/dev/dri/renderD128",
+      hardware_strict: true,
     });
 
     const silence = mediaGenerateSilenceInputSchema.parse({});
