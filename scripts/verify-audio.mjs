@@ -38,8 +38,8 @@ const required = [
   "src/audio/remove-silence.ts",
   "src/audio/telephony.ts",
   "src/audio/index.ts",
-  "src/cli/actions/milestone-5.ts",
-  "src/cli/milestone-5-options.ts",
+  "src/cli/actions/audio.ts",
+  "src/cli/audio-options.ts",
   "test/audio/audio-builders.test.ts",
   "test/audio/audio.integration.test.ts",
   "test/cli/audio-options.test.ts",
@@ -48,10 +48,10 @@ const required = [
 for (const file of required) await stat(file);
 
 const pkg = JSON.parse(await readFile("package.json", "utf8"));
-if (!versionAtLeast(pkg.version, "0.3.0")) throw new Error(`Milestone 5 requires package version >= 0.3.0, got ${pkg.version}`);
+if (!versionAtLeast(pkg.version, "0.3.0")) throw new Error(`Audio processing requires package version >= 0.3.0, got ${pkg.version}`);
 const registry = await readFile("src/cli/action-registry.ts", "utf8");
 for (const command of ["audio attach", "audio silence", "audio add-silence", "audio detect-silence", "audio remove-silence", "audio telephony"]) {
-  if (!registry.includes(command)) throw new Error(`Missing Milestone 5 action: ${command}`);
+  if (!registry.includes(command)) throw new Error(`Missing Audio processing action: ${command}`);
 }
 const telephonySource = await readFile("src/audio/telephony.ts", "utf8");
 if (!telephonySource.includes("pcm_mulaw") || !telephonySource.includes("libgsm")) {
@@ -127,7 +127,7 @@ try {
   const gsmAudio = gsmProbe.streams.find((stream) => stream.codec_type === "audio");
   if (gsmAudio?.codec_name !== "gsm") throw new Error("GSM verification failed");
 
-  console.log("Milestone 5 audio verifier: PASS");
+  console.log("Audio processing audio verifier: PASS");
   console.log("silence: pcm_s16le 48000 Hz stereo");
   console.log("attach/add-silence: video + audio streams verified");
   console.log(`silencedetect intervals: ${(silenceDetection.match(/silence_start:/g) ?? []).length}`);
