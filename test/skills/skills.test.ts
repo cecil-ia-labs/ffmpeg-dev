@@ -18,6 +18,7 @@ const requiredHeadings = [
   "## Do not use",
   "## Required inputs",
   "## Preflight",
+  "## Toolkit surface selection",
   "## Preferred toolkit commands",
   "## Native FFmpeg fallback",
   "## Output expectations",
@@ -34,6 +35,9 @@ describe("Milestone 10 professional skills", () => {
       const text = await readFile(file, "utf8");
       expect(text).toMatch(new RegExp(`^---\\nname: ${skill}\\ndescription: .+\\n---`, "s"));
       expect(text).toContain("@cecilialabs/ffmpeg");
+      expect(text).toContain("cecilia-ffmpeg");
+      expect(text).toContain("npm exec --yes --package=@cecilialabs/ffmpeg -- cecilia-ffmpeg");
+      expect(text).not.toContain("npx @cecilialabs/ffmpeg");
       for (const heading of requiredHeadings) expect(text).toContain(heading);
       expect(text).toMatch(/references\/[A-Za-z0-9-]+\.md/);
     });
