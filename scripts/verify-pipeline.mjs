@@ -66,7 +66,8 @@ for (const domainCall of [
   assert(executor.includes(domainCall), "Pipeline executor does not reuse typed domain call: " + domainCall);
 }
 assert(executor.includes("TemporaryWorkspace"), "Pipeline execution must isolate intermediate artifacts.");
-assert(executor.includes("Pipeline input and final output paths must be different."), "Pipeline must reject original-input output collisions.");
+assert(executor.includes("preflightOutputPath"), "Pipeline must preflight its final output before executing media steps.");
+assert(executor.indexOf("preflightOutputPath") < executor.indexOf("TemporaryWorkspace.create"), "Pipeline output preflight must happen before workspace creation.");
 assert(executor.includes("validatePipelineResultCodec"), "Pipeline executor must enforce the final codec assertion.");
 assert(!/node:child_process|from\s+["']child_process["']/.test(executor), "Pipeline executor must not create a process boundary.");
 
