@@ -53,6 +53,9 @@ export async function mediaConvertAdapter(input: MediaConvertInput, signal: Abor
     ...(input.audio_bitrate !== undefined ? { audioBitrate: input.audio_bitrate } : {}),
     ...(input.sample_rate !== undefined ? { sampleRate: input.sample_rate } : {}),
     ...(input.channels !== undefined ? { channels: input.channels } : {}),
+    hardware: input.hardware,
+    ...(input.hardware_device !== undefined ? { hardwareDevice: input.hardware_device } : {}),
+    hardwareStrict: input.hardware_strict,
   });
 }
 
@@ -68,6 +71,9 @@ export async function mediaConcatAdapter(input: MediaConcatInput, signal: AbortS
     ...(input.fit !== undefined ? { fit: input.fit } : {}),
     ...(input.background !== undefined ? { background: input.background } : {}),
     to: input.to,
+    hardware: input.hardware,
+    ...(input.hardware_device !== undefined ? { hardwareDevice: input.hardware_device } : {}),
+    hardwareStrict: input.hardware_strict,
   });
 }
 
