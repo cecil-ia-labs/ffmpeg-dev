@@ -4,6 +4,7 @@ import { ZodError } from "zod";
 import { VERSION } from "../version.js";
 import { brandGreen, brandWhite, colorEnabled, normalLog } from "./colors.js";
 import { validateGlobalCliOptions } from "./global-options.js";
+import { preflightExplicitCliOutput } from "./output-preflight.js";
 import { configureSemanticHelp } from "./help-style.js";
 import { registerCommandTree } from "./register-command-tree.js";
 
@@ -54,9 +55,10 @@ export function buildProgram(): Command {
     .option("--ffprobe-path <path>", normalLog("\t\t\t\b\b\b\boverride FFprobe binary resolution"))
     .option("--keep-temp", normalLog("\t\t\t\b\b\b\bpreserve temporary/intermediate artifacts for debugging"), false);
 
-  program.hook("preAction", (_thisCommand, actionCommand) => {
+  program.hook("preAction", async (_thisCommand, actionCommand) => {
     try {
-      validateGlobalCliOptions(actionCommand.optsWithGlobals());
+      const options = validateGlobalCliOptions(actionCommand.optsWithGlobals());
+      await preflightExplicitCliOutput(actionCommand, options);
     } catch (error: unknown) {
       if (error instanceof ZodError) {
         actionCommand.error(`Invalid global options: ${formatZodError(error)}`, {
