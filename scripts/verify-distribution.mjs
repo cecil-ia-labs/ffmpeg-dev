@@ -22,6 +22,7 @@ assert(pkg.scripts?.prepack === "npm run build", "prepack must build the distrib
 assert(pkg.scripts?.["verify:distribution"] === "node scripts/verify-distribution.mjs", "Missing distribution verifier.");
 assert(pkg.scripts?.validate?.includes("verify:distribution"), "validate must include verify:distribution.");
 assert(pkg.scripts?.postinstall === undefined, "The package must not mutate user shell configuration from postinstall.");
+assert(pkg.scripts?.prepublishOnly === "npm run validate:release", "Publication must use the stable release validation gate.");
 
 for (const relative of [
   "scripts/setup-local-cli.mjs",
@@ -38,7 +39,7 @@ for (const token of ["Continue? [y/N]", "npm", "link:cli", ".bashrc", "cecilia-f
 
 const publisher = await text("scripts/publish-npm.sh");
 for (const token of [
-  "npm run validate",
+  "npm run validate:release",
   "npm pack",
   "npm publish",
   "origin/master",
