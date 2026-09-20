@@ -119,7 +119,8 @@
     "verify:mcp": "node scripts/verify-mcp.mjs",
     "verify:hardware": "node scripts/verify-hardware.mjs",
     "verify:pipeline": "node scripts/verify-pipeline.mjs",
-    "verify:output-preflight": "node scripts/verify-output-preflight.mjs"
+    "verify:output-preflight": "node scripts/verify-output-preflight.mjs",
+    "pack:openai-plugin": "bash scripts/pack-openai-plugin.sh"
   },
   "type": "module",
   "types": "./dist/index.d.ts",
