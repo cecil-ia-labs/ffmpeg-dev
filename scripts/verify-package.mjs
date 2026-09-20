@@ -1,4 +1,5 @@
 import { spawnSync } from "node:child_process";
+import { readFile } from "node:fs/promises";
 import { fileURLToPath } from "node:url";
 
 const root = fileURLToPath(new URL("../", import.meta.url));
@@ -46,6 +47,11 @@ const required = [
 
 for (const file of required) {
   if (!files.has(file)) throw new Error(`npm package is missing required file: ${file}`);
+}
+
+const cliEntry = await readFile(new URL("../dist/cli.js", import.meta.url), "utf8");
+if (!cliEntry.startsWith("#!/usr/bin/env node")) {
+  throw new Error("dist/cli.js must preserve the Node shebang for the npm bin executable.");
 }
 
 const deniedPrefixes = ["legacy/", "test/", "scripts/", "node_modules/"];

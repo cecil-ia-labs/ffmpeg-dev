@@ -1071,6 +1071,49 @@ Machine contracts remain unchanged: `--json` has no ANSI/emoji decoration; non-T
 
 ---
 
+# Milestone 14.5 — CLI Installation & Release Workflow
+
+**Target:** `v0.9.9` release hardening  
+**Status:** Implementation complete; validation/merge pending
+
+### Objectives
+
+Complete the executable-installation and release path before the v1 stabilization milestone:
+
+- standard global `cecilia-ffmpeg` installation through npm `bin`;
+- explicit local contributor setup with build + `npm link`;
+- opt-in Bash PATH repair only when required;
+- no shell-mutating `postinstall`;
+- `prepack` build guarantee;
+- repository-only pack/publish workflow;
+- clean-master and remote-parity release gates;
+- publish exact inspected tarball;
+- npm verification followed by optional Git tag;
+- branded CLI help headline;
+- structural distribution verifier.
+
+### Stable installation model
+
+```text
+public user
+  -> npm install -g @cecilialabs/ffmpeg
+  -> npm creates executable link
+  -> cecilia-ffmpeg
+
+repository contributor
+  -> npm run setup:cli
+  -> consent
+  -> build + npm link
+  -> optional consented ~/.bashrc PATH repair
+  -> cecilia-ffmpeg
+```
+
+### Acceptance Criteria
+
+The CLI is directly callable after standard global npm installation, local linking is explicit and reversible, publication uses the exact inspected tarball, and no installation lifecycle hook silently modifies user shell configuration.
+
+---
+
 # Milestone 15 — Stable CLI Release
 
 **Target:** `v1.0.0`

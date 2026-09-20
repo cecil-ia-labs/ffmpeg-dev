@@ -1,7 +1,9 @@
 # FFmpeg Media Toolkit
 
-**Release status:** `0.9.9` — Documentation & Migration Guide complete  
+**Release status:** `0.9.9` — Documentation complete; CLI installation/release hardening in 14.5  
 **Version:** `0.9.9`
+
+**Cecil-IA Labs · FFmpeg Media Toolkit**
 
 FFmpeg Media Toolkit is a professional, agent-friendly TypeScript CLI and plugin foundation for deterministic FFmpeg/FFprobe media workflows.
 
@@ -17,7 +19,7 @@ FFmpeg Media Toolkit is a professional, agent-friendly TypeScript CLI and plugin
 
 ## Release status
 
-The v0.9.9 documentation and migration phase is complete and ready for the final validation gate before merge. It provides the public documentation layer for the pre-v1 CLI, a full 21-script Bash migration guide, synchronized Skills, and semantic emoji/icon UX for interactive human terminals while preserving clean JSON and non-TTY output.
+The v0.9.9 documentation and migration phase is merged and complete. The 14.5 release-hardening pass adds the direct CLI installation/link workflow, safe maintainer publication flow, and branded CLI headline before the v1 stabilization milestone. The public CLI documentation, 21-script Bash migration guide, synchronized Skills, semantic TTY UX, JSON contract, and non-TTY behavior remain intact.
 
 Implemented now:
 
@@ -321,23 +323,47 @@ ffmpeg / ffprobe
 
 Only `src/core/command-result.ts` may execute child processes.
 
-## Install dependencies
+## Install and run the CLI
+
+Recommended public installation:
+
+```bash
+npm install -g @cecilialabs/ffmpeg
+cecilia-ffmpeg --help
+cecilia-ffmpeg doctor
+```
+
+No `postinstall` hook modifies the user's shell. npm exposes the command through the package `bin` mapping.
+
+For a development checkout:
 
 ```bash
 npm install
+npm run setup:cli
 ```
 
-## Development
+The setup asks permission before building/linking and only offers to modify `~/.bashrc` if the npm global bin directory is missing from `PATH`.
+
+Manual equivalent:
 
 ```bash
-npx tsx src/cli.ts --help
+npm run build
+npm link
 ```
 
-or:
+Remove the development link with:
+
+```bash
+npm run unlink:cli
+```
+
+Source-mode development remains available with:
 
 ```bash
 npm run dev -- --help
 ```
+
+See [Installation](docs/installation.md) for the complete global/local/release flow.
 
 ## Environment inspection
 
