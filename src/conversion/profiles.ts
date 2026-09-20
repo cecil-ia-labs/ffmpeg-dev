@@ -1,6 +1,12 @@
 import path from "node:path";
 
 import { ToolkitRuntimeError } from "../core/errors.js";
+import {
+  hardwareFilterSuffix,
+  hardwareGlobalArgs,
+  hardwareVideoEncodingArgs,
+  type HardwareEncodingSelection,
+} from "../hardware/index.js";
 import { buildFitFilters } from "../media/fit.js";
 import type { MediaInfo, ToolkitWarning } from "../types/contracts.js";
 import type { ConversionFormat, ConversionTuningOptions } from "./types.js";
@@ -170,12 +176,43 @@ function audioPlan(source: string, to: ConversionFormat, media: MediaInfo, optio
   };
 }
 
+function hardwareAwareFilter(
+  filter: string | undefined,
+  hardware: HardwareEncodingSelection | undefined,
+): string | undefined {
+  const suffix = hardware === undefined ? [] : hardwareFilterSuffix(hardware);
+  const parts = [...(filter ? [filter] : []), ...suffix];
+  return parts.length > 0 ? parts.join(",") : undefined;
+}
+
+function hardwareWarnings(
+  base: ToolkitWarning[],
+  hardware: HardwareEncodingSelection | undefined,
+): ToolkitWarning[] {
+  return hardware?.warning === undefined ? base : [...base, hardware.warning];
+}
+
+function hardwareDetails(hardware: HardwareEncodingSelection | undefined): Record<string, unknown> {
+  return hardware === undefined ? {} : {
+    hardware: {
+      requested: hardware.requested,
+      resolved: hardware.resolved,
+      encoder: hardware.encoder,
+      runtimeVerified: hardware.runtimeVerified,
+      fallback: hardware.fallback,
+      ...(hardware.device !== undefined ? { device: hardware.device } : {}),
+      attempts: hardware.attempts,
+    },
+  };
+}
+
 export function buildConversionPlan(
   source: string,
   from: ConversionFormat,
   to: ConversionFormat,
   media: MediaInfo,
   options: ConversionTuningOptions = {},
+  hardware?: HardwareEncodingSelection,
 ): ConversionPlan {
   assertSupportedConversion(from, to);
   if (AUDIO_TARGETS.has(to)) return audioPlan(source, to, media, options);
@@ -186,35 +223,55 @@ export function buildConversionPlan(
 
   if (to === "mp4") {
     const hasAudio = media.audio.length > 0;
+    const effectiveFilter = hardwareAwareFilter(vf, hardware);
+    const videoArgs = hardware === undefined
+      ? ["-c:v", "libx264", "-preset", "medium", "-crf", "18", "-pix_fmt", "yuv420p"]
+      : hardwareVideoEncodingArgs(hardware, { softwareCrf: 18, softwarePreset: "medium" });
     return {
       argsBeforeOutput: [
+        ...(hardware === undefined ? [] : hardwareGlobalArgs(hardware)),
         "-i", source,
         "-map", "0:v:0",
         ...(hasAudio ? ["-map", "0:a:0?"] : []),
-        ...(vf ? ["-vf", vf] : []),
-        "-c:v", "libx264", "-preset", "medium", "-crf", "18", "-pix_fmt", "yuv420p",
+        ...(effectiveFilter ? ["-vf", effectiveFilter] : []),
+        ...videoArgs,
         ...(hasAudio ? ["-c:a", "aac", "-b:a", options.audioBitrate ?? "192k"] : ["-an"]),
         "-movflags", "+faststart", "-map_metadata", "0",
       ],
-      warnings,
-      details: { codec: "libx264", audioCodec: hasAudio ? "aac" : null, ...(vf ? { videoFilter: vf } : {}) },
+      warnings: hardwareWarnings(warnings, hardware),
+      details: {
+        codec: hardware?.encoder ?? "libx264",
+        audioCodec: hasAudio ? "aac" : null,
+        ...(effectiveFilter ? { videoFilter: effectiveFilter } : {}),
+        ...hardwareDetails(hardware),
+      },
     };
   }
 
   if (to === "webm") {
     const hasAudio = media.audio.length > 0;
+    const effectiveFilter = hardwareAwareFilter(vf, hardware);
+    const videoArgs = hardware === undefined
+      ? ["-c:v", "libvpx-vp9", "-crf", "32", "-b:v", "0", "-pix_fmt", "yuv420p"]
+      : hardwareVideoEncodingArgs(hardware, { softwareCrf: 32 });
     return {
       argsBeforeOutput: [
+        ...(hardware === undefined ? [] : hardwareGlobalArgs(hardware)),
         "-i", source,
         "-map", "0:v:0",
         ...(hasAudio ? ["-map", "0:a:0?"] : []),
-        ...(vf ? ["-vf", vf] : []),
-        "-c:v", "libvpx-vp9", "-crf", "32", "-b:v", "0", "-pix_fmt", "yuv420p",
+        ...(effectiveFilter ? ["-vf", effectiveFilter] : []),
+        ...videoArgs,
         ...(hasAudio ? ["-c:a", "libopus", "-b:a", options.audioBitrate ?? "128k"] : ["-an"]),
         "-map_metadata", "0",
       ],
-      warnings,
-      details: { codec: "libvpx-vp9", audioCodec: hasAudio ? "libopus" : null, ...(vf ? { videoFilter: vf } : {}) },
+      warnings: hardwareWarnings(warnings, hardware),
+      details: {
+        codec: hardware?.encoder ?? "libvpx-vp9",
+        audioCodec: hasAudio ? "libopus" : null,
+        ...(effectiveFilter ? { videoFilter: effectiveFilter } : {}),
+        ...hardwareDetails(hardware),
+      },
     };
   }
 
