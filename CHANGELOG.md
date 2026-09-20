@@ -11,6 +11,9 @@
 - Local reusable named presets with nested expansion, unknown-reference errors, and cycle detection.
 - Pipeline-level dry-run that validates schema, input, presets, step order, and final output contracts without fabricating intermediates.
 - Output codec/extension/final-step consistency validation.
+- Final FFprobe codec assertion against the produced artifact.
+- Protection against final-output/original-input path collisions.
+- Deterministic preset safety limits: 32 nesting levels and 256 expanded concrete steps.
 - Public package API for loading, expanding, validating, and executing pipelines.
 - `media_run_pipeline` MCP tool, increasing the MCP catalog from 9 to 10 tools.
 - Dedicated `ffmpeg-pipelines` professional Skill and schema reference, increasing the bundled Skill catalog from 7 to 8.
