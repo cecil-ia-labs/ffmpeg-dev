@@ -3,7 +3,7 @@ import { buildFitFilters } from "../media/fit.js";
 import { encodingArgs, resolveEncodingProfile } from "./encoding.js";
 import { executeVideoTransform, positiveFinite } from "./helpers.js";
 import { resolveVideoHardware, hardwareReportDetails } from "./hardware.js";
-import { deriveOutputPath, resolveReadableFile } from "./io.js";
+import { deriveOutputPath, preflightOutputPath, resolveReadableFile } from "./io.js";
 import type { VideoFromImageRequest, VideoOperationReport } from "./types.js";
 
 export async function createVideoFromImage(input: string, request: VideoFromImageRequest = {}): Promise<VideoOperationReport> {
@@ -18,6 +18,7 @@ export async function createVideoFromImage(input: string, request: VideoFromImag
     ...(request.cwd !== undefined ? { cwd: request.cwd } : {}),
     defaultExtension: `.${to}`,
   });
+  await preflightOutputPath({ source, output, overwrite: request.overwrite ?? false });
   const profile = resolveEncodingProfile(output);
   const hardware = await resolveVideoHardware(to, request);
   const filter = [
