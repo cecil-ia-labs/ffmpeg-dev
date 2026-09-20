@@ -1,2 +1,2 @@
-/** Package/plugin version for the Milestone 14 implementation. */
-export const VERSION = "0.9.9" as const;
+/** Stable package/plugin version. */
+export const VERSION = "1.0.0" as const;
