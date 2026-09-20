@@ -31,7 +31,7 @@ describe("pipeline convert step", () => {
       "steps:",
       "  - trim:",
       "      start: 0",
-      "      duration: 1",
+      "      duration: 0.5",
       "  - convert:",
       "      to: webm",
       "      hardware: software",
