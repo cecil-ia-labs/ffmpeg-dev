@@ -22,6 +22,7 @@ These documents preserve implementation rationale, validation evidence, compatib
 - [Diagnostics & repair](diagnostics-and-repair.md)
 - [Streaming & capture](streaming-and-capture.md)
 - [Media capability expansion](media-capability-expansion.md)
+- [Hardware acceleration](hardware-acceleration.md)
 
 ## Agent and distribution layers
 
