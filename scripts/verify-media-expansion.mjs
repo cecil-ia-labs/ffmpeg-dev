@@ -16,16 +16,16 @@ for (const relative of [
   "src/media/fit.ts",
   "src/image/types.ts",
   "src/image/extract.ts",
-  "src/cli/actions/milestone-13-5.ts",
-  "src/cli/milestone-13-5-options.ts",
+  "src/cli/actions/image.ts",
+  "src/cli/image-options.ts",
   "src/composition/transitions.ts",
   "test/media/fit.test.ts",
   "test/image/image.integration.test.ts",
   "test/conversion/audio-conversion.integration.test.ts",
   "test/composition/transitions.test.ts",
-  "docs/milestone-13-5/media-capability-expansion.md",
+  "docs/development/media-capability-expansion.md",
 ]) {
-  assert((await stat(path.join(root, relative))).isFile(), `Missing Milestone 13.5 file: ${relative}`);
+  assert((await stat(path.join(root, relative))).isFile(), `Missing Media capability file: ${relative}`);
 }
 
 const registry = await text("src/cli/action-registry.ts");
@@ -36,7 +36,7 @@ for (const command of [
   "image convert",
   "image extract",
 ]) {
-  assert(registry.includes(command), `Missing Milestone 13.5 action: ${command}`);
+  assert(registry.includes(command), `Missing Media capability action: ${command}`);
 }
 
 const profiles = await text("src/conversion/profiles.ts");
@@ -72,4 +72,4 @@ const packageJson = JSON.parse(await text("package.json"));
 assert(packageJson.scripts?.["verify:media-expansion"] === "node scripts/verify-media-expansion.mjs", "Missing verify:media-expansion package script.");
 assert(packageJson.scripts?.validate?.includes("verify:media-expansion"), "validate must include verify:media-expansion.");
 
-console.log("Milestone 13.5 media capability expansion: PASS");
+console.log("Media capability media capability expansion: PASS");

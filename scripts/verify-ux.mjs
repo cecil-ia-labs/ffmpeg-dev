@@ -21,9 +21,9 @@ for (const relative of [
   "test/core/progress.test.ts",
   "test/core/progress-runtime.integration.test.ts",
   "test/cli/progress-renderer.test.ts",
-  "docs/milestone-13/ux-progress-agent-output.md",
+  "docs/development/ux-progress-agent-output.md",
 ]) {
-  assert((await stat(path.join(root, relative))).isFile(), `Missing Milestone 13 file: ${relative}`);
+  assert((await stat(path.join(root, relative))).isFile(), `Missing UX/progress file: ${relative}`);
 }
 
 const runner = await text("src/core/ffmpeg-runner.ts");
@@ -66,4 +66,4 @@ const packageJson = JSON.parse(await text("package.json"));
 assert(packageJson.scripts?.["verify:ux"] === "node scripts/verify-ux.mjs", "Missing verify:ux package script.");
 assert(packageJson.scripts?.validate?.includes("verify:ux"), "validate must include verify:ux.");
 
-console.log("Milestone 13 UX/progress/agent-output structure: PASS");
+console.log("UX/progress UX/progress/agent-output structure: PASS");
