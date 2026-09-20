@@ -234,6 +234,8 @@ if [[ "$VERIFIED" == true ]]; then
   success "Verified $PACKAGE_NAME@$PACKAGE_VERSION on npm"
 else
   warn "npm accepted the publish, but registry propagation could not yet be verified"
+  warn "Git tagging is intentionally stopped until the published version can be verified."
+  exit 2
 fi
 
 section "Git tag"
@@ -241,6 +243,8 @@ section "Git tag"
 GIT_TAG="v$PACKAGE_VERSION"
 if git rev-parse "$GIT_TAG" >/dev/null 2>&1; then
   warn "Git tag $GIT_TAG already exists locally"
+elif git ls-remote --exit-code --tags origin "refs/tags/$GIT_TAG" >/dev/null 2>&1; then
+  warn "Git tag $GIT_TAG already exists on origin"
 else
   printf "Create and push annotated Git tag %s? [Y/n] " "$GIT_TAG"
   read -r TAG_CONFIRM

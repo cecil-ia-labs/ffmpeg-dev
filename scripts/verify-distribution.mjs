@@ -44,12 +44,16 @@ for (const token of [
   "origin/master",
   "git tag -a",
   "git push origin",
+  "git ls-remote",
 ]) {
   assert(publisher.includes(token), "Publish workflow is missing required behavior: " + token);
 }
 
 const cliEntry = await text("src/cli.ts");
 assert(cliEntry.startsWith("#!/usr/bin/env node"), "Compiled CLI entrypoint must preserve the Node shebang.");
+
+const cliProgram = await text("src/cli/program.ts");
+assert(cliProgram.includes("Cecil-IA Labs · FFmpeg Media Toolkit"), "CLI help headline is missing.");
 
 const packagedRoots = pkg.files ?? [];
 assert(!packagedRoots.some((entry) => String(entry).startsWith("scripts")), "Repository release/setup scripts must stay out of the npm package.");
