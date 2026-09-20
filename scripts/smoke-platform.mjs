@@ -1,10 +1,12 @@
 import path from "node:path";
 import process from "node:process";
 import { spawnSync } from "node:child_process";
+import { readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 
 const root = fileURLToPath(new URL("../", import.meta.url));
 const cli = path.join(root, "dist", "cli.js");
+const expectedVersion = JSON.parse(readFileSync(path.join(root, "package.json"), "utf8")).version;
 
 function run(args) {
   const result = spawnSync(process.execPath, [cli, ...args], {
@@ -24,7 +26,7 @@ function run(args) {
 }
 
 const version = run(["--version"]).trim();
-if (version !== "1.0.0") throw new Error("Expected CLI version 1.0.0, received " + version);
+if (version !== expectedVersion) throw new Error("Expected CLI version " + expectedVersion + ", received " + version);
 
 const help = run(["--help"]);
 for (const token of ["Cecil-IA Labs · FFmpeg Media Toolkit", "doctor", "probe", "video", "audio", "image", "stream"]) {
