@@ -8,6 +8,7 @@ cd "$ROOT_DIR"
 command -v node >/dev/null 2>&1 || { echo "Node.js is required." >&2; exit 1; }
 command -v npm >/dev/null 2>&1 || { echo "npm is required." >&2; exit 1; }
 command -v zip >/dev/null 2>&1 || { echo "zip is required to build the OpenAI submission archive." >&2; exit 1; }
+command -v unzip >/dev/null 2>&1 || { echo "unzip is required to inspect the OpenAI submission archive." >&2; exit 1; }
 
 VERSION="$(node -p "JSON.parse(require('fs').readFileSync('package.json','utf8')).version")"
 PACK_ROOT="$ROOT_DIR/.openai-pack"
@@ -48,7 +49,10 @@ const ui = openai?.interface;
 if (!ui) throw new Error("Missing extensions.com.openai.interface.");
 if (openai.apps !== undefined) throw new Error("Skills-only bundle must not declare extensions.com.openai.apps.");
 if (ui.screenshots !== undefined) throw new Error("Skills-only bundle must not declare interface.screenshots.");
-if (plugin.version !== "1.3.0") throw new Error(`Expected plugin version 1.3.0, received ${plugin.version}.`);
+if (plugin.name !== "ffmpeg-media-toolkit") throw new Error(`Unexpected plugin name: ${plugin.name}.`);
+if (typeof plugin.version !== "string" || !/^\\d+\\.\\d+\\.\\d+(?:-[0-9A-Za-z.-]+)?$/.test(plugin.version)) {
+  throw new Error(`Plugin version is not valid semver: ${plugin.version}.`);
+}
 NODE
 
 (
