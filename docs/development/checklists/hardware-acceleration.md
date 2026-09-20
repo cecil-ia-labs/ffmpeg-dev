@@ -1,7 +1,7 @@
 # Advanced Hardware Acceleration — Completion Checklist
 
 **Target:** `v1.2.0`  
-**Status:** 🚧 Implementation complete; local validation pending
+**Status:** ✅ Implementation and validation complete; ready for merge
 
 ## Core policy
 
@@ -58,8 +58,22 @@
 - [x] Add hardware layers to test-suite verification.
 - [x] Extend plugin metadata/schema.
 - [x] Advance package/plugin/runtime/contract to `1.2.0`.
-- [ ] Run `npm run check`.
-- [ ] Run `npm run test`.
-- [ ] Run `npm run validate`.
-- [ ] Run `npm run validate:release`.
-- [ ] Exercise `--hardware auto` on available local hardware.
+- [x] Run `npm run check`.
+- [x] Run `npm run test`.
+- [x] Run `npm run validate`.
+- [x] Run `npm run validate:release`.
+- [x] Exercise `--hardware auto` on available local hardware.
+
+
+## Hardware smoke evidence
+
+Validated on Linux with an NVIDIA GeForce RTX 4060 (8 GB), NVIDIA driver 595.91.07 and CUDA 13.2 visibility.
+
+- FFmpeg reports `h264_nvenc`, `hevc_nvenc`, and `av1_nvenc`.
+- The initial 64x64 synthetic NVENC probe exposed a real false-negative edge case because the encoder rejected dimensions below its supported minimum.
+- The runtime probe was corrected to a 256x256 synthetic frame and regression-guarded.
+- Direct `h264_nvenc` probe succeeds with exit code 0.
+- Real `cecilia-ffmpeg convert file ... --hardware auto` resolves to `nvenc`.
+- The actual conversion command uses `-c:v h264_nvenc -preset p4 -cq 23 -b:v 0`.
+- Structured JSON reports `requested=auto`, `resolved=nvenc`, `runtimeVerified=true`, `fallback=false`, and a successful NVENC attempt.
+- Hardware probe failures retain a short FFmpeg diagnostic for CLI/MCP consumers.
