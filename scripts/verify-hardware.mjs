@@ -50,10 +50,13 @@ for (const invariant of [
   "W_HARDWARE_SOFTWARE_FALLBACK",
   "W_HARDWARE_DRY_RUN_UNVERIFIED",
   "hardwareStrict",
+  'HARDWARE_RUNTIME_PROBE_SIZE = "256x256"',
+  "runtimeProbeDiagnostic",
 ]) {
   assert(selection.includes(invariant), "Hardware selector is missing invariant: " + invariant);
 }
 assert(!selection.includes("node:child_process"), "Hardware selection must reuse the existing FFmpeg runtime.");
+assert(!selection.includes("s=64x64"), "Hardware runtime probe must not use the known-invalid 64x64 NVENC frame size.");
 
 const conversionOptions = await text("src/cli/conversion-options.ts");
 for (const flag of ["--hardware <mode>", "--hardware-device <path>", "--hardware-strict"]) {
