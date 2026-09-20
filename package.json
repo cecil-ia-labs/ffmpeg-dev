@@ -103,7 +103,9 @@
     "verify:ux": "node scripts/verify-ux.mjs",
     "verify:video": "node scripts/verify-video.mjs",
     "verify:release": "node scripts/verify-release.mjs",
-    "validate:release": "npm run validate && npm run verify:release"
+    "validate:release": "npm run validate && npm run verify:release && npm run verify:install",
+    "verify:install": "npm run build && node scripts/verify-install.mjs",
+    "smoke:platform": "node scripts/smoke-platform.mjs"
   },
   "type": "module",
   "types": "./dist/index.d.ts",
