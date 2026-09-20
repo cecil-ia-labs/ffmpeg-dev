@@ -40,12 +40,12 @@ Probe source media when encoding decisions depend on audio/video presence. In ba
 Use the highest-level toolkit surface available to the host:
 
 1. In an MCP-enabled host, prefer `media_convert` for supported single-file conversion.
-2. For directory batch conversion, use the global `cecilia-ffmpeg` binary because batch conversion is not an MCP tool in v1.2.
+2. For directory batch conversion, use the global `cecilia-ffmpeg` binary because batch conversion is not currently exposed as an MCP tool.
 3. If the global binary is unavailable, use:
    `npm exec --yes --package=@cecilialabs/ffmpeg -- cecilia-ffmpeg <command>`.
 4. Use native FFmpeg only for unsupported format pairs or an explicit native-command request.
 
-For MP4/H.264 and WebM/VP9 targets, the CLI and `media_convert` also accept the v1.2 hardware policy: `software`, `auto`, `nvenc`, `qsv`, `vaapi`, or `videotoolbox` where codec/backend support exists.
+For MP4/H.264 and WebM/VP9 targets, the CLI and `media_convert` also accept the current hardware policy introduced in v1.2: `software`, `auto`, `nvenc`, `qsv`, `vaapi`, or `videotoolbox` where codec/backend support exists.
 
 ## Preferred toolkit commands
 
