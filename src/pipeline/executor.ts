@@ -3,7 +3,7 @@ import path from "node:path";
 import { TemporaryWorkspace } from "../core/temp-files.js";
 import { ToolkitRuntimeError } from "../core/errors.js";
 import { resolveReadableFile } from "../media/io.js";
-import { changeVideoSpeed, trimVideoRange, trimVideoStart } from "../video/index.js";
+import { changeVideoSpeed, trimVideoRange, trimVideoStart, upscaleVideo } from "../video/index.js";
 import type { VideoOperationReport } from "../video/types.js";
 import type {
   LoadedPipeline,
@@ -29,7 +29,12 @@ function finalOutput(loaded: LoadedPipeline): string {
   return path.isAbsolute(target) ? path.normalize(target) : path.resolve(loaded.baseDirectory, target);
 }
 
-function intermediateExtension(current: string): string {
+function videoFormatForPath(target: string): "mp4" | "webm" {
+  return path.extname(target).toLowerCase() === ".webm" ? "webm" : "mp4";
+}
+
+function intermediateExtension(current: string, step: PipelineStep): string {
+  if ("resize" in step && step.resize.to !== undefined) return `.${step.resize.to}`;
   return path.extname(current) || ".mp4";
 }
 
@@ -62,6 +67,33 @@ function fromVideoReport(
     warnings: report.warnings,
     details: report.details,
   };
+}
+
+async function executeResize(
+  index: number,
+  input: string,
+  output: string,
+  step: Extract<PipelineStep, { resize: unknown }>,
+  runtime: PipelineRuntimeOptions,
+  final: boolean,
+): Promise<{ step: PipelineStepReport; media: VideoOperationReport["outputMedia"] }> {
+  const resize = step.resize;
+  const report = await upscaleVideo(input, {
+    ...commonRuntime(runtime, output, final),
+    width: resize.width,
+    height: resize.height,
+    ...(resize.fit !== undefined ? { fit: resize.fit } : {}),
+    ...(resize.background !== undefined ? { background: resize.background } : {}),
+    ...(resize.profile !== undefined ? { profile: resize.profile } : {}),
+    ...(resize.fps !== undefined ? { fps: resize.fps } : {}),
+    ...(resize.crf !== undefined ? { crf: resize.crf } : {}),
+    ...(resize.preset !== undefined ? { preset: resize.preset } : {}),
+    to: resize.to ?? videoFormatForPath(output),
+    ...(resize.hardware !== undefined ? { hardware: resize.hardware } : {}),
+    ...(resize.hardwareDevice !== undefined ? { hardwareDevice: resize.hardwareDevice } : {}),
+    ...(resize.hardwareStrict !== undefined ? { hardwareStrict: resize.hardwareStrict } : {}),
+  });
+  return { step: fromVideoReport(index, "resize", report), media: report.outputMedia };
 }
 
 async function executeSpeed(
@@ -165,13 +197,15 @@ export async function executePipeline(
       const isFinal = offset === loaded.document.steps.length - 1;
       const stepOutput = isFinal
         ? output
-        : workspace.pathFor(`step-${String(index).padStart(3, "0")}-${kind}${intermediateExtension(current)}`);
+        : workspace.pathFor(`step-${String(index).padStart(3, "0")}-${kind}${intermediateExtension(current, declaration)}`);
 
       const result = kind === "trim" && "trim" in declaration
         ? await executeTrim(index, current, stepOutput, declaration, options, isFinal)
         : kind === "speed" && "speed" in declaration
           ? await executeSpeed(index, current, stepOutput, declaration, options, isFinal)
-          : undefined;
+          : kind === "resize" && "resize" in declaration
+            ? await executeResize(index, current, stepOutput, declaration, options, isFinal)
+            : undefined;
 
       if (result === undefined) {
         throw new ToolkitRuntimeError("E_OPERATION_UNSUPPORTED", `Pipeline step "${kind}" is not executable in the current implementation phase.`, {
