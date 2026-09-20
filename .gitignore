@@ -11,3 +11,4 @@ legacy/tmp/
 test/fixtures/generated/
 media/
 legacy/
+publish-npm.sh
