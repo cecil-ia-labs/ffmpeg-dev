@@ -61,6 +61,28 @@ Fit modes:
 - `cover`: fill output, crop overflow;
 - `stretch`: force exact dimensions.
 
+## Hardware-accelerated encoding
+
+`video from-image` and `video upscale` / `video restore` support:
+
+```text
+--hardware software|auto|nvenc|qsv|vaapi|videotoolbox
+--hardware-device <path>
+--hardware-strict
+```
+
+Example:
+
+```bash
+cecilia-ffmpeg video upscale input.mp4 \
+  --resolution 1920x1080 \
+  --hardware auto
+```
+
+The default remains software encoding. When hardware is requested, the toolkit verifies encoder visibility and runtime usability before selecting it; otherwise it falls back to software unless `--hardware-strict` is set.
+
+See [Hardware acceleration](hardware-acceleration.md) for backend/codec mappings and dry-run semantics.
+
 ## Audio on video
 
 Attach/replace:
