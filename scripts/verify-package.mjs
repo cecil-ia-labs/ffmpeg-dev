@@ -24,9 +24,6 @@ try {
 const files = new Set((report[0]?.files ?? []).map((entry) => String(entry.path).replace(/^package\//, "")));
 const required = [
   "dist/cli.js",
-  "dist/mcp.js",
-  "dist/mcp/index.js",
-  "dist/mcp/index.d.ts",
   "dist/index.js",
   "dist/index.d.ts",
   "plugin.json",
@@ -61,13 +58,14 @@ const cliEntry = await readFile(new URL("../dist/cli.js", import.meta.url), "utf
 if (!cliEntry.startsWith("#!/usr/bin/env node")) {
   throw new Error("dist/cli.js must preserve the Node shebang for the npm bin executable.");
 }
-const mcpEntry = await readFile(new URL("../dist/mcp.js", import.meta.url), "utf8");
-if (!mcpEntry.startsWith("#!/usr/bin/env node")) {
-  throw new Error("dist/mcp.js must preserve the Node shebang for the MCP npm bin executable.");
+for (const file of files) {
+  if (file === "docs/mcp.md" || /^dist\/mcp(?:\.|\/)/.test(file)) {
+    throw new Error(`Removed MCP artifact leaked into npm package: ${file}`);
+  }
 }
 
 if (process.platform !== "win32") {
-  for (const relative of ["../dist/cli.js", "../dist/mcp.js"]) {
+  for (const relative of ["../dist/cli.js"]) {
     const mode = (await stat(new URL(relative, import.meta.url))).mode & 0o777;
     if ((mode & 0o111) === 0) {
       throw new Error(relative.replace("../", "") + " must be executable for npm link/global binary use.");

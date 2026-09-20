@@ -23,7 +23,7 @@ Commands that produce local files resolve and validate their destination before 
 - an existing destination fails with `E_IO_OUTPUT_EXISTS` unless `--overwrite` is explicit;
 - input/output path collisions are rejected before mutation;
 - explicit `--output` paths are checked by the common CLI action preflight;
-- domain operations repeat the check after resolving command-specific/default output paths, so package API and MCP callers receive the same protection;
+- domain operations repeat the check after resolving command-specific/default output paths, so package API and Skill-script callers receive the same protection;
 - `convert batch --existing error` validates all planned destinations before starting workers;
 - pipeline output is validated before any intermediate workspace or step execution.
 

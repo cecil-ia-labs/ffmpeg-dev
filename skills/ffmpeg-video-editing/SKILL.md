@@ -42,8 +42,8 @@ Identify:
 
 Use the highest-level toolkit surface available to the host:
 
-1. In an MCP-enabled host, prefer `media_trim` for range trimming and `media_restore` for upscale/restoration.
-2. For speed changes, still-image video creation, trim-start/trim-end convenience commands, or other supported video operations not exposed through MCP, use `cecilia-ffmpeg`.
+1. Use the associated `scripts/run.mjs` entry point for supported video actions.
+2. For speed changes, still-image video creation, trim-start/trim-end convenience commands, or other supported video operations, use `cecilia-ffmpeg`.
 3. If the global binary is unavailable, use:
    `npm exec --yes --package=@cecilialabs/ffmpeg -- cecilia-ffmpeg <command>`.
 4. Use native FFmpeg only for unsupported transforms or an explicit native-command request.

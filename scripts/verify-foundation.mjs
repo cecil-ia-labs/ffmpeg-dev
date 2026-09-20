@@ -67,15 +67,15 @@ const versionMatch = versionSource.match(/VERSION\s*=\s*"([^"]+)"/);
 assert(pkg.name === "@cecilialabs/ffmpeg", "Unexpected npm package name");
 assert(pkg.bin?.["cecilia-ffmpeg"] === "./dist/cli.js", "Unexpected npm bin mapping");
 assert(pkg.type === "module", "package.json must use ESM");
-assert(plugin.name === "ffmpeg-media-toolkit", "Unexpected plugin name");
+assert(plugin.name === "cecilialabs-ffmpeg", "Unexpected plugin name");
 assert(versionMatch, "VERSION constant not found");
 assert(pkg.version === plugin.version, "package.json/plugin.json version mismatch");
 assert(pkg.version === versionMatch[1], "package.json/src version mismatch");
 assert(identity.currentImplementationVersion === pkg.version, "project identity version mismatch");
 assert(identity.npmPackage === pkg.name, "project identity npm package mismatch");
 assert(identity.binary === "cecilia-ffmpeg", "project identity CLI binary mismatch");
-assert(identity.mcpBinary === "cecilia-ffmpeg-mcp", "project identity MCP binary mismatch");
-assert(identity.distribution?.includes("MCP Server"), "project identity must include MCP Server distribution");
+assert(identity.mcpBinary === undefined, "project identity must not expose a removed MCP binary");
+assert(!identity.distribution?.includes("MCP Server"), "project identity must not list a removed MCP distribution");
 
 const tsconfig = await readJson("tsconfig.json");
 assert(tsconfig.compilerOptions?.strict === true, "TypeScript strict mode is not enabled");

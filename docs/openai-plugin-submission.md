@@ -6,9 +6,9 @@ This document is the publication dossier for the public OpenAI Plugin Directory 
 
 **Skills only**
 
-The repository includes a local stdio MCP server (`cecilia-ffmpeg-mcp`), but the public OpenAI directory requires the **With MCP** flow to use a stable public HTTPS MCP endpoint. The v1.3.0 public submission therefore ships the eight portable Skills and does **not** submit the stdio MCP server as a remote app.
-
-The local MCP implementation remains part of the npm package and repository. A future plugin version may add the remote MCP surface after a production HTTPS deployment is available.
+The v1.3.0 public submission ships the portable Skills-only plugin. Executable
+workflows use the canonical CLI or the associated Skill scripts when the host
+provides an execution environment.
 
 ## Package identity
 
@@ -67,7 +67,7 @@ For the Skills-only submission, the four listing URLs are optional. Recommended 
 - Privacy policy: leave blank until a Cecil-IA Labs policy URL is intentionally published
 - Terms of service: leave blank until a Cecil-IA Labs terms URL is intentionally published
 
-Do not invent privacy-policy or terms URLs solely to satisfy the form. If the submission is later upgraded to **With MCP**, all required public URLs must exist before submission.
+Do not invent privacy-policy or terms URLs solely to satisfy the form.
 
 ## Runtime requirements
 
@@ -104,7 +104,7 @@ Prompt:
 Expected behavior:
 
 - activate `ffmpeg-environment`;
-- prefer `media_probe` when an eligible MCP tool is connected, otherwise use `cecilia-ffmpeg probe`;
+- use the associated environment script or `cecilia-ffmpeg probe`;
 - inspect rather than mutate the input;
 - report actual media properties without inventing missing streams.
 
@@ -213,8 +213,6 @@ Highlights:
 - FFprobe preflight and post-operation validation;
 - structured error and JSON-oriented agent workflows.
 
-The npm package also contains a 10-tool stdio MCP server, but that local server is not part of this Skills-only directory submission.
-
 ## Build the submission ZIP
 
 From the repository root:
@@ -252,7 +250,9 @@ cecilialabs-ffmpeg/
     └── ffmpeg-pipelines/
 ```
 
-The archive deliberately excludes `mcp.json`, `.mcp.json`, `.app.json`, OpenAI interface screenshots, source code, tests, npm build output, and repository-only release tooling.
+The archive deliberately excludes optional protocol/app sidecars, OpenAI
+interface screenshots, source code, tests, npm build output, and
+repository-only release tooling.
 
 ## Portal checklist
 
@@ -274,17 +274,3 @@ Before pressing **Submit for review**:
 - [ ] Paste the release notes above.
 - [ ] Review policy declarations truthfully for the actual Skills-only behavior.
 - [ ] Submit for review.
-
-## Future remote MCP publication
-
-Do not select **With MCP** for the current stdio server.
-
-To add MCP to a future public directory version:
-
-1. deploy the MCP server to a stable public HTTPS endpoint;
-2. define accurate `readOnlyHint`, `openWorldHint`, and `destructiveHint` values plus justifications for every tool;
-3. complete the OpenAI domain-verification challenge;
-4. run the production tool scan;
-5. provide required public website/support/privacy/terms URLs;
-6. provide reviewer/demo credentials if authentication is added;
-7. submit the remote server through the **With MCP** flow rather than referencing the local stdio integration.

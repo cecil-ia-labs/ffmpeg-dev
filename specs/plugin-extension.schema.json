@@ -9,7 +9,6 @@
     "documentation",
     "skillCatalog",
     "npm",
-    "mcp",
     "hardware"
   ],
   "properties": {
@@ -56,8 +55,7 @@
       "required": [
         "readme",
         "skills",
-        "packaging",
-        "mcp"
+        "packaging"
       ],
       "properties": {
         "readme": {
@@ -69,10 +67,6 @@
           "pattern": "^\\./"
         },
         "packaging": {
-          "type": "string",
-          "pattern": "^\\./"
-        },
-        "mcp": {
           "type": "string",
           "pattern": "^\\./"
         }
@@ -113,37 +107,6 @@
         },
         "binary": {
           "const": "cecilia-ffmpeg"
-        }
-      }
-    },
-    "mcp": {
-      "type": "object",
-      "additionalProperties": false,
-      "required": [
-        "binary",
-        "transport",
-        "protocol",
-        "tools"
-      ],
-      "properties": {
-        "binary": {
-          "const": "cecilia-ffmpeg-mcp"
-        },
-        "transport": {
-          "const": "stdio"
-        },
-        "protocol": {
-          "type": "string",
-          "minLength": 1
-        },
-        "tools": {
-          "type": "array",
-          "minItems": 1,
-          "uniqueItems": true,
-          "items": {
-            "type": "string",
-            "pattern": "^media_"
-          }
         }
       }
     },

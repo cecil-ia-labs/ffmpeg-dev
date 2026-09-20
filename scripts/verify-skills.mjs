@@ -43,8 +43,11 @@ for (const skill of skills) {
   if (!text.includes("npm exec --yes --package=@cecilialabs/ffmpeg -- cecilia-ffmpeg")) {
     throw new Error(`${skill}: missing explicit package-runner fallback`);
   }
-  if (!text.includes("MCP") && !text.includes("media_")) {
-    throw new Error(`${skill}: missing MCP-aware surface policy`);
+  if (!text.includes("## Associated scripts")) {
+    throw new Error(`${skill}: missing associated script policy`);
+  }
+  if (/\bMCP\b|\bmedia_[a-z_]+\b/i.test(text)) {
+    throw new Error(`${skill}: removed MCP execution references are not allowed`);
   }
   if (text.includes("npx @cecilialabs/ffmpeg")) {
     throw new Error(`${skill}: ambiguous multi-bin npx shorthand is not allowed`);

@@ -4,9 +4,9 @@ Architecture decisions were checked against current upstream documentation on **
 
 ## OpenAI Agent Plugins / Skills
 
-- Portable plugins use a root `plugin.json` and can contain root `skills/`, optional `mcp.json`, assets and hooks.
+- Portable plugins use a root `plugin.json` and can contain root `skills/`, assets and hooks.
 - Skills are grouped around clear user goals and may include `references/`, `assets/` and deterministic `scripts/`.
-- MCP is optional; a skills-only plugin is valid.
+- A Skills-only plugin is a supported distribution shape.
 
 References:
 

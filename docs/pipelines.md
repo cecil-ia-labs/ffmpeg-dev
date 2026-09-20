@@ -252,21 +252,6 @@ The pipeline report includes:
 - aggregated warnings;
 - final FFprobe media information.
 
-## MCP
-
-MCP-enabled hosts can execute the same file with `media_run_pipeline`:
-
-```json
-{
-  "pipeline": "/workspace/pipeline.yaml",
-  "dry_run": false,
-  "overwrite": false
-}
-```
-
-The MCP adapter calls `loadPipelineFile()` and `executePipeline()` directly; it does not invoke the CLI.
-
-
 ## Machine-readable schema
 
 The npm package includes the JSON Schema representation of pipeline v1:

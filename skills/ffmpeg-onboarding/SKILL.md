@@ -57,10 +57,8 @@ Use the highest-level executable surface available:
 4. use native FFmpeg/FFprobe only when the toolkit lacks the required
    inspection or the user explicitly requests native commands.
 
-This Skill is script/CLI-first. It does not require a public MCP endpoint,
-dynamic proxy, containerized NAT, or network-exposed MCP server. A local stdio
-MCP adapter in the current v1.3 baseline is not a reason to invent a network
-deployment.
+This Skill is script/CLI-first and does not require a network service or an
+alternate agent protocol.
 
 ## Associated scripts
 

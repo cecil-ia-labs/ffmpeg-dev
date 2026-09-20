@@ -7,12 +7,10 @@
     "export": ".",
     "node": ">=22.0.0",
     "license": "MIT",
-    "access": "public",
-    "mcpBinary": "cecilia-ffmpeg-mcp",
-    "mcpExport": "./mcp"
+    "access": "public"
   },
   "plugin": {
-    "name": "ffmpeg-media-toolkit"
+    "name": "cecilialabs-ffmpeg"
   },
   "mediaEngine": {
     "ffmpegMinimum": "6.1",
@@ -33,7 +31,7 @@
       "keep-temp"
     ],
     "topLevelCommands": [
-      "run",
+      "pipeline",
       "doctor",
       "probe",
       "environment",
@@ -59,25 +57,10 @@
     "ffmpeg-composition",
     "ffmpeg-streaming",
     "ffmpeg-diagnostics",
-    "ffmpeg-pipelines"
+    "ffmpeg-pipelines",
+    "ffmpeg-onboarding",
+    "ffmpeg-workflow"
   ],
-  "mcp": {
-    "protocol": "2026-07-28",
-    "sdk": "@modelcontextprotocol/server@^2.0.0",
-    "transport": "stdio",
-    "tools": [
-      "media_probe",
-      "media_trim",
-      "media_convert",
-      "media_concat",
-      "media_attach_audio",
-      "media_remove_silence",
-      "media_generate_silence",
-      "media_restore",
-      "media_run_pipeline",
-      "media_diagnose"
-    ]
-  },
   "hardwareAcceleration": {
     "default": "software",
     "modes": [
@@ -109,7 +92,6 @@
   "pipeline": {
     "schemaVersion": 1,
     "cliCommand": "pipeline <file> <validate|print|run>",
-    "mcpTool": "media_run_pipeline",
     "parser": "js-yaml@^4.3.2",
     "steps": [
       "trim",

@@ -100,15 +100,10 @@ assert(!commandSpec.includes('syntax: "run <pipeline>"'), "Top-level run command
 assert(actionRegistry.includes('"cecilia-ffmpeg pipeline": runPipelineAction'), "CLI action registry must route pipeline to the pipeline action.");
 assert(!actionRegistry.includes('"cecilia-ffmpeg run": runPipelineAction'), "Top-level run action must be removed.");
 
-const mcpServer = await text("src/mcp/server.ts");
-const mcpAdapters = await text("src/mcp/adapters.ts");
-assert(mcpServer.includes('"media_run_pipeline"'), "MCP server must expose media_run_pipeline.");
-assert(mcpAdapters.includes("executePipeline("), "MCP pipeline adapter must reuse executePipeline().");
-
 const skill = await text("skills/ffmpeg-pipelines/SKILL.md");
-assert(skill.includes("media_run_pipeline"), "Pipeline skill must prefer the MCP pipeline tool.");
 assert(skill.includes("cecilia-ffmpeg pipeline"), "Pipeline skill must document the namespaced CLI runner.");
 assert(!skill.includes("cecilia-ffmpeg run"), "Pipeline skill must not document the removed top-level runner.");
+assert(skill.includes("scripts/run.mjs"), "Pipeline skill must document its associated script.");
 
 const pipelineDir = path.join(root, "src/pipeline");
 for (const entry of await readdir(pipelineDir, { withFileTypes: true })) {

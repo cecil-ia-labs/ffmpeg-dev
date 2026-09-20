@@ -13,13 +13,11 @@ checkout before editing.
 ## Current architecture and migration boundary
 
 - master is the canonical release branch for the current v1.3.0 baseline.
-- The current implementation still contains the v1.3 stdio MCP adapter and
-  its documentation. Do not describe that runtime surface as already removed.
-- The accepted next architecture is documented in ROADMAP.md: execution
-  context and environment checks, behavioral Skills, domain Skills, and
-  Skill-associated scripts over the typed CLI/domain runtime.
-- Do not introduce a public MCP endpoint, dynamic-domain proxy, HTTPS/mTLS
-  gateway, containerized NAT arrangement, or a parallel MCP network surface.
+- The current implementation is script/Skills-first: execution context and
+  environment checks, behavioral Skills, domain Skills, and Skill-associated
+  scripts use the typed CLI/domain runtime.
+- Milestone 23 removed the legacy alternate agent adapter and its package,
+  plugin, documentation, and validation surfaces.
 - The roadmap is not an authorization to implement migration work. Implement
   only the milestone requested by the user.
 
@@ -58,7 +56,7 @@ ffmpeg-workflow route context detection and natural-language requests.
 Project Skills live under skills/. New or substantially changed Skills must
 follow the skill-creator instructions, keep their scope narrow, include
 references only when needed, and pass the local Skill validator. Do not add
-MCP dependencies to a Skill merely to make it discoverable.
+alternate agent-protocol dependencies to a Skill merely to make it discoverable.
 
 ## Validation
 

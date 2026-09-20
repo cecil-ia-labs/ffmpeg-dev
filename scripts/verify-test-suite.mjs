@@ -45,8 +45,6 @@ const layers = {
   cli: "test/cli/help.test.ts",
   ffmpegIntegration: "test/fixtures/fixture-matrix.integration.test.ts",
   fixtureRegression: "test/regression/legacy-migrations.integration.test.ts",
-  mcpUnit: "test/mcp/schemas.test.ts",
-  mcpIntegration: "test/mcp/adapters.integration.test.ts",
   hardwareUnit: "test/hardware/selection.test.ts",
   hardwareIntegration: "test/conversion/hardware.integration.test.ts",
   pipelineUnit: "test/pipeline/presets.test.ts",

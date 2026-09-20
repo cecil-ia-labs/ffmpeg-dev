@@ -2,7 +2,7 @@
 
 **Cecil-IA Labs · FFmpeg Media Toolkit**
 
-FFmpeg Media Toolkit exposes deterministic FFmpeg/FFprobe workflows through a typed TypeScript package, the `cecilia-ffmpeg` CLI, and a local stdio MCP server.
+FFmpeg Media Toolkit exposes deterministic FFmpeg/FFprobe workflows through a typed TypeScript package, the `cecilia-ffmpeg` CLI, and portable Skill-associated scripts.
 
 ## Requirements
 
@@ -30,7 +30,7 @@ Run without installing globally by naming the CLI binary explicitly:
 npm exec --yes --package=@cecilialabs/ffmpeg -- cecilia-ffmpeg doctor
 ```
 
-The package has two executables since v1.1, so the shorthand the package-only `npx` shorthand is intentionally not used. All examples below assume the recommended global installation.
+All examples below assume the recommended global installation.
 
 Development checkout:
 
@@ -60,22 +60,6 @@ printf '%s\n' '{"context":"codex","input":{}}' | node skills/ffmpeg-onboarding/s
 Regular Chat cannot inspect the local host. In that context, copy the printed
 check command to a Work/Codex/IDE/terminal environment and return its JSON
 result before claiming that the runtime or a media file is ready.
-
-## Agent access through MCP
-
-A global installation also exposes `cecilia-ffmpeg-mcp`. Configure it as a stdio MCP server in a compatible host:
-
-```json
-{
-  "mcpServers": {
-    "cecilia-ffmpeg": {
-      "command": "cecilia-ffmpeg-mcp"
-    }
-  }
-}
-```
-
-The MCP tools are adapters over the same typed media functions used by the CLI; they do not shell out to the CLI.
 
 Use `doctor` before codec/filter-sensitive work. Use `probe` before transforms where stream presence, duration, dimensions, FPS, or timestamps matter.
 
@@ -145,7 +129,6 @@ Progress can look like:
 
 - [Installation](installation.md)
 - [CLI Reference](cli-reference.md)
-- [MCP Server](mcp.md)
 - [Declarative Pipelines & Presets](pipelines.md)
 - [Video](video.md)
 - [Image](image.md)

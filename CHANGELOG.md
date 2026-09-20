@@ -29,14 +29,19 @@
 - Skill script catalog verification, executable-bit checks, and per-Skill
   documentation links for the associated operational entry points.
 
+### Removed
+
+- Milestone 23 removes the legacy stdio MCP runtime, npm dependency, binary,
+  package export, plugin metadata, schemas, tests, docs, and validation gate.
+- Agent-facing execution is now proven through the associated Skill scripts,
+  the canonical CLI, and the explicit npm-exec fallback.
+
 ### Compatibility
 
-- No media runtime, CLI, package API, or MCP behavior is removed by this
-  preparation change.
-- The v1.3.0 MCP documentation remains valid for the current local stdio
-  baseline until the roadmap migration milestone is implemented.
-- Existing CLI/domain/MCP surfaces remain available; the new `environment
-  check` and `environment install` flows are additive.
+- The typed media domains, CLI, package API, Skills, and result contracts remain
+  available; only the legacy alternate agent adapter surface is removed.
+- Historical release entries below remain an immutable record of prior v1
+  distribution surfaces and are not current execution instructions.
 
 ## 1.3.0 — 2026-09-20 — Milestone 18 — Pipeline & Preset System
 

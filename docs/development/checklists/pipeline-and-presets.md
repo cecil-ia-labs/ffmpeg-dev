@@ -45,8 +45,6 @@
 - [x] Inline `cecilia-ffmpeg pipeline --step ... run` parsing.
 - [x] Human output.
 - [x] JSON output through stable CLI envelope.
-- [x] MCP `media_run_pipeline`.
-- [x] Plugin MCP catalog updated to 10 tools.
 - [x] Dedicated `ffmpeg-pipelines` Skill.
 - [x] Skill catalog updated to 8 Skills.
 - [x] Public pipeline documentation.
@@ -55,7 +53,6 @@
 
 - [x] Reuse typed media domains.
 - [x] No pipeline child-process boundary.
-- [x] MCP does not call CLI actions.
 - [x] Existing transactional output safety preserved per step.
 - [x] Hardware-aware resize/conversion reuse v1.2 selector.
 - [x] Eager output preflight before expensive local file-producing work.
@@ -66,7 +63,6 @@
 
 - [x] Pipeline unit test sources.
 - [x] Pipeline FFmpeg integration test sources.
-- [x] MCP pipeline integration test source.
 - [x] `verify:pipeline`.
 - [x] `verify:output-preflight`.
 - [x] Pipeline layers wired into test-suite verification.
@@ -76,4 +72,3 @@
 - [x] Run `npm run validate`.
 - [x] Run `npm run validate:release`.
 - [ ] Run a real CLI pipeline smoke test.
-- [ ] Run `media_run_pipeline` through an MCP host or adapter smoke test.

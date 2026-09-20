@@ -5,7 +5,7 @@ Milestone 17 adds a typed hardware-encoder policy without creating a second FFmp
 ## Architecture
 
 ```text
-CLI / MCP / package API
+CLI / Skill scripts / package API
         |
         v
 hardware policy
@@ -86,8 +86,6 @@ Hardware policy is available through:
 - `convert batch`;
 - `video from-image`;
 - `video upscale` / `video restore`;
-- MCP `media_convert`;
-- MCP `media_restore`.
 
 ## Validation
 

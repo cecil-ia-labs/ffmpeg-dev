@@ -92,13 +92,6 @@ assert(hardwareContract?.softwareFallback === true, "Stable hardware contract mu
 const rootIndex = await text("src/index.ts");
 assert(rootIndex.includes('export * from "./hardware/index.js";'), "Package root must export the public hardware API.");
 
-const mcpSchemas = await text("src/mcp/schemas.ts");
-assert(mcpSchemas.includes("mcpHardwareShape"), "MCP schemas must expose the hardware policy.");
-assert(mcpSchemas.includes('"videotoolbox"'), "MCP hardware policy must include VideoToolbox.");
-
-const mcpAdapters = await text("src/mcp/adapters.ts");
-assert(mcpAdapters.includes("hardware: input.hardware"), "MCP adapters must pass hardware policy to supported domain operations.");
-
 const docs = await text("docs/hardware-acceleration.md");
 for (const token of ["--hardware auto", "NVENC", "NVDEC", "Quick Sync", "VAAPI", "VideoToolbox"]) {
   assert(docs.includes(token), "Hardware documentation is missing: " + token);

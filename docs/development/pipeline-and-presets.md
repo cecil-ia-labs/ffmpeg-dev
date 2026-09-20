@@ -56,10 +56,6 @@ Presets are local named arrays of pipeline steps. Expansion is recursive and det
 
 `output.codec` is an optional assertion. The validator also checks the final `convert.to` / `resize.to` against the final extension.
 
-## MCP
-
-`media_run_pipeline` is a sibling adapter to the CLI `run` command. Both call `loadPipelineFile()` and `executePipeline()` directly.
-
 ## Public API
 
 The package root exports the full `src/pipeline/` API, including parser, schemas, preset expansion, validation, and execution.

@@ -57,9 +57,15 @@ Use the highest-level surface available:
 4. use native FFmpeg only when the toolkit cannot represent the operation or
    the user explicitly requests native syntax.
 
-The target architecture is script/Skill-first and does not require a public
-MCP endpoint. Do not introduce a dynamic proxy, public HTTPS/mTLS gateway,
-containerized NAT, or a new network MCP surface to make a workflow run.
+The target architecture is script/Skill-first and does not require a network
+service or an alternate agent protocol to make a workflow run.
+
+## Associated scripts
+
+This behavioral Skill delegates executable work to the selected domain Skill's
+`scripts/run.mjs` entry point. Use `ffmpeg-onboarding/scripts/check.mjs` first
+when the host or required capability is unknown; do not create a generic shell
+runner in this routing layer.
 
 ## Request routing and associated scripts
 
@@ -135,8 +141,7 @@ state when the associated script supports it.
 Never overwrite a source or final artifact without explicit policy. Never
 embed arbitrary shell interpolation in declarative workflow files. Preserve
 step order, resolve relative paths from the workflow file, use transactional
-outputs, and do not report success from a dry-run. Do not require public MCP
-networking for local media work.
+outputs, and do not report success from a dry-run.
 
 ## References
 

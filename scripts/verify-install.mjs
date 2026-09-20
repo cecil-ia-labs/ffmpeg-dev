@@ -10,6 +10,10 @@ const npmBinary = process.platform === "win32" ? "npm.cmd" : "npm";
 const packageJson = JSON.parse(await readFile(path.join(root, "package.json"), "utf8"));
 const expectedVersion = packageJson.version;
 
+if (packageJson.bin?.["cecilia-ffmpeg-mcp"] !== undefined || packageJson.exports?.["./mcp"] !== undefined) {
+  throw new Error("Clean-install contract still exposes a removed MCP binary or package export.");
+}
+
 function run(command, args, cwd) {
   const result = spawnSync(command, args, {
     cwd,
@@ -86,18 +90,6 @@ try {
     ],
     installDir,
   );
-
-  if (packageJson.exports?.["./mcp"] !== undefined) {
-    run(
-      process.execPath,
-      [
-        "--input-type=module",
-        "-e",
-        'import("@cecilialabs/ffmpeg/mcp").then((m) => { if (typeof m.createMediaMcpServer !== "function") process.exit(3); })',
-      ],
-      installDir,
-    );
-  }
 
   console.log("Clean npm tarball installation: PASS");
   console.log("Platform: " + process.platform + "/" + process.arch);

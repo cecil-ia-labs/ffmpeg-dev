@@ -34,8 +34,6 @@
 - [x] `convert batch`.
 - [x] `video from-image`.
 - [x] `video upscale` / `video restore`.
-- [x] MCP `media_convert`.
-- [x] MCP `media_restore`.
 - [x] Human reports expose requested/resolved encoder and fallback state.
 - [x] Structured reports include hardware selection details.
 
@@ -44,11 +42,9 @@
 - [x] Replace ambiguous public `npx @cecilialabs/ffmpeg` examples.
 - [x] Make global `cecilia-ffmpeg` the canonical public example.
 - [x] Document explicit `npm exec --package ... -- cecilia-ffmpeg` fallback.
-- [x] Make all seven Skills MCP-aware.
-- [x] Prefer matching MCP tool before CLI when connected.
+- [x] Make all seven Skills script/CLI-aware.
 - [x] Preserve global CLI and npm-exec fallbacks.
-- [x] Do not invent MCP capabilities that are not exposed.
-- [x] Document hardware policy in public CLI/MCP/video/conversion docs.
+- [x] Document hardware policy in public CLI/video/conversion docs.
 
 ## Tests and release gates
 
@@ -76,4 +72,4 @@ Validated on Linux with an NVIDIA GeForce RTX 4060 (8 GB), NVIDIA driver 595.91.
 - Real `cecilia-ffmpeg convert file ... --hardware auto` resolves to `nvenc`.
 - The actual conversion command uses `-c:v h264_nvenc -preset p4 -cq 23 -b:v 0`.
 - Structured JSON reports `requested=auto`, `resolved=nvenc`, `runtimeVerified=true`, `fallback=false`, and a successful NVENC attempt.
-- Hardware probe failures retain a short FFmpeg diagnostic for CLI/MCP consumers.
+- Hardware probe failures retain a short FFmpeg diagnostic for CLI and Skill-script consumers.

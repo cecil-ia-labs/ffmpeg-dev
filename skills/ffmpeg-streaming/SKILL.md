@@ -37,13 +37,10 @@ For file sources, probe before streaming. For camera sources, use `--dry-run` to
 
 ## Toolkit surface selection
 
-Streaming is not exposed through the current MCP tool catalog.
-
-1. Use the global `cecilia-ffmpeg` binary for supported streaming and capture operations.
+1. Use the associated `scripts/run.mjs` entry point for supported streaming and capture operations.
 2. If the global binary is unavailable, use:
    `npm exec --yes --package=@cecilialabs/ffmpeg -- cecilia-ffmpeg <command>`.
-3. Do not invent an MCP streaming tool.
-4. Use native FFmpeg only for unsupported streaming features or an explicit native-command request.
+3. Use native FFmpeg only for unsupported streaming features or an explicit native-command request.
 
 ## Associated scripts
 

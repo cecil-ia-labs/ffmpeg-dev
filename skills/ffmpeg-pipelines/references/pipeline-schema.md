@@ -126,12 +126,6 @@ CLI:
 cecilia-ffmpeg pipeline pipeline.yaml run
 ```
 
-MCP:
-
-```text
-media_run_pipeline
-```
-
 Package API:
 
 ```ts
