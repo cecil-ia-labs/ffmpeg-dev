@@ -38,7 +38,7 @@ describe("pipeline preset execution", () => {
       "steps:",
       "  - trim:",
       "      start: 0",
-      "      duration: 1.5",
+      "      duration: 0.5",
       "  - preset: social-360p",
       "output:",
       "  path: preset-result.mp4",
