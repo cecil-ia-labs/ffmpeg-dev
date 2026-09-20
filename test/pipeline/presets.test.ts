@@ -83,15 +83,21 @@ describe("pipeline presets", () => {
   });
 
   it("rejects expanded pipelines beyond the supported step limit", () => {
-    const repeated = Array.from(
-      { length: MAX_EXPANDED_PIPELINE_STEPS + 1 },
-      () => "  - trim:\n      start: 1",
+    const repeatedPresetReferences = Array.from(
+      { length: Math.floor(MAX_EXPANDED_PIPELINE_STEPS / 2) + 1 },
+      () => "  - preset: pair",
     ).join("\n");
 
     const document = parsePipelineText([
       "input: input.mp4",
+      "presets:",
+      "  pair:",
+      "    - trim:",
+      "        start: 1",
+      "    - speed:",
+      "        factor: 1.1",
       "steps:",
-      repeated,
+      repeatedPresetReferences,
       "output:",
       "  path: final.mp4",
     ].join("\n"));
