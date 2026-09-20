@@ -12,8 +12,8 @@ command -v unzip >/dev/null 2>&1 || { echo "unzip is required to inspect the Ope
 
 VERSION="$(node -p "JSON.parse(require('fs').readFileSync('package.json','utf8')).version")"
 PACK_ROOT="$ROOT_DIR/.openai-pack"
-PLUGIN_ROOT="$PACK_ROOT/ffmpeg-media-toolkit"
-ARCHIVE="$PACK_ROOT/ffmpeg-media-toolkit-openai-v${VERSION}.zip"
+PLUGIN_ROOT="$PACK_ROOT/cecilialabs-ffmpeg"
+ARCHIVE="$PACK_ROOT/cecilialabs-ffmpeg-openai-v${VERSION}.zip"
 
 echo "Validating canonical plugin metadata..."
 npm run verify:plugin
@@ -49,7 +49,7 @@ const ui = openai?.interface;
 if (!ui) throw new Error("Missing extensions.com.openai.interface.");
 if (openai.apps !== undefined) throw new Error("Skills-only bundle must not declare extensions.com.openai.apps.");
 if (ui.screenshots !== undefined) throw new Error("Skills-only bundle must not declare interface.screenshots.");
-if (plugin.name !== "ffmpeg-media-toolkit") throw new Error(`Unexpected plugin name: ${plugin.name}.`);
+if (plugin.name !== "cecilialabs-ffmpeg") throw new Error(`Unexpected plugin name: ${plugin.name}.`);
 if (typeof plugin.version !== "string" || !/^\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?$/.test(plugin.version)) {
   throw new Error(`Plugin version is not valid semver: ${plugin.version}.`);
 }
@@ -57,7 +57,7 @@ NODE
 
 (
   cd "$PACK_ROOT"
-  zip -qr "$ARCHIVE" "ffmpeg-media-toolkit"
+  zip -qr "$ARCHIVE" "cecilialabs-ffmpeg"
 )
 
 BYTES="$(wc -c < "$ARCHIVE" | tr -d ' ')"
