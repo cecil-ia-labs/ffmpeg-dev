@@ -1,6 +1,6 @@
 # Changelog
 
-## 1.2.0 — Unreleased — Milestone 17 — Advanced Hardware Acceleration
+## 1.2.0 — 2026-09-20 — Milestone 17 — Advanced Hardware Acceleration
 
 ### Added
 

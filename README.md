@@ -1,6 +1,7 @@
 # FFmpeg Media Toolkit
 
-**Release status:** `1.2.0` — Advanced hardware acceleration implementation in progress  
+**Release status:** `1.2.0` — Advanced hardware acceleration
+
 **Version:** `1.2.0`
 
 **Cecil-IA Labs · FFmpeg Media Toolkit**
