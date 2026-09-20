@@ -1,7 +1,7 @@
 import { ToolkitRuntimeError } from "../core/errors.js";
 import { encodingArgs, resolveEncodingProfile } from "../video/encoding.js";
 import { FilterGraphBuilder } from "./filter-graph.js";
-import { deriveCompositionOutput, durationSeconds, executeComposition, inspectCompositionInput, requireVideoStreams, resolveCompositionFiles } from "./helpers.js";
+import { deriveCompositionOutput, durationSeconds, executeComposition, inspectCompositionInput, preflightCompositionOutput, requireVideoStreams, resolveCompositionFiles } from "./helpers.js";
 import { AUDIO_NORMALIZATION_FILTERS, resolveVideoNormalization, videoNormalizationFilters } from "./normalization.js";
 import { COMPOSITION_TRANSITIONS, xfadeFilter } from "./transitions.js";
 import type { CompositionAudioMode, CompositionReport, TransitionRequest } from "./types.js";
@@ -16,6 +16,9 @@ function resolvedAudioMode(requested: CompositionAudioMode | undefined, allHaveA
 
 export async function transitionMedia(leftInput: string, rightInput: string, request: TransitionRequest = {}): Promise<CompositionReport> {
   const sources = await resolveCompositionFiles([leftInput, rightInput], request);
+  const output = deriveCompositionOutput(sources[0]!, "transition", request.output, request.cwd, request.to ?? "mp4");
+  await preflightCompositionOutput(sources, output, request.overwrite ?? false);
+
   const media = await Promise.all(sources.map(async (source) => await inspectCompositionInput(source, request)));
   requireVideoStreams(media, sources);
 
@@ -51,7 +54,6 @@ export async function transitionMedia(leftInput: string, rightInput: string, req
     graph.addRaw(`[a0][a1]acrossfade=d=${duration}:c1=tri:c2=tri[aout]`);
   }
 
-  const output = deriveCompositionOutput(sources[0]!, "transition", request.output, request.cwd, request.to ?? "mp4");
   const encoding = resolveEncodingProfile(output);
   const args = [
     "-i", sources[0]!, "-i", sources[1]!,
