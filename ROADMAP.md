@@ -1232,7 +1232,7 @@ trimMedia()
 # Milestone 17 — Advanced Hardware Acceleration
 
 **Target:** `v1.2.0`  
-**Status:** 🚧 Implementation complete; validation pending
+**Status:** ✅ Implementation and validation complete; ready for release
 
 ### Targets
 
