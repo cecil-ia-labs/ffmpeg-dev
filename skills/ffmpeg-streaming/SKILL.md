@@ -37,7 +37,7 @@ For file sources, probe before streaming. For camera sources, use `--dry-run` to
 
 ## Toolkit surface selection
 
-Streaming is not exposed through the v1.2 MCP tool catalog.
+Streaming is not exposed through the current MCP tool catalog.
 
 1. Use the global `cecilia-ffmpeg` binary for supported streaming and capture operations.
 2. If the global binary is unavailable, use:

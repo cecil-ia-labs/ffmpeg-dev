@@ -66,4 +66,4 @@ Current MCP mappings relevant to the Skills include:
 - streaming: no dedicated MCP streaming tool;
 - pipelines: `media_run_pipeline`.
 
-The v1.2 hardware policy is available through `media_convert`, `media_restore`, and the corresponding CLI operations where documented.
+The current hardware policy, introduced in v1.2, is available through `media_convert`, `media_restore`, and the corresponding CLI operations where documented.

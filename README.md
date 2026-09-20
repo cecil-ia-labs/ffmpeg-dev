@@ -1,6 +1,6 @@
 # FFmpeg Media Toolkit
 
-**Release status:** `1.3.0` — Declarative pipelines & presets implementation complete; validation pending
+**Release status:** `1.3.0` — Released 2026-09-20 with declarative pipelines & presets
 
 **Version:** `1.3.0`
 
@@ -10,7 +10,7 @@ FFmpeg Media Toolkit is a professional, agent-friendly TypeScript CLI and plugin
 
 ## Identity
 
-- **Plugin:** `ffmpeg-media-toolkit`
+- **Plugin:** `cecilialabs-ffmpeg`
 - **npm package:** `@cecilialabs/ffmpeg`
 - **CLI binary:** `cecilia-ffmpeg`
 - **MCP binary:** `cecilia-ffmpeg-mcp`
@@ -21,7 +21,7 @@ FFmpeg Media Toolkit is a professional, agent-friendly TypeScript CLI and plugin
 
 ## Release status
 
-v1.2.0 is published with runtime-verified hardware acceleration. Milestone 18 advances the package to v1.3.0 with declarative YAML pipelines, reusable presets, a public `run <pipeline>` CLI command, `media_run_pipeline` MCP execution, and a dedicated pipeline-authoring Skill.
+v1.3.0 is published with declarative YAML pipelines, reusable presets, a public `run <pipeline>` CLI command, `media_run_pipeline` MCP execution, runtime-verified hardware acceleration, and a dedicated pipeline-authoring Skill.
 
 Implemented now:
 
@@ -286,13 +286,9 @@ See [test-suite and fixture architecture](docs/development/test-suite-and-fixtur
 
 ## Plugin package
 
-`plugin.json` remains conformant with the closed Agent Plugins 1.0.0 manifest schema. Portable metadata uses the standard fields, while product-specific branding/documentation metadata lives under:
+`plugin.json` remains conformant with the closed Agent Plugins 1.0.0 manifest schema. Portable metadata uses the standard fields. Cecil-IA Labs runtime/documentation metadata remains under `extensions.com.cecilialabs.ffmpeg`, while OpenAI directory presentation metadata is defined under `extensions.com.openai.interface`.
 
-```text
-extensions.com.cecilialabs.ffmpeg
-```
-
-Skills remain portable components discovered from the standard fixed `skills/` directory rather than a non-standard manifest field.
+Skills remain portable components discovered from the standard fixed `skills/` directory rather than a non-standard manifest field. The public OpenAI v1.3.0 submission is branded **Cecil-IA Labs FFmpeg** and is intentionally Skills-only because the bundled MCP server is a local stdio server rather than a public HTTPS MCP endpoint.
 
 Branding assets:
 
@@ -316,7 +312,7 @@ npm run verify:package
 
 `verify:package` executes `npm pack --dry-run --json --ignore-scripts` and confirms that runtime, skills, plugin metadata, docs, and assets are present while repository-only test/legacy/script paths are excluded.
 
-See [plugin packaging architecture](docs/development/plugin-packaging.md).
+See [plugin packaging architecture](docs/development/plugin-packaging.md) and [OpenAI plugin submission](docs/openai-plugin-submission.md).
 
 ## Professional skills
 

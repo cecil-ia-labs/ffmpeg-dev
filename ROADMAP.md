@@ -1282,7 +1282,7 @@ Implemented policy:
 # Milestone 18 — Pipeline & Preset System
 
 **Target:** `v1.3.0`  
-**Status:** 🚧 Implementation complete; validation pending
+**Status:** ✅ Released 2026-09-20
 
 ### Objective
 
