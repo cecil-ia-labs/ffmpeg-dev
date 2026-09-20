@@ -42,7 +42,11 @@ async function capabilitiesFor(options: SelectHardwareEncodingOptions) {
   const cached = capabilityCache.get(key);
   if (cached !== undefined) return cached;
 
-  const capabilities = await capabilitiesFor(options);
+  const capabilities = await inspectEnvironmentCapabilities({
+    ...(options.ffmpegPath !== undefined ? { ffmpegPath: options.ffmpegPath } : {}),
+    ...(options.verbose !== undefined ? { verbose: options.verbose } : {}),
+    ...(options.signal !== undefined ? { signal: options.signal } : {}),
+  });
   capabilityCache.set(key, capabilities);
   return capabilities;
 }
@@ -241,11 +245,7 @@ export async function selectHardwareEncoding(
     };
   }
 
-  const capabilities = await inspectEnvironmentCapabilities({
-    ...(options.ffmpegPath !== undefined ? { ffmpegPath: options.ffmpegPath } : {}),
-    ...(options.verbose !== undefined ? { verbose: options.verbose } : {}),
-    ...(options.signal !== undefined ? { signal: options.signal } : {}),
-  });
+  const capabilities = await capabilitiesFor(options);
   const compiledEncoders = new Set(capabilities.encoders.map((entry) => entry.name));
   const platform = options.platform ?? process.platform;
   const candidates = requested === "auto"
