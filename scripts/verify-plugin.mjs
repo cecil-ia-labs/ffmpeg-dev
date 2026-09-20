@@ -34,6 +34,7 @@ function localPaths(extension) {
     extension.documentation?.readme,
     extension.documentation?.skills,
     extension.documentation?.packaging,
+    extension.documentation?.mcp,
     ...(extension.skillCatalog ?? []).map((entry) => entry.path),
   ].filter((value) => typeof value === "string");
 }
