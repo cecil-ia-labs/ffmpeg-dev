@@ -34,7 +34,14 @@ const SOFTWARE_ENCODERS: Readonly<Record<HardwareVideoCodec, string>> = {
   vp9: "libvpx-vp9",
 };
 
-const probeCache = new Map<string, boolean>();
+interface RuntimeProbeResult {
+  usable: boolean;
+  diagnostic?: string;
+}
+
+export const HARDWARE_RUNTIME_PROBE_SIZE = "256x256" as const;
+
+const probeCache = new Map<string, RuntimeProbeResult>();
 const capabilityCache = new Map<string, Awaited<ReturnType<typeof inspectEnvironmentCapabilities>>>();
 
 async function capabilitiesFor(options: SelectHardwareEncodingOptions) {
@@ -143,13 +150,32 @@ export function hardwareVideoEncodingArgs(
   ];
 }
 
+function runtimeProbeDiagnostic(error: unknown): string | undefined {
+  if (error instanceof ToolkitRuntimeError) {
+    const stderr = error.details?.["stderrTail"];
+    if (typeof stderr === "string" && stderr.trim().length > 0) {
+      const lines = stderr
+        .split(/\r?\n/)
+        .map((line) => line.trim())
+        .filter((line) => line.length > 0);
+      const diagnostic = lines.find((line) =>
+        /initialize|error|failed|cannot|unsupported|invalid|driver|device/i.test(line),
+      ) ?? lines.at(-1);
+      if (diagnostic !== undefined) return diagnostic.slice(0, 600);
+    }
+    return error.message;
+  }
+  if (error instanceof Error) return error.message;
+  return undefined;
+}
+
 async function runtimeProbe(
   backend: HardwareEncoderBackend,
   codec: HardwareVideoCodec,
   encoder: string,
   device: string | undefined,
   options: SelectHardwareEncodingOptions,
-): Promise<boolean> {
+): Promise<RuntimeProbeResult> {
   const key = [
     options.ffmpegPath ?? "ffmpeg",
     options.cwd ?? process.cwd(),
@@ -178,7 +204,7 @@ async function runtimeProbe(
       "-loglevel", "error",
       ...hardwareGlobalArgs(pseudo),
       "-f", "lavfi",
-      "-i", "color=c=black:s=64x64:r=1",
+      "-i", `color=c=black:s=${HARDWARE_RUNTIME_PROBE_SIZE}:r=1`,
       ...(hardwareFilterSuffix(pseudo).length > 0 ? ["-vf", hardwareFilterSuffix(pseudo).join(",")] : []),
       "-frames:v", "1",
       "-an",
@@ -192,12 +218,18 @@ async function runtimeProbe(
       ...(options.signal !== undefined ? { signal: options.signal } : {}),
       maxCaptureBytes: 2 * 1024 * 1024,
     });
-    probeCache.set(key, true);
-    return true;
+    const result: RuntimeProbeResult = { usable: true };
+    probeCache.set(key, result);
+    return result;
   } catch (error: unknown) {
     if (error instanceof ToolkitRuntimeError && error.code === "E_ABORTED") throw error;
-    probeCache.set(key, false);
-    return false;
+    const diagnostic = runtimeProbeDiagnostic(error);
+    const result: RuntimeProbeResult = {
+      usable: false,
+      ...(diagnostic !== undefined ? { diagnostic } : {}),
+    };
+    probeCache.set(key, result);
+    return result;
   }
 }
 
@@ -311,15 +343,16 @@ export async function selectHardwareEncoding(
       };
     }
 
-    const runtimeUsable = await runtimeProbe(backend, codec, encoder, device, options);
+    const runtimeProbeResult = await runtimeProbe(backend, codec, encoder, device, options);
     attempts.push({
       backend,
       encoder,
       compiled: true,
-      runtimeUsable,
-      ...(!runtimeUsable ? { reason: "Runtime encoder probe failed." } : {}),
+      runtimeUsable: runtimeProbeResult.usable,
+      ...(!runtimeProbeResult.usable ? { reason: "Runtime encoder probe failed." } : {}),
+      ...(runtimeProbeResult.diagnostic !== undefined ? { diagnostic: runtimeProbeResult.diagnostic } : {}),
     });
-    if (!runtimeUsable) continue;
+    if (!runtimeProbeResult.usable) continue;
 
     return {
       requested,
