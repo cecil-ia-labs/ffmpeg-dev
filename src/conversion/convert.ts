@@ -42,14 +42,6 @@ export async function convertFile(input: string, request: ConvertFileRequest): P
   }
 
   const output = deriveConversionOutputPath(source, request.to, request.output, request.cwd);
-  const transaction = await prepareOutputTransaction({
-    source,
-    output,
-    ...(request.overwrite !== undefined ? { overwrite: request.overwrite } : {}),
-    ...(request.dryRun !== undefined ? { dryRun: request.dryRun } : {}),
-    ...(request.keepTemp !== undefined ? { keepTemp: request.keepTemp } : {}),
-  });
-
   const media = inputProbe.media;
   let hardware: HardwareEncodingSelection | undefined;
   if (request.to === "mp4" || request.to === "webm") {
@@ -73,6 +65,14 @@ export async function convertFile(input: string, request: ConvertFileRequest): P
   }
 
   const plan = buildConversionPlan(source, sourceFormat, request.to, media, request, hardware);
+  const transaction = await prepareOutputTransaction({
+    source,
+    output,
+    ...(request.overwrite !== undefined ? { overwrite: request.overwrite } : {}),
+    ...(request.dryRun !== undefined ? { dryRun: request.dryRun } : {}),
+    ...(request.keepTemp !== undefined ? { keepTemp: request.keepTemp } : {}),
+  });
+
   let execution;
   try {
     execution = await runFFmpeg([
