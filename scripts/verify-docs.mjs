@@ -29,7 +29,7 @@ const requiredDocs = [
 ];
 
 for (const relative of requiredDocs) {
-  assert((await stat(path.join(root, relative))).isFile(), `Missing Milestone 14 documentation: ${relative}`);
+  assert((await stat(path.join(root, relative))).isFile(), `Missing public documentation: ${relative}`);
   const content = await text(relative);
   assert(content.trim().length >= 300, `Documentation is unexpectedly thin: ${relative}`);
 }
@@ -63,10 +63,10 @@ for (const migration of migrationMap.migrations) {
   const filename = path.basename(migration.legacy);
   assert(migrationDoc.includes(filename), `Migration guide is missing legacy script: ${filename}`);
 }
-assert(migrationMap.migrations.length === 21, "Milestone 14 expects all 21 legacy migrations.");
+assert(migrationMap.migrations.length === 21, "Documentation coverage expects all 21 historical migrations.");
 
 const hardware = await text("docs/hardware-acceleration.md");
-assert(hardware.includes("not yet an automatic encoding policy"), "Hardware docs must not claim future Milestone 17 behavior as current.");
+assert(hardware.includes("not yet an automatic encoding policy"), "Hardware docs must not claim future automatic hardware selection as current.");
 
 const readme = await text("README.md");
 for (const relative of ["getting-started.md", "cli-reference.md", "migration-from-bash.md"]) {
@@ -77,4 +77,4 @@ const packageJson = JSON.parse(await text("package.json"));
 assert(packageJson.scripts?.["verify:docs"] === "node scripts/verify-docs.mjs", "Missing verify:docs package script.");
 assert(packageJson.scripts?.validate?.includes("verify:docs"), "validate must include verify:docs.");
 
-console.log(`Milestone 14 documentation: PASS (${requiredDocs.length} guides, ${publicLeaves.length} public leaf commands, ${migrationMap.migrations.length} legacy mappings)`);
+console.log(`Documentation coverage: PASS (${requiredDocs.length} guides, ${publicLeaves.length} public leaf commands, ${migrationMap.migrations.length} legacy mappings)`);

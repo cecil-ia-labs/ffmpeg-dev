@@ -53,4 +53,4 @@ for (const [layer, relative] of Object.entries(layers)) {
 const fixtureTest = await readFile(path.join(root, layers.ffmpegIntegration), "utf8");
 assert(fixtureTest.includes("probeMedia"), "Fixture regression must verify media properties with FFprobe-backed probeMedia.");
 
-console.log(`Milestone 12 test-suite structure: PASS (${mapped.length} historical migrations, ${manifest.fixtures.length} fixture recipes)`);
+console.log(`Test-suite structure: PASS (${mapped.length} historical migrations, ${manifest.fixtures.length} fixture recipes)`);

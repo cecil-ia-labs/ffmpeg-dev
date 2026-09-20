@@ -30,4 +30,4 @@ for (const command of ["compose concat", "compose transition", "compose slidesho
   assert(registry.includes(command), `action registry missing ${command}`);
 }
 
-console.log("Milestone 7 composition verification passed.");
+console.log("Composition verification passed.");
