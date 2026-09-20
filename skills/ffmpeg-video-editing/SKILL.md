@@ -38,6 +38,16 @@ Identify:
 2. Use `--dry-run` when the user wants to inspect the FFmpeg invocation first.
 3. Preserve audio unless the requested operation or explicit policy says otherwise.
 
+## Toolkit surface selection
+
+Use the highest-level toolkit surface available to the host:
+
+1. In an MCP-enabled host, prefer `media_trim` for range trimming and `media_restore` for upscale/restoration.
+2. For speed changes, still-image video creation, trim-start/trim-end convenience commands, or other supported video operations not exposed through MCP, use `cecilia-ffmpeg`.
+3. If the global binary is unavailable, use:
+   `npm exec --yes --package=@cecilialabs/ffmpeg -- cecilia-ffmpeg <command>`.
+4. Use native FFmpeg only for unsupported transforms or an explicit native-command request.
+
 ## Preferred toolkit commands
 
 ```bash
@@ -53,7 +63,7 @@ cecilia-ffmpeg video add-silence <video>
 
 Prefer the toolkit over constructing arbitrary shell commands for supported operations.
 
-For supported operations, prefer `npx @cecilialabs/ffmpeg ...` over constructing arbitrary FFmpeg shell commands.
+For supported operations, prefer the toolkit surface selected above over constructing arbitrary FFmpeg shell commands.
 
 ## Native FFmpeg fallback
 
