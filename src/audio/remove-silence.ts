@@ -1,5 +1,5 @@
 import { ToolkitRuntimeError } from "../core/errors.js";
-import { deriveOutputPath, resolveReadableFile } from "../media/io.js";
+import { deriveOutputPath, preflightOutputPath, resolveReadableFile } from "../media/io.js";
 import { audioEncodingArgs, resolveAudioEncodingProfile } from "./encoding.js";
 import { executeAudioTransform, formatNumber, inspectAudioInput, nonNegativeFinite, positiveFinite, requireAudio } from "./helpers.js";
 import type { AudioOperationReport, RemoveSilenceRequest } from "./types.js";
@@ -28,6 +28,9 @@ export function buildSilenceRemoveFilter(noiseDb: number, minDuration: number, k
 
 export async function removeSilence(input: string, request: RemoveSilenceRequest = {}): Promise<AudioOperationReport> {
   const source = await resolveReadableFile(input, request.cwd);
+  const output = deriveOutputPath(source, "desilenced", request.output, { ...(request.cwd !== undefined ? { cwd: request.cwd } : {}) });
+  await preflightOutputPath({ source, output, overwrite: request.overwrite ?? false });
+
   const media = await inspectAudioInput(source, request);
   requireAudio(media, source);
   if (media.video.length > 0) {
@@ -38,7 +41,6 @@ export async function removeSilence(input: string, request: RemoveSilenceRequest
   const noiseDb = validateNoiseDb(request.noiseDb ?? -30);
   const minDuration = positiveFinite(request.minDuration ?? 0.5, "minDuration");
   const keepSilence = nonNegativeFinite(request.keepSilence ?? 0.05, "keepSilence");
-  const output = deriveOutputPath(source, "desilenced", request.output, { ...(request.cwd !== undefined ? { cwd: request.cwd } : {}) });
   const encoding = resolveAudioEncodingProfile(output);
   const filter = buildSilenceRemoveFilter(noiseDb, minDuration, keepSilence);
 
