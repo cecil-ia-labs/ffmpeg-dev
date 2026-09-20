@@ -3,7 +3,7 @@ import path from "node:path";
 import { TemporaryWorkspace } from "../core/temp-files.js";
 import { ToolkitRuntimeError } from "../core/errors.js";
 import { resolveReadableFile } from "../media/io.js";
-import { trimVideoRange, trimVideoStart } from "../video/index.js";
+import { changeVideoSpeed, trimVideoRange, trimVideoStart } from "../video/index.js";
 import type { VideoOperationReport } from "../video/types.js";
 import type {
   LoadedPipeline,
@@ -62,6 +62,23 @@ function fromVideoReport(
     warnings: report.warnings,
     details: report.details,
   };
+}
+
+async function executeSpeed(
+  index: number,
+  input: string,
+  output: string,
+  step: Extract<PipelineStep, { speed: unknown }>,
+  runtime: PipelineRuntimeOptions,
+  final: boolean,
+): Promise<{ step: PipelineStepReport; media: VideoOperationReport["outputMedia"] }> {
+  const speed = step.speed;
+  const report = await changeVideoSpeed(input, {
+    ...commonRuntime(runtime, output, final),
+    factor: speed.factor,
+    ...(speed.audio !== undefined ? { audio: speed.audio } : {}),
+  });
+  return { step: fromVideoReport(index, "speed", report), media: report.outputMedia };
 }
 
 async function executeTrim(
@@ -150,13 +167,17 @@ export async function executePipeline(
         ? output
         : workspace.pathFor(`step-${String(index).padStart(3, "0")}-${kind}${intermediateExtension(current)}`);
 
-      if (kind !== "trim" || !("trim" in declaration)) {
+      const result = kind === "trim" && "trim" in declaration
+        ? await executeTrim(index, current, stepOutput, declaration, options, isFinal)
+        : kind === "speed" && "speed" in declaration
+          ? await executeSpeed(index, current, stepOutput, declaration, options, isFinal)
+          : undefined;
+
+      if (result === undefined) {
         throw new ToolkitRuntimeError("E_OPERATION_UNSUPPORTED", `Pipeline step "${kind}" is not executable in the current implementation phase.`, {
           details: { index, kind },
         });
       }
-
-      const result = await executeTrim(index, current, stepOutput, declaration, options, isFinal);
       reports.push(result.step);
       current = result.step.output;
       outputMedia = result.media;
