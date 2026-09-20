@@ -146,4 +146,58 @@ describe("pipeline output validation", () => {
     ].join("\n"))).toThrow(/schema/i);
   });
 
+
+  it("fails on an existing final output before executing any media step", async () => {
+    const workspace = await mkdtemp(path.join(os.tmpdir(), "cecilia-pipeline-existing-output-test-"));
+    try {
+      const input = path.join(workspace, "input.mp4");
+      const output = path.join(workspace, "already-exists.mp4");
+      await writeFile(input, "not valid media on purpose");
+      await writeFile(output, "existing output");
+      const pipelineFile = path.join(workspace, "pipeline.yaml");
+      await writeFile(pipelineFile, [
+        "input: input.mp4",
+        "steps:",
+        "  - trim:",
+        "      start: 1",
+        "output:",
+        "  path: already-exists.mp4",
+      ].join("\n"));
+
+      await expect(
+        executePipeline(await loadPipelineFile(pipelineFile)),
+      ).rejects.toMatchObject({ code: "E_IO_OUTPUT_EXISTS" });
+    } finally {
+      await rm(workspace, { recursive: true, force: true });
+    }
+  });
+
+  it("allows an existing final output during preflight when overwrite is explicit", async () => {
+    const workspace = await mkdtemp(path.join(os.tmpdir(), "cecilia-pipeline-overwrite-preflight-test-"));
+    try {
+      const input = path.join(workspace, "input.mp4");
+      const output = path.join(workspace, "already-exists.mp4");
+      await writeFile(input, "placeholder");
+      await writeFile(output, "existing output");
+      const pipelineFile = path.join(workspace, "pipeline.yaml");
+      await writeFile(pipelineFile, [
+        "input: input.mp4",
+        "steps:",
+        "  - trim:",
+        "      start: 1",
+        "output:",
+        "  path: already-exists.mp4",
+      ].join("\n"));
+
+      const report = await executePipeline(
+        await loadPipelineFile(pipelineFile),
+        { dryRun: true, overwrite: true },
+      );
+      expect(report.planned).toBe(true);
+      expect(report.output).toBe(output);
+    } finally {
+      await rm(workspace, { recursive: true, force: true });
+    }
+  });
+
 });
