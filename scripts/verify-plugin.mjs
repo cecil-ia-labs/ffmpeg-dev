@@ -55,7 +55,7 @@ const plugin = await readJson("plugin.json");
 const pkg = await readJson("package.json");
 
 assert(plugin.$schema === "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json", "Unexpected Agent Plugins schema");
-assert(plugin.name === "ffmpeg-media-toolkit", "Unexpected plugin name");
+assert(plugin.name === "cecilialabs-ffmpeg", "Unexpected plugin name");
 assert(plugin.version === pkg.version, "Plugin/package version mismatch");
 for (const key of Object.keys(plugin)) assert(allowedTopLevel.has(key), `Non-portable top-level plugin.json field: ${key}`);
 
@@ -66,7 +66,7 @@ assert(plugin.license === "MIT", "Plugin license must remain MIT");
 
 const extension = plugin.extensions?.["com.cecilialabs.ffmpeg"];
 assert(extension && typeof extension === "object", "Missing com.cecilialabs.ffmpeg extension metadata");
-assert(extension.branding?.displayName === "FFmpeg Media Toolkit", "Unexpected branding display name");
+assert(extension.branding?.displayName === "Cecil-IA Labs FFmpeg", "Unexpected branding display name");
 assert(extension.npm?.package === "@cecilialabs/ffmpeg", "Unexpected npm package identity");
 assert(extension.npm?.binary === "cecilia-ffmpeg", "Unexpected CLI binary identity");
 assert(extension.mcp?.binary === "cecilia-ffmpeg-mcp", "Unexpected MCP binary identity");
@@ -85,7 +85,7 @@ assert(openai && typeof openai === "object", "Missing com.openai extension metad
 assert(openai.apps === undefined, "Skills-only OpenAI submission must not declare apps");
 const openaiInterface = openai.interface;
 assert(openaiInterface && typeof openaiInterface === "object", "Missing OpenAI interface metadata");
-assert(openaiInterface.displayName === "FFmpeg Media Toolkit", "Unexpected OpenAI display name");
+assert(openaiInterface.displayName === "Cecil-IA Labs FFmpeg", "Unexpected OpenAI display name");
 assert(openaiInterface.displayName.length <= 30, "OpenAI display name exceeds 30 characters");
 assert(typeof openaiInterface.shortDescription === "string" && openaiInterface.shortDescription.length > 0, "Missing OpenAI short description");
 assert(openaiInterface.shortDescription.length <= 30, "OpenAI short description exceeds 30 characters");
