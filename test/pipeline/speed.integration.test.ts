@@ -32,7 +32,7 @@ describe("pipeline speed step", () => {
       "steps:",
       "  - trim:",
       "      start: 0",
-      "      duration: 1.5",
+      "      duration: 0.5",
       "  - speed:",
       "      factor: 1.5",
       "      audio: sync",
@@ -48,6 +48,6 @@ describe("pipeline speed step", () => {
     expect(report.steps.map((step) => step.kind)).toEqual(["trim", "speed"]);
     expect(report.steps.every((step) => step.planned === false)).toBe(true);
     expect(report.outputMedia?.video[0]?.codecName).toBe("h264");
-    expect(report.outputMedia?.format.durationSeconds).toBeLessThan(1.5);
+    expect(report.outputMedia?.format.durationSeconds).toBeLessThan(0.5);
   }, 120_000);
 });
