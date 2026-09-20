@@ -1,6 +1,10 @@
+import { mkdtemp, rm, writeFile } from "node:fs/promises";
+import os from "node:os";
+import path from "node:path";
+
 import { describe, expect, it } from "vitest";
 
-import { expandPipelineSteps, parsePipelineText, validatePipelineOutput } from "../../src/pipeline/index.js";
+import { executePipeline, expandPipelineSteps, loadPipelineFile, parsePipelineText, validatePipelineOutput } from "../../src/pipeline/index.js";
 
 describe("pipeline output validation", () => {
   it("accepts roadmap H.264 output semantics", () => {
@@ -53,4 +57,30 @@ describe("pipeline output validation", () => {
     ].join("\n"));
     expect(() => validatePipelineOutput(document, expandPipelineSteps(document), "/tmp/final.gif")).toThrow(/codec/i);
   });
+
+  it("resolves a relative runtime output override from the pipeline file directory", async () => {
+    const workspace = await mkdtemp(path.join(os.tmpdir(), "cecilia-pipeline-output-test-"));
+    try {
+      await writeFile(path.join(workspace, "input.mp4"), "placeholder");
+      const pipelineFile = path.join(workspace, "pipeline.yaml");
+      await writeFile(pipelineFile, [
+        "input: input.mp4",
+        "steps:",
+        "  - trim:",
+        "      start: 1",
+        "output:",
+        "  path: default.mp4",
+      ].join("\n"));
+
+      const report = await executePipeline(
+        await loadPipelineFile(pipelineFile),
+        { dryRun: true, output: "alternate.mp4" },
+      );
+
+      expect(report.output).toBe(path.join(workspace, "alternate.mp4"));
+    } finally {
+      await rm(workspace, { recursive: true, force: true });
+    }
+  });
+
 });
