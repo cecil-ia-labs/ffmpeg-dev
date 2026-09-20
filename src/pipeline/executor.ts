@@ -2,7 +2,10 @@ import path from "node:path";
 
 import { TemporaryWorkspace } from "../core/temp-files.js";
 import { ToolkitRuntimeError } from "../core/errors.js";
+import { normalizeMedia } from "../diagnostics/index.js";
+import type { RepairReport } from "../diagnostics/types.js";
 import { resolveReadableFile } from "../media/io.js";
+import type { MediaInfo } from "../types/contracts.js";
 import { changeVideoSpeed, trimVideoRange, trimVideoStart, upscaleVideo } from "../video/index.js";
 import type { VideoOperationReport } from "../video/types.js";
 import type {
@@ -69,6 +72,62 @@ function fromVideoReport(
   };
 }
 
+function fromRepairReport(
+  index: number,
+  kind: "normalize" | "audio",
+  report: RepairReport,
+): PipelineStepReport {
+  return {
+    index,
+    kind,
+    input: report.source,
+    output: report.output,
+    planned: report.planned,
+    invocation: report.invocation,
+    durationMs: report.execution.durationMs,
+    warnings: report.warnings,
+    details: report.details,
+  };
+}
+
+async function executeNormalize(
+  index: number,
+  input: string,
+  output: string,
+  step: Extract<PipelineStep, { normalize: unknown }>,
+  runtime: PipelineRuntimeOptions,
+  final: boolean,
+): Promise<{ step: PipelineStepReport; media: MediaInfo | undefined }> {
+  const normalize = step.normalize;
+  const report = await normalizeMedia(input, {
+    ...commonRuntime(runtime, output, final),
+    ...(normalize.width !== undefined ? { width: normalize.width } : {}),
+    ...(normalize.height !== undefined ? { height: normalize.height } : {}),
+    ...(normalize.fps !== undefined ? { fps: normalize.fps } : {}),
+    ...(normalize.pixelFormat !== undefined ? { pixelFormat: normalize.pixelFormat } : {}),
+    ...(normalize.sampleRate !== undefined ? { sampleRate: normalize.sampleRate } : {}),
+    ...(normalize.channels !== undefined ? { channels: normalize.channels } : {}),
+  });
+  return { step: fromRepairReport(index, "normalize", report), media: report.outputMedia };
+}
+
+async function executeAudioNormalize(
+  index: number,
+  input: string,
+  output: string,
+  step: Extract<PipelineStep, { audio: unknown }>,
+  runtime: PipelineRuntimeOptions,
+  final: boolean,
+): Promise<{ step: PipelineStepReport; media: MediaInfo | undefined }> {
+  const audio = step.audio;
+  const report = await normalizeMedia(input, {
+    ...commonRuntime(runtime, output, final),
+    ...(audio.sampleRate !== undefined ? { sampleRate: audio.sampleRate } : {}),
+    ...(audio.channels !== undefined ? { channels: audio.channels } : {}),
+  });
+  return { step: fromRepairReport(index, "audio", report), media: report.outputMedia };
+}
+
 async function executeResize(
   index: number,
   input: string,
@@ -76,7 +135,7 @@ async function executeResize(
   step: Extract<PipelineStep, { resize: unknown }>,
   runtime: PipelineRuntimeOptions,
   final: boolean,
-): Promise<{ step: PipelineStepReport; media: VideoOperationReport["outputMedia"] }> {
+): Promise<{ step: PipelineStepReport; media: MediaInfo | undefined }> {
   const resize = step.resize;
   const report = await upscaleVideo(input, {
     ...commonRuntime(runtime, output, final),
@@ -103,7 +162,7 @@ async function executeSpeed(
   step: Extract<PipelineStep, { speed: unknown }>,
   runtime: PipelineRuntimeOptions,
   final: boolean,
-): Promise<{ step: PipelineStepReport; media: VideoOperationReport["outputMedia"] }> {
+): Promise<{ step: PipelineStepReport; media: MediaInfo | undefined }> {
   const speed = step.speed;
   const report = await changeVideoSpeed(input, {
     ...commonRuntime(runtime, output, final),
@@ -120,7 +179,7 @@ async function executeTrim(
   step: Extract<PipelineStep, { trim: unknown }>,
   runtime: PipelineRuntimeOptions,
   final: boolean,
-): Promise<{ step: PipelineStepReport; media: VideoOperationReport["outputMedia"] }> {
+): Promise<{ step: PipelineStepReport; media: MediaInfo | undefined }> {
   const trim = step.trim;
   const common = commonRuntime(runtime, output, final);
   const report = trim.end !== undefined || trim.duration !== undefined
@@ -187,7 +246,7 @@ export async function executePipeline(
 
   try {
     let current = source;
-    let outputMedia: VideoOperationReport["outputMedia"];
+    let outputMedia: MediaInfo | undefined;
     const reports: PipelineStepReport[] = [];
 
     for (let offset = 0; offset < loaded.document.steps.length; offset += 1) {
@@ -205,7 +264,11 @@ export async function executePipeline(
           ? await executeSpeed(index, current, stepOutput, declaration, options, isFinal)
           : kind === "resize" && "resize" in declaration
             ? await executeResize(index, current, stepOutput, declaration, options, isFinal)
-            : undefined;
+            : kind === "normalize" && "normalize" in declaration
+              ? await executeNormalize(index, current, stepOutput, declaration, options, isFinal)
+              : kind === "audio" && "audio" in declaration
+                ? await executeAudioNormalize(index, current, stepOutput, declaration, options, isFinal)
+                : undefined;
 
       if (result === undefined) {
         throw new ToolkitRuntimeError("E_OPERATION_UNSUPPORTED", `Pipeline step "${kind}" is not executable in the current implementation phase.`, {
