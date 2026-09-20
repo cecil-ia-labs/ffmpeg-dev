@@ -28,6 +28,7 @@ for (const relative of [
   "src/pipeline/validation.ts",
   "src/pipeline/executor.ts",
   "src/pipeline/index.ts",
+  "specs/pipeline.schema.json",
   "test/pipeline/trim.integration.test.ts",
   "test/pipeline/speed.integration.test.ts",
   "test/pipeline/resize.integration.test.ts",
@@ -42,6 +43,11 @@ for (const relative of [
 ]) {
   assert((await stat(path.join(root, relative))).isFile(), "Missing pipeline artifact: " + relative);
 }
+
+const publicSchema = JSON.parse(await text("specs/pipeline.schema.json"));
+assert(publicSchema.$schema === "https://json-schema.org/draft/2020-12/schema", "Pipeline public schema must use JSON Schema 2020-12.");
+assert(publicSchema.properties?.version?.const === 1, "Pipeline public schema must freeze version 1.");
+assert(publicSchema.$defs?.step?.oneOf?.length === 7, "Pipeline public schema must expose all seven declarative step forms.");
 
 const schema = await text("src/pipeline/schema.ts");
 for (const token of ["trim:", "speed:", "resize:", "normalize:", "audio:", "convert:", "preset:"]) {

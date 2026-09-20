@@ -1,0 +1,414 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://cecilialabs.com/schemas/ffmpeg-media-toolkit/pipeline-v1.schema.json",
+  "title": "Cecil-IA Labs FFmpeg Media Toolkit Pipeline v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "input",
+    "steps",
+    "output"
+  ],
+  "properties": {
+    "version": {
+      "const": 1,
+      "default": 1
+    },
+    "input": {
+      "type": "string",
+      "minLength": 1
+    },
+    "presets": {
+      "type": "object",
+      "default": {},
+      "additionalProperties": {
+        "type": "array",
+        "minItems": 1,
+        "items": {
+          "$ref": "#/$defs/step"
+        }
+      }
+    },
+    "steps": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/step"
+      }
+    },
+    "output": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "path"
+      ],
+      "properties": {
+        "path": {
+          "type": "string",
+          "minLength": 1
+        },
+        "codec": {
+          "enum": [
+            "h264",
+            "vp9"
+          ]
+        }
+      }
+    }
+  },
+  "$defs": {
+    "hardware": {
+      "enum": [
+        "software",
+        "auto",
+        "nvenc",
+        "qsv",
+        "vaapi",
+        "videotoolbox"
+      ]
+    },
+    "fit": {
+      "enum": [
+        "contain",
+        "cover",
+        "stretch"
+      ]
+    },
+    "conversionFormat": {
+      "enum": [
+        "mp4",
+        "webm",
+        "gif",
+        "webp",
+        "png",
+        "jpeg",
+        "wav",
+        "mp3",
+        "aac",
+        "m4a",
+        "flac",
+        "opus",
+        "ogg"
+      ]
+    },
+    "trim": {
+      "type": "object",
+      "additionalProperties": false,
+      "minProperties": 1,
+      "properties": {
+        "start": {
+          "type": "number",
+          "minimum": 0
+        },
+        "end": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        },
+        "duration": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        },
+        "mode": {
+          "enum": [
+            "auto",
+            "copy",
+            "accurate"
+          ]
+        }
+      },
+      "allOf": [
+        {
+          "not": {
+            "required": [
+              "end",
+              "duration"
+            ]
+          }
+        }
+      ]
+    },
+    "speed": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "factor"
+      ],
+      "properties": {
+        "factor": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        },
+        "audio": {
+          "enum": [
+            "sync",
+            "drop"
+          ]
+        }
+      }
+    },
+    "resize": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "width",
+        "height"
+      ],
+      "properties": {
+        "width": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "height": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "fit": {
+          "$ref": "#/$defs/fit"
+        },
+        "background": {
+          "type": "string",
+          "minLength": 1
+        },
+        "profile": {
+          "enum": [
+            "balanced",
+            "aggressive"
+          ]
+        },
+        "fps": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        },
+        "crf": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 63
+        },
+        "preset": {
+          "type": "string",
+          "minLength": 1
+        },
+        "to": {
+          "enum": [
+            "mp4",
+            "webm"
+          ]
+        },
+        "hardware": {
+          "$ref": "#/$defs/hardware"
+        },
+        "hardwareDevice": {
+          "type": "string",
+          "minLength": 1
+        },
+        "hardwareStrict": {
+          "type": "boolean"
+        }
+      }
+    },
+    "normalize": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "width": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "height": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "fps": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        },
+        "pixelFormat": {
+          "type": "string",
+          "minLength": 1
+        },
+        "sampleRate": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "channels": {
+          "type": "integer",
+          "minimum": 1
+        }
+      }
+    },
+    "audioNormalize": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "normalize"
+      ],
+      "properties": {
+        "normalize": {
+          "const": true
+        },
+        "sampleRate": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "channels": {
+          "type": "integer",
+          "minimum": 1
+        }
+      }
+    },
+    "convert": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "to"
+      ],
+      "properties": {
+        "to": {
+          "$ref": "#/$defs/conversionFormat"
+        },
+        "fps": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        },
+        "width": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "height": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "fit": {
+          "$ref": "#/$defs/fit"
+        },
+        "background": {
+          "type": "string",
+          "minLength": 1
+        },
+        "quality": {
+          "type": "number"
+        },
+        "maxColors": {
+          "type": "integer",
+          "minimum": 2,
+          "maximum": 256
+        },
+        "loop": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "audioBitrate": {
+          "type": "string",
+          "minLength": 1
+        },
+        "sampleRate": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "channels": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "hardware": {
+          "$ref": "#/$defs/hardware"
+        },
+        "hardwareDevice": {
+          "type": "string",
+          "minLength": 1
+        },
+        "hardwareStrict": {
+          "type": "boolean"
+        }
+      }
+    },
+    "step": {
+      "oneOf": [
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "trim"
+          ],
+          "properties": {
+            "trim": {
+              "$ref": "#/$defs/trim"
+            }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "speed"
+          ],
+          "properties": {
+            "speed": {
+              "$ref": "#/$defs/speed"
+            }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "resize"
+          ],
+          "properties": {
+            "resize": {
+              "$ref": "#/$defs/resize"
+            }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "normalize"
+          ],
+          "properties": {
+            "normalize": {
+              "$ref": "#/$defs/normalize"
+            }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "audio"
+          ],
+          "properties": {
+            "audio": {
+              "$ref": "#/$defs/audioNormalize"
+            }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "convert"
+          ],
+          "properties": {
+            "convert": {
+              "$ref": "#/$defs/convert"
+            }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "preset"
+          ],
+          "properties": {
+            "preset": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        }
+      ]
+    }
+  }
+}

@@ -234,3 +234,14 @@ MCP-enabled hosts can execute the same file with `media_run_pipeline`:
 ```
 
 The MCP adapter calls `loadPipelineFile()` and `executePipeline()` directly; it does not invoke the CLI.
+
+
+## Machine-readable schema
+
+The npm package includes the JSON Schema representation of pipeline v1:
+
+```text
+specs/pipeline.schema.json
+```
+
+Editors, agents, and external validators may use this schema for static authoring assistance. Runtime execution still validates the parsed YAML with the canonical Zod schema before expanding presets or touching media.
