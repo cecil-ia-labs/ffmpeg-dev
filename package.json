@@ -73,7 +73,7 @@
     "url": "git+https://github.com/cecil-ia-labs/ffmpeg-dev.git"
   },
   "scripts": {
-    "build": "tsc -p tsconfig.build.json",
+    "build": "tsc -p tsconfig.build.json && node scripts/prepare-binaries.mjs",
     "check": "tsc -p tsconfig.json --noEmit",
     "cli": "tsx src/cli.ts",
     "codex:cleanup": "node scripts/codex-environment-cleanup.mjs",
