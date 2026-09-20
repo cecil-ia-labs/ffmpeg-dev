@@ -10,6 +10,9 @@
 - `validate:release` as the publication-quality superset of the regular validation chain.
 - Public npm `publishConfig.access` for the scoped package.
 - Stable release architecture and completion checklist.
+- Clean npm tarball installation verifier covering the generated executable and package import.
+- Cross-platform CLI/doctor smoke runner.
+- GitHub Actions v1 release matrix with full Linux validation plus macOS/Windows smoke coverage.
 
 ### Release policy
 
