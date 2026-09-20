@@ -33,6 +33,10 @@
 - [x] Preset cycle detection.
 - [x] Output codec/extension validation.
 - [x] Final convert/resize target validation.
+- [x] Final FFprobe codec assertion validation.
+- [x] Reject final-output/original-input collisions.
+- [x] Bound preset nesting to 32 levels.
+- [x] Bound expanded pipelines to 256 concrete steps.
 
 ## Public surfaces
 
