@@ -14,3 +14,4 @@ legacy/
 .npm-pack/
 .codex/
 publish-npm.sh
+.openai-pack/
