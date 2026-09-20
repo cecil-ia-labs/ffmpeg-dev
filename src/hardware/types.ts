@@ -19,6 +19,8 @@ export interface HardwareEncodingAttempt {
   compiled: boolean;
   runtimeUsable?: boolean;
   reason?: string;
+  /** Short FFmpeg/runtime diagnostic retained when a hardware probe fails. */
+  diagnostic?: string;
 }
 
 export interface HardwareEncodingSelection {
