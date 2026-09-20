@@ -80,6 +80,14 @@ export interface PipelinePresetStep {
   preset: string;
 }
 
+export type ConcretePipelineStep =
+  | PipelineTrimStep
+  | PipelineSpeedStep
+  | PipelineResizeStep
+  | PipelineNormalizeStep
+  | PipelineAudioStep
+  | PipelineConvertStep;
+
 export type PipelineStep =
   | PipelineTrimStep
   | PipelineSpeedStep

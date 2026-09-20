@@ -10,7 +10,9 @@ import { resolveReadableFile } from "../media/io.js";
 import type { MediaInfo } from "../types/contracts.js";
 import { changeVideoSpeed, trimVideoRange, trimVideoStart, upscaleVideo } from "../video/index.js";
 import type { VideoOperationReport } from "../video/types.js";
+import { expandPipelineSteps } from "./presets.js";
 import type {
+  ConcretePipelineStep,
   LoadedPipeline,
   PipelineReport,
   PipelineRuntimeOptions,
@@ -248,15 +250,15 @@ async function executeTrim(
   return { step: fromVideoReport(index, "trim", report), media: report.outputMedia };
 }
 
-function plannedReport(loaded: LoadedPipeline, source: string, output: string): PipelineReport {
-  const steps: PipelineStepReport[] = loaded.document.steps.map((step, offset) => {
-    const kind = stepKind(step);
-    if (kind === "preset") {
-      throw new ToolkitRuntimeError("E_OPERATION_UNSUPPORTED", "Preset expansion is not executable until the preset phase is resolved.", {
-        details: { index: offset + 1 },
-      });
-    }
-    const isFinal = offset === loaded.document.steps.length - 1;
+function plannedReport(
+  loaded: LoadedPipeline,
+  source: string,
+  output: string,
+  declarations: readonly ConcretePipelineStep[],
+): PipelineReport {
+  const steps: PipelineStepReport[] = declarations.map((step, offset) => {
+    const kind = stepKind(step) as PipelineStepKind;
+    const isFinal = offset === declarations.length - 1;
     return {
       index: offset + 1,
       kind,
@@ -287,7 +289,9 @@ export async function executePipeline(
   const source = await resolveReadableFile(input, loaded.baseDirectory);
   const output = finalOutput(loaded);
 
-  if (options.dryRun) return plannedReport(loaded, source, output);
+  const declarations = expandPipelineSteps(loaded.document);
+
+  if (options.dryRun) return plannedReport(loaded, source, output, declarations);
 
   const workspace = await TemporaryWorkspace.create({
     prefix: "cecilia-ffmpeg-pipeline-",
@@ -299,11 +303,11 @@ export async function executePipeline(
     let outputMedia: MediaInfo | undefined;
     const reports: PipelineStepReport[] = [];
 
-    for (let offset = 0; offset < loaded.document.steps.length; offset += 1) {
-      const declaration = loaded.document.steps[offset] as PipelineStep;
+    for (let offset = 0; offset < declarations.length; offset += 1) {
+      const declaration = declarations[offset] as ConcretePipelineStep;
       const kind = stepKind(declaration);
       const index = offset + 1;
-      const isFinal = offset === loaded.document.steps.length - 1;
+      const isFinal = offset === declarations.length - 1;
       const stepOutput = isFinal
         ? output
         : workspace.pathFor(`step-${String(index).padStart(3, "0")}-${kind}${intermediateExtension(current, declaration)}`);
