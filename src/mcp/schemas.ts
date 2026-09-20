@@ -132,6 +132,11 @@ export const mediaRestoreInputSchema = z.object({
   ...mcpRuntimeShape,
 }).strict();
 
+export const mediaRunPipelineInputSchema = z.object({
+  pipeline: nonEmpty,
+  ...mcpRuntimeShape,
+}).strict();
+
 export const mediaDiagnoseInputSchema = z.object({
   input: nonEmpty,
   deep: z.boolean().default(false),
@@ -152,4 +157,5 @@ export type MediaAttachAudioInput = z.infer<typeof mediaAttachAudioInputSchema>;
 export type MediaRemoveSilenceInput = z.infer<typeof mediaRemoveSilenceInputSchema>;
 export type MediaGenerateSilenceInput = z.infer<typeof mediaGenerateSilenceInputSchema>;
 export type MediaRestoreInput = z.infer<typeof mediaRestoreInputSchema>;
+export type MediaRunPipelineInput = z.infer<typeof mediaRunPipelineInputSchema>;
 export type MediaDiagnoseInput = z.infer<typeof mediaDiagnoseInputSchema>;

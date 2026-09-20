@@ -86,6 +86,7 @@
           "media_remove_silence",
           "media_generate_silence",
           "media_restore",
+          "media_run_pipeline",
           "media_diagnose"
         ]
       },
