@@ -1,7 +1,7 @@
 # FFmpeg Media Toolkit
 
-**Release status:** `1.0.0` — Stable CLI release in progress  
-**Version:** `1.0.0`
+**Release status:** `1.1.0` — MCP Server implementation in progress  
+**Version:** `1.1.0`
 
 **Cecil-IA Labs · FFmpeg Media Toolkit**
 
@@ -12,6 +12,7 @@ FFmpeg Media Toolkit is a professional, agent-friendly TypeScript CLI and plugin
 - **Plugin:** `ffmpeg-media-toolkit`
 - **npm package:** `@cecilialabs/ffmpeg`
 - **CLI binary:** `cecilia-ffmpeg`
+- **MCP binary:** `cecilia-ffmpeg-mcp`
 - **Language:** TypeScript
 - **Runtime:** Node.js `>=22`
 - **Media engine:** FFmpeg + FFprobe
@@ -19,7 +20,7 @@ FFmpeg Media Toolkit is a professional, agent-friendly TypeScript CLI and plugin
 
 ## Release status
 
-The pre-v1 documentation, migration, installation, and publication hardening phases are complete. Milestone 15 freezes the stable v1.0.0 release contract and focuses on compatibility, clean installation, cross-platform smoke validation, packaging, and final publication evidence. New media capabilities are deferred unless required to resolve a release blocker.
+v1.0.0 is published on npm and released on GitHub. Milestone 16 advances the package to v1.1.0 by adding a Model Context Protocol server as a sibling adapter to the stable CLI. The MCP layer reuses the existing typed media-domain functions and core FFmpeg/FFprobe runtime rather than duplicating media implementations.
 
 Implemented now:
 
@@ -77,6 +78,7 @@ The public CLI is now documented without requiring source inspection:
 - [Getting started](docs/getting-started.md)
 - [Installation](docs/installation.md)
 - [CLI reference](docs/cli-reference.md)
+- [MCP server](docs/mcp.md)
 - [Video](docs/video.md)
 - [Image](docs/image.md)
 - [Audio](docs/audio.md)
@@ -96,6 +98,51 @@ Interactive human output now uses semantic icons in addition to the stronger col
 ```
 
 `--no-color` disables ANSI color and friendly semantic icons. `--json` remains machine-only and non-TTY progress remains plain.
+
+## MCP server
+
+v1.1.0 adds a dedicated stdio MCP server without changing the stable CLI command grammar.
+
+```bash
+npm install -g @cecilialabs/ffmpeg
+cecilia-ffmpeg-mcp
+```
+
+A host can launch it directly:
+
+```json
+{
+  "mcpServers": {
+    "cecilia-ffmpeg": {
+      "command": "cecilia-ffmpeg-mcp"
+    }
+  }
+}
+```
+
+The initial tool catalog is:
+
+```text
+media_probe
+media_trim
+media_convert
+media_concat
+media_attach_audio
+media_remove_silence
+media_generate_silence
+media_restore
+media_diagnose
+```
+
+The adapter path is deliberately:
+
+```text
+MCP tool -> src/mcp/adapters.ts -> existing typed domain function -> core FFmpeg/FFprobe runtime
+```
+
+It does not invoke CLI actions and does not create another child-process execution boundary. MCP cancellation is propagated into the same `AbortSignal` used by domain operations. Successful tool calls return both JSON text content and MCP structured content.
+
+See [MCP server](docs/mcp.md) and [MCP architecture](docs/development/mcp-server.md).
 
 ## Media capability expansion
 
