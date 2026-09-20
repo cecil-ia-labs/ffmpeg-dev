@@ -15,6 +15,7 @@ async function text(relative) {
 const required = [
   "src/cli/output-preflight.ts",
   "test/cli/output-preflight.test.ts",
+  "test/media/output-preflight.test.ts",
 ];
 for (const relative of required) {
   assert((await stat(path.join(root, relative))).isFile(), "Missing output-preflight artifact: " + relative);
