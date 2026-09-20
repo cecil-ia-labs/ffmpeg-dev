@@ -1117,26 +1117,26 @@ The CLI is directly callable after standard global npm installation, local linki
 # Milestone 15 — Stable CLI Release
 
 **Target:** `v1.0.0`  
-**Status:** 🚧 In progress
+**Status:** ✅ Released 2026-09-20
 
 ### Release requirements
 
 The stable release contract is frozen in `specs/stable-release-contract.json`. Milestone 15 is a stabilization and portability pass; new media capabilities are out of scope unless required to fix a v1 release blocker.
 
-- [ ] CLI architecture stable.
-- [ ] Core APIs stable.
-- [ ] Original script set migrated.
-- [ ] All Skills validated.
-- [ ] Plugin installable.
-- [ ] Linux fully tested.
-- [ ] macOS smoke-tested.
-- [ ] Windows strategy documented/tested.
-- [ ] npm package ready.
-- [ ] Clean installation tested.
-- [ ] Full README completed.
-- [ ] Changelog generated.
-- [ ] Semantic versioning established.
-- [ ] No dependency on `.sh` implementations.
+- [x] CLI architecture stable.
+- [x] Core APIs stable.
+- [x] Original script set migrated.
+- [x] All Skills validated.
+- [x] Plugin installable.
+- [x] Linux fully tested.
+- [ ] macOS smoke-tested. *(deferred after v1.0.0 release; automated smoke workflow is present)*
+- [ ] Windows strategy documented/tested. *(strategy documented; runtime smoke deferred)*
+- [x] npm package ready.
+- [x] Clean installation tested.
+- [x] Full README completed.
+- [x] Changelog generated.
+- [x] Semantic versioning established.
+- [x] No dependency on `.sh` implementations.
 
 ### Stable user experience
 
@@ -1163,7 +1163,8 @@ npx @cecilialabs/ffmpeg compose concat ./clips \
 
 # Milestone 16 — MCP Server
 
-**Target:** `v1.1.0`
+**Target:** `v1.1.0`  
+**Status:** 🚧 Implementation complete; validation pending
 
 ### Objective
 
@@ -1183,7 +1184,7 @@ Architecture:
                         Codex
 ```
 
-### Potential MCP tools
+### Implemented MCP tools
 
 ```text
 media_probe
@@ -1196,6 +1197,16 @@ media_generate_silence
 media_restore
 media_diagnose
 ```
+
+### Implementation
+
+- dedicated `cecilia-ffmpeg-mcp` stdio executable;
+- reusable `@cecilialabs/ffmpeg/mcp` package export;
+- stable MCP TypeScript SDK v2;
+- protocol-aware `serveStdio()`;
+- Zod input schemas and structured content;
+- cancellation propagation through the existing `AbortSignal`;
+- MCP-specific verifier plus unit/integration coverage.
 
 ### Rule
 
