@@ -11,6 +11,7 @@ import type { MediaInfo } from "../types/contracts.js";
 import { changeVideoSpeed, trimVideoRange, trimVideoStart, upscaleVideo } from "../video/index.js";
 import type { VideoOperationReport } from "../video/types.js";
 import { expandPipelineSteps } from "./presets.js";
+import { validatePipelineOutput } from "./validation.js";
 import type {
   ConcretePipelineStep,
   LoadedPipeline,
@@ -290,6 +291,7 @@ export async function executePipeline(
   const output = finalOutput(loaded, options.output);
 
   const declarations = expandPipelineSteps(loaded.document);
+  validatePipelineOutput(loaded.document, declarations, output);
 
   if (options.dryRun) return plannedReport(loaded, source, output, declarations);
 
