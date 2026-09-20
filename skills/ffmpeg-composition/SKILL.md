@@ -37,6 +37,16 @@ Identify:
 
 Probe every media input. Before transitions, normalize properties that FFmpeg requires to agree: scale/pad geometry, PTS, FPS, pixel format, and time base.
 
+## Toolkit surface selection
+
+Use the highest-level toolkit surface available to the host:
+
+1. In an MCP-enabled host, prefer `media_concat` when the request is concatenation covered by that tool.
+2. For explicit transition commands, slideshows, or composition capabilities not exposed through MCP, use `cecilia-ffmpeg`.
+3. If the global binary is unavailable, use:
+   `npm exec --yes --package=@cecilialabs/ffmpeg -- cecilia-ffmpeg <command>`.
+4. Use native FFmpeg only for unsupported composition graphs or an explicit native-command request.
+
 ## Preferred toolkit commands
 
 ```bash
@@ -47,7 +57,7 @@ cecilia-ffmpeg compose slideshow <directory>
 cecilia-ffmpeg compose slideshow <directory> --style sequence --transition zoomin
 ```
 
-For supported operations, prefer `npx @cecilialabs/ffmpeg ...` over constructing arbitrary FFmpeg shell commands.
+For supported operations, prefer the toolkit surface selected above over constructing arbitrary FFmpeg shell commands.
 
 ## Native FFmpeg fallback
 
