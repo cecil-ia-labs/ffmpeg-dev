@@ -1,5 +1,5 @@
 import { spawnSync } from "node:child_process";
-import { readFile } from "node:fs/promises";
+import { readFile, stat } from "node:fs/promises";
 import { fileURLToPath } from "node:url";
 
 const root = fileURLToPath(new URL("../", import.meta.url));
@@ -59,6 +59,15 @@ if (!cliEntry.startsWith("#!/usr/bin/env node")) {
 const mcpEntry = await readFile(new URL("../dist/mcp.js", import.meta.url), "utf8");
 if (!mcpEntry.startsWith("#!/usr/bin/env node")) {
   throw new Error("dist/mcp.js must preserve the Node shebang for the MCP npm bin executable.");
+}
+
+if (process.platform !== "win32") {
+  for (const relative of ["../dist/cli.js", "../dist/mcp.js"]) {
+    const mode = (await stat(new URL(relative, import.meta.url))).mode & 0o777;
+    if ((mode & 0o111) === 0) {
+      throw new Error(relative.replace("../", "") + " must be executable for npm link/global binary use.");
+    }
+  }
 }
 
 const deniedPrefixes = ["legacy/", "test/", "scripts/", "node_modules/"];
