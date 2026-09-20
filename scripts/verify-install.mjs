@@ -7,7 +7,6 @@ import { fileURLToPath } from "node:url";
 
 const root = fileURLToPath(new URL("../", import.meta.url));
 const npmBinary = process.platform === "win32" ? "npm.cmd" : "npm";
-const binName = process.platform === "win32" ? "cecilia-ffmpeg.cmd" : "cecilia-ffmpeg";
 
 function run(command, args, cwd) {
   const result = spawnSync(command, args, {
@@ -58,14 +57,20 @@ try {
     installDir,
   );
 
-  const executable = path.join(installDir, "node_modules", ".bin", binName);
-
-  const version = run(executable, ["--version"], installDir).stdout.trim();
+  const version = run(
+    npmBinary,
+    ["exec", "--offline", "--", "cecilia-ffmpeg", "--version"],
+    installDir,
+  ).stdout.trim();
   if (version !== "1.0.0") {
     throw new Error("Clean-install CLI version mismatch: expected 1.0.0, received " + version);
   }
 
-  const help = run(executable, ["--help"], installDir).stdout;
+  const help = run(
+    npmBinary,
+    ["exec", "--offline", "--", "cecilia-ffmpeg", "--help"],
+    installDir,
+  ).stdout;
   for (const token of ["Cecil-IA Labs · FFmpeg Media Toolkit", "cecilia-ffmpeg", "doctor", "video", "audio", "image"]) {
     if (!help.includes(token)) throw new Error("Clean-install help is missing: " + token);
   }
