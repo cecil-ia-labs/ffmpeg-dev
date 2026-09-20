@@ -123,6 +123,7 @@ Progress can look like:
 
 - no shell interpolation;
 - no implicit overwrite;
+- eager output-path preflight before expensive file-producing work;
 - transactional file output;
 - `--dry-run` for plan inspection;
 - FFprobe validation after file-producing operations;
