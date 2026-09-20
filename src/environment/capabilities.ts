@@ -45,37 +45,45 @@ function backend(
   name: HardwareBackendCapability["name"],
   methods: readonly string[],
   encoders: readonly EncoderDecoderCapability[],
+  decoders: readonly EncoderDecoderCapability[],
   acceleratorMethods: readonly string[],
-  suffixes: readonly string[],
+  encoderSuffixes: readonly string[],
+  decoderSuffixes: readonly string[] = [],
 ): HardwareBackendCapability {
   const compiledEncoders = encoders
     .map((entry) => entry.name)
-    .filter((encoderName) => suffixes.some((suffix) => encoderName.endsWith(suffix)));
+    .filter((encoderName) => encoderSuffixes.some((suffix) => encoderName.endsWith(suffix)));
+  const compiledDecoders = decoders
+    .map((entry) => entry.name)
+    .filter((decoderName) => decoderSuffixes.some((suffix) => decoderName.endsWith(suffix)));
   const reportedMethods = acceleratorMethods.filter((method) => methods.includes(method));
   return {
     name,
-    compiled: compiledEncoders.length > 0 || (name !== "nvenc" && reportedMethods.length > 0),
+    compiled: compiledEncoders.length > 0 || compiledDecoders.length > 0 || reportedMethods.length > 0,
     reportedMethods,
     encoders: compiledEncoders,
+    decoders: compiledDecoders,
   };
 }
 
 function hardwareInfo(
   methods: string[],
   encoders: EncoderDecoderCapability[],
+  decoders: EncoderDecoderCapability[],
 ): HardwareAccelerationInfo {
   return {
     methods,
     backends: [
-      backend("nvenc", methods, encoders, ["cuda"], ["_nvenc"]),
-      backend("vaapi", methods, encoders, ["vaapi"], ["_vaapi"]),
-      backend("qsv", methods, encoders, ["qsv"], ["_qsv"]),
-      backend("videotoolbox", methods, encoders, ["videotoolbox"], ["_videotoolbox"]),
-      backend("cuda", methods, encoders, ["cuda"], ["_cuda"]),
-      backend("vulkan", methods, encoders, ["vulkan"], ["_vulkan"]),
-      backend("opencl", methods, encoders, ["opencl"], ["_opencl"]),
+      backend("nvenc", methods, encoders, decoders, ["cuda"], ["_nvenc"]),
+      backend("nvdec", methods, encoders, decoders, ["cuda"], [], ["_cuvid"]),
+      backend("vaapi", methods, encoders, decoders, ["vaapi"], ["_vaapi"], ["_vaapi"]),
+      backend("qsv", methods, encoders, decoders, ["qsv"], ["_qsv"], ["_qsv"]),
+      backend("videotoolbox", methods, encoders, decoders, ["videotoolbox"], ["_videotoolbox"], ["_videotoolbox"]),
+      backend("cuda", methods, encoders, decoders, ["cuda"], ["_cuda"], ["_cuda", "_cuvid"]),
+      backend("vulkan", methods, encoders, decoders, ["vulkan"], ["_vulkan"], ["_vulkan"]),
+      backend("opencl", methods, encoders, decoders, ["opencl"], ["_opencl"], ["_opencl"]),
     ],
-    note: "Reported/compiled support does not prove that compatible hardware, drivers, or device permissions are available at runtime.",
+    note: "Reported/compiled support is only capability discovery. Milestone 17 encoder selection also performs a runtime probe before choosing a hardware encoder.",
   };
 }
 
@@ -117,7 +125,7 @@ export async function inspectEnvironmentCapabilities(
     encoders,
     decoders,
     filters,
-    hardwareAcceleration: hardwareInfo(methods, encoders),
+    hardwareAcceleration: hardwareInfo(methods, encoders, decoders),
     plannedCommands: planned
       ? executions.map((execution) => renderCommandForDisplay({ binary: execution.binary, args: execution.args }))
       : [],
