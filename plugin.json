@@ -36,7 +36,8 @@
       "documentation": {
         "readme": "./README.md",
         "skills": "./skills/README.md",
-        "packaging": "./docs/development/plugin-packaging.md"
+        "packaging": "./docs/development/plugin-packaging.md",
+        "mcp": "./docs/mcp.md"
       },
       "skillCatalog": [
         {
