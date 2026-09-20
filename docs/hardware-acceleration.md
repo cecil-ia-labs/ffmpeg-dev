@@ -71,7 +71,7 @@ Unsupported codec/backend pairs are skipped before runtime probing.
 
 Environment capability discovery is not treated as proof that hardware is usable.
 
-Before an actual accelerated encode, the toolkit executes a small FFmpeg runtime probe with the selected encoder. This catches common failures such as:
+Before an actual accelerated encode, the toolkit executes a small FFmpeg runtime probe with the selected encoder. The probe uses a 256x256 synthetic frame rather than an ultra-small frame because some hardware encoders, including NVENC generations, enforce minimum frame dimensions. This catches common failures such as:
 
 - missing GPU/device;
 - missing or incompatible driver;
@@ -79,7 +79,7 @@ Before an actual accelerated encode, the toolkit executes a small FFmpeg runtime
 - an encoder compiled into FFmpeg but unusable on the current machine;
 - unsupported runtime device setup.
 
-Successful runtime probes are cached for the current process.
+Successful and failed runtime probes are cached for the current process. Failed attempts retain a short FFmpeg diagnostic in structured hardware metadata so CLI/MCP callers can distinguish missing drivers/devices from encoder-parameter failures.
 
 If no requested backend is usable, the default behavior is to fall back to the software encoder and emit:
 
