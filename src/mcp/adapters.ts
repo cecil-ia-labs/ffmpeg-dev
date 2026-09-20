@@ -71,9 +71,6 @@ export async function mediaConcatAdapter(input: MediaConcatInput, signal: AbortS
     ...(input.fit !== undefined ? { fit: input.fit } : {}),
     ...(input.background !== undefined ? { background: input.background } : {}),
     to: input.to,
-    hardware: input.hardware,
-    ...(input.hardware_device !== undefined ? { hardwareDevice: input.hardware_device } : {}),
-    hardwareStrict: input.hardware_strict,
   });
 }
 
@@ -117,6 +114,9 @@ export async function mediaRestoreAdapter(input: MediaRestoreInput, signal: Abor
     ...(input.fit !== undefined ? { fit: input.fit } : {}),
     ...(input.background !== undefined ? { background: input.background } : {}),
     to: input.to,
+    hardware: input.hardware,
+    ...(input.hardware_device !== undefined ? { hardwareDevice: input.hardware_device } : {}),
+    hardwareStrict: input.hardware_strict,
   });
 }
 
