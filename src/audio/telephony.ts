@@ -1,7 +1,7 @@
 import path from "node:path";
 
 import { ToolkitRuntimeError } from "../core/errors.js";
-import { resolveReadableFile } from "../media/io.js";
+import { preflightOutputPath, resolveReadableFile } from "../media/io.js";
 import { executeAudioTransform, inspectAudioInput, integerInRange, requireAudio } from "./helpers.js";
 import type { AudioOperationReport, TelephonyCodec, TelephonyContainer, TelephonyRequest } from "./types.js";
 
@@ -118,10 +118,12 @@ function resolveOutput(source: string, profile: TelephonyProfile, explicitOutput
 
 export async function transcodeTelephony(input: string, request: TelephonyRequest): Promise<AudioOperationReport> {
   const source = await resolveReadableFile(input, request.cwd);
-  const media = await inspectAudioInput(source, request);
-  requireAudio(media, source);
   const profile = resolveTelephonyProfile(request);
   const output = resolveOutput(source, profile, request.output, request.cwd);
+  await preflightOutputPath({ source, output, overwrite: request.overwrite ?? false });
+
+  const media = await inspectAudioInput(source, request);
+  requireAudio(media, source);
 
   if (request.container !== undefined && request.output !== undefined) {
     const actualExtension = path.extname(output).toLowerCase();
