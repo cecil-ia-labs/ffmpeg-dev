@@ -15,6 +15,7 @@ const requiredSections = [
   "## Do not use",
   "## Required inputs",
   "## Preflight",
+  "## Toolkit surface selection",
   "## Preferred toolkit commands",
   "## Native FFmpeg fallback",
   "## Output expectations",
@@ -32,6 +33,18 @@ for (const skill of skills) {
   }
   if (!text.includes("@cecilialabs/ffmpeg")) {
     throw new Error(`${skill}: missing toolkit preference`);
+  }
+  if (!text.includes("cecilia-ffmpeg")) {
+    throw new Error(`${skill}: missing canonical global CLI fallback`);
+  }
+  if (!text.includes("npm exec --yes --package=@cecilialabs/ffmpeg -- cecilia-ffmpeg")) {
+    throw new Error(`${skill}: missing explicit package-runner fallback`);
+  }
+  if (!text.includes("MCP") && !text.includes("media_")) {
+    throw new Error(`${skill}: missing MCP-aware surface policy`);
+  }
+  if (text.includes("npx @cecilialabs/ffmpeg")) {
+    throw new Error(`${skill}: ambiguous multi-bin npx shorthand is not allowed`);
   }
   for (const section of requiredSections) {
     if (!text.includes(section)) throw new Error(`${skill}: missing section ${section}`);
