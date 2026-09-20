@@ -1,7 +1,7 @@
 # MCP Server — Completion Checklist
 
 **Target:** `v1.1.0`  
-**Status:** 🚧 Implementation complete; local dependency/install validation pending
+**Status:** ✅ Released to npm as v1.1.0 on 2026-09-20
 
 ## Architecture
 
@@ -18,8 +18,8 @@
 - [x] Add `@cecilialabs/ffmpeg/mcp` package export.
 - [x] Add MCP metadata to the plugin extension.
 - [x] Advance package/plugin/source release line to `1.1.0`.
-- [ ] Regenerate `package-lock.json` with the MCP SDK dependency.
-- [ ] Confirm packed npm artifact contains MCP executable and declarations.
+- [x] Regenerate `package-lock.json` with the MCP SDK dependency.
+- [x] Confirm packed npm artifact contains MCP executable and declarations.
 
 ## Tools
 
@@ -48,10 +48,10 @@
 - [x] Add FFmpeg-backed MCP adapter integration coverage.
 - [x] Add `verify:mcp`.
 - [x] Add MCP tests to test-suite structure verification.
-- [ ] Run `npm install` to update dependency lock.
-- [ ] Run `npm run validate`.
-- [ ] Run `npm run verify:mcp`.
-- [ ] Run MCP server through an MCP host/Inspector smoke test.
+- [x] Run `npm install` to update dependency lock.
+- [x] Run `npm run validate`.
+- [x] Run `npm run verify:mcp`.
+- [x] Run MCP server through an MCP host/Inspector smoke test.
 
 ## Documentation
 
@@ -59,3 +59,12 @@
 - [x] MCP architecture document.
 - [x] MCP tool catalog and safety semantics.
 - [x] Document stdio-only v1.1 transport scope.
+
+
+## Validation evidence
+
+- `npm run validate:release` passed after the MCP TypeScript fixes.
+- VS Code started the stdio server and reported `Discovered 9 tools`.
+- A real `media_probe` call inspected a WebM/VP9 file successfully.
+- A real `media_convert` call produced MP4 and was followed by MCP `media_probe` validation.
+- `@cecilialabs/ffmpeg@1.1.0` was published successfully with both `cecilia-ffmpeg` and `cecilia-ffmpeg-mcp` binaries.
