@@ -24,6 +24,9 @@ try {
 const files = new Set((report[0]?.files ?? []).map((entry) => String(entry.path).replace(/^package\//, "")));
 const required = [
   "dist/cli.js",
+  "dist/mcp.js",
+  "dist/mcp/index.js",
+  "dist/mcp/index.d.ts",
   "dist/index.js",
   "dist/index.d.ts",
   "plugin.json",
@@ -52,6 +55,10 @@ for (const file of required) {
 const cliEntry = await readFile(new URL("../dist/cli.js", import.meta.url), "utf8");
 if (!cliEntry.startsWith("#!/usr/bin/env node")) {
   throw new Error("dist/cli.js must preserve the Node shebang for the npm bin executable.");
+}
+const mcpEntry = await readFile(new URL("../dist/mcp.js", import.meta.url), "utf8");
+if (!mcpEntry.startsWith("#!/usr/bin/env node")) {
+  throw new Error("dist/mcp.js must preserve the Node shebang for the MCP npm bin executable.");
 }
 
 const deniedPrefixes = ["legacy/", "test/", "scripts/", "node_modules/"];
