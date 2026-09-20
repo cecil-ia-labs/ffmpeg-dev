@@ -316,9 +316,16 @@ skills/
 Each skill contains a portable `SKILL.md` plus a `references/` directory. The core execution policy is:
 
 ```text
-supported operation → prefer @cecilialabs/ffmpeg
-unsupported operation or explicit request → native FFmpeg fallback
+matching connected MCP tool
+        ↓ unavailable / not exposed
+cecilia-ffmpeg
+        ↓ unavailable
+npm exec --yes --package=@cecilialabs/ffmpeg -- cecilia-ffmpeg ...
+        ↓ unsupported / explicit native request
+native FFmpeg
 ```
+
+Skills never invent MCP tools that are not part of the current server catalog.
 
 Run the skill contract verifier with:
 
@@ -383,13 +390,13 @@ npm run codex:cleanup
 ```text
 User / Agent
     ↓
-CLI action / package API
+CLI / MCP / package API
     ↓
-video/*, audio/*, conversion/*, composition/*, or diagnostics/* domain service
+typed media-domain services
     ↓
-FFprobe preflight
+optional hardware encoder policy
     ↓
-FFmpeg typed argument construction
+FFprobe preflight + FFmpeg argument construction
     ↓
 runFFmpeg() / runFFprobe()
     ↓
