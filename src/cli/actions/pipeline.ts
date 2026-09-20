@@ -1,5 +1,3 @@
-import path from "node:path";
-
 import type { Command } from "commander";
 
 import { ToolkitRuntimeError } from "../../core/errors.js";
@@ -34,7 +32,7 @@ export async function runPipelineAction(command: Command, positional: readonly u
   await executeAction(command, async (global, signal) => {
     const loaded = await loadPipelineFile(pipelineAt(positional));
     const report = await executePipeline(loaded, {
-      ...(global.output !== undefined ? { output: path.resolve(global.output) } : {}),
+      ...(global.output !== undefined ? { output: global.output } : {}),
       overwrite: global.overwrite,
       dryRun: global.dryRun,
       verbose: global.verbose,
