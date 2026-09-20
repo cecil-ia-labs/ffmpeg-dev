@@ -13,6 +13,11 @@ export interface CommandSpec {
  */
 export const COMMAND_TREE: readonly CommandSpec[] = [
   {
+    syntax: "run <pipeline>",
+    description: "Execute a declarative YAML media pipeline.",
+    implementationMilestone: 18,
+  },
+  {
     syntax: "doctor",
     description: "Inspect the FFmpeg/FFprobe runtime and media capabilities.",
     implementationMilestone: 3,

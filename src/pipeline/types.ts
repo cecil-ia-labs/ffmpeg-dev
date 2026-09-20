@@ -119,6 +119,8 @@ export interface LoadedPipeline {
 import type { MediaInfo, ToolkitWarning } from "../types/contracts.js";
 
 export interface PipelineRuntimeOptions {
+  /** Optional final-output override. Relative paths resolve from the pipeline file directory. */
+  output?: string;
   overwrite?: boolean;
   dryRun?: boolean;
   verbose?: boolean;

@@ -7,3 +7,4 @@ export * from "./diagnostics.js";
 export * from "./streaming.js";
 export * from "./image.js";
 export * from "./shared.js";
+export * from "./pipeline.js";

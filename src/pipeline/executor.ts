@@ -31,8 +31,8 @@ function stepKind(step: PipelineStep): PipelineStepKind | "preset" {
   return "preset";
 }
 
-function finalOutput(loaded: LoadedPipeline): string {
-  const target = loaded.document.output.path;
+function finalOutput(loaded: LoadedPipeline, override?: string): string {
+  const target = override ?? loaded.document.output.path;
   return path.isAbsolute(target) ? path.normalize(target) : path.resolve(loaded.baseDirectory, target);
 }
 
@@ -287,7 +287,7 @@ export async function executePipeline(
 ): Promise<PipelineReport> {
   const input = loaded.document.input;
   const source = await resolveReadableFile(input, loaded.baseDirectory);
-  const output = finalOutput(loaded);
+  const output = finalOutput(loaded, options.output);
 
   const declarations = expandPipelineSteps(loaded.document);
 
