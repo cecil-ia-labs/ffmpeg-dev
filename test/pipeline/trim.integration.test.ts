@@ -31,7 +31,7 @@ describe("pipeline trim step", () => {
       "steps:",
       "  - trim:",
       "      start: 0",
-      "      duration: 1",
+      "      duration: 0.5",
       "output:",
       "  path: trimmed.mp4",
       "  codec: h264",
