@@ -61,6 +61,20 @@ The target architecture is script/Skill-first and does not require a public
 MCP endpoint. Do not introduce a dynamic proxy, public HTTPS/mTLS gateway,
 containerized NAT, or a new network MCP surface to make a workflow run.
 
+## Request routing and associated scripts
+
+Start from the user's desired outcome and route to the smallest domain Skill;
+use this Skill to coordinate multiple domains, not to hide a generic shell
+runner. The canonical request examples are in
+[`../../docs/skill-request-examples.md`](../../docs/skill-request-examples.md).
+
+When execution is available, invoke the selected domain's `scripts/run.mjs`
+with one JSON request. Use `ffmpeg-onboarding/scripts/check.mjs` and
+`ffmpeg-environment/scripts/inspect.mjs` before routing when the host or
+required capability is unknown. Use `ffmpeg-pipelines/scripts/run.mjs` only
+for ordered/reusable workflows or when the user explicitly asks for a
+pipeline.
+
 ## Preferred toolkit commands
 
 For a single operation, use the matching documented cecilia-ffmpeg command,

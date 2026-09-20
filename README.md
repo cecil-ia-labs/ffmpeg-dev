@@ -18,9 +18,9 @@ and media runtime.
 
 The project will not add a public MCP endpoint, dynamic-domain proxy,
 HTTPS/mTLS gateway, containerized NAT arrangement, or a parallel network MCP
-surface. This preparation entry adds the onboarding/workflow Skills and
-documents the boundary; runtime MCP removal and CLI migration remain roadmap
-work and are not claimed as implemented here.
+surface. Milestone 22 now ships the associated JSON-in/JSON-out scripts for
+environment inspection and domain operations; runtime MCP removal and CLI
+migration remain roadmap work and are not claimed as implemented here.
 
 See ROADMAP.md for the migration milestones.
 
@@ -109,6 +109,7 @@ The public CLI is now documented without requiring source inspection:
 - [Hardware acceleration status](docs/hardware-acceleration.md)
 - [Platform support & release validation](docs/platform-support.md)
 - [Migration from Bash](docs/migration-from-bash.md)
+- [Skill request examples](docs/skill-request-examples.md)
 
 Interactive human output now uses semantic icons in addition to the stronger color palette:
 
@@ -346,7 +347,10 @@ skills/
 └── ffmpeg-pipelines/
 ```
 
-Each skill contains a portable `SKILL.md` plus a `references/` directory. The core execution policy is:
+Each skill contains a portable `SKILL.md` plus a `references/` directory. The
+environment and domain Skills also expose typed `scripts/*.mjs` entry points;
+the canonical request set is in [Skill request examples](docs/skill-request-examples.md).
+The core execution policy is:
 
 ```text
 matching connected MCP tool
@@ -359,9 +363,10 @@ native FFmpeg
 ```
 
 Skills never invent MCP tools that are not part of the current server catalog.
-The planned migration changes this domain policy to associated scripts or the
-canonical CLI; until then, the current v1.3 adapter policy above remains
-accurate.
+When execution is available, Milestone 22 associated scripts call the typed
+domain runtime directly and return the shared result envelope. The current
+v1.3 MCP preference remains accurate until the removal milestone changes the
+supported runtime surface.
 
 Run the skill contract verifier with:
 

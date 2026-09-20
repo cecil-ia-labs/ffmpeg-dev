@@ -47,6 +47,18 @@ Use the highest-level toolkit surface available to the host:
    `npm exec --yes --package=@cecilialabs/ffmpeg -- cecilia-ffmpeg <command>`.
 4. Use native FFmpeg only for unsupported composition graphs or an explicit native-command request.
 
+## Associated scripts
+
+Use `scripts/run.mjs` with `input.action` `concat`, `transition`, or
+`slideshow`. Provide ordered `inputs` for concatenation, `left`/`right` for a
+transition, or `directory` for a slideshow. The script preserves the typed
+normalization and audio policy before execution.
+
+```bash
+printf '%s\n' '{"context":"codex","input":{"action":"concat","inputs":["one.mp4","two.mp4"],"transition":"fade","output":"joined.mp4"}}' \
+  | node skills/ffmpeg-composition/scripts/run.mjs
+```
+
 ## Preferred toolkit commands
 
 ```bash

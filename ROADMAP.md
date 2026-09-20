@@ -4,7 +4,7 @@
 > **Package:** @cecilialabs/ffmpeg
 > **Current baseline:** v1.3.0 on master
 > **Next architectural line:** planned v2.0.0
-> **Status:** Milestone 21 implementation in progress; later milestones remain planned
+> **Status:** Milestone 22 implementation in progress; later milestones remain planned
 
 This roadmap replaces the previous MCP-centered evolution plan. It records the
 post-v1.3 architectural decision and defines the work required to make the
@@ -463,6 +463,8 @@ npm run validate:release
 - update pipeline Skill and examples.
 
 ### Milestone 22 — Behavioral and operational Skills
+
+**Status:** implemented on `codex/milestone-22-behavioral-skills`
 
 - add ffmpeg-onboarding;
 - add ffmpeg-workflow;

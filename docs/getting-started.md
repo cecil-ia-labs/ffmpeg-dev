@@ -156,3 +156,4 @@ Progress can look like:
 - [Diagnostics](diagnostics.md)
 - [Batch Processing](batch-processing.md)
 - [Migration from Bash](migration-from-bash.md)
+- [Skill request examples](skill-request-examples.md)

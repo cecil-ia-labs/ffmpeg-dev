@@ -65,6 +65,18 @@ Use the highest-level toolkit surface available:
 4. Use individual toolkit tools/commands only when the user explicitly wants step-by-step execution rather than a pipeline.
 5. Use native FFmpeg only when pipeline v1 cannot represent the required operation or the user explicitly requests native syntax.
 
+## Associated scripts
+
+Use `scripts/run.mjs` with `input.action` `validate`, `print`, or `run` and
+provide `input.file`, `input.text`, or a parsed `input.document`. It uses the
+same schema, preset expansion, output preflight, and execution functions as
+the namespaced CLI. Set top-level `dryRun: true` for a plan without mutation.
+
+```bash
+printf '%s\n' '{"context":"codex","input":{"action":"validate","file":"pipeline.yaml"}}' \
+  | node skills/ffmpeg-pipelines/scripts/run.mjs
+```
+
 ## Preferred toolkit commands
 
 Validate a file:

@@ -20,6 +20,18 @@ filesystem access; never infer it from the product name alone.
 4. Probe the specific media input only if it is available and relevant.
 5. Record whether each result was observed, supplied by the user, or inferred.
 
+For an executable host, the canonical first step is the associated read-only
+script:
+
+```bash
+printf '%s\n' '{"context":"codex","input":{}}' \
+  | node skills/ffmpeg-onboarding/scripts/check.mjs
+```
+
+Then route capability/media inspection to
+`skills/ffmpeg-environment/scripts/inspect.mjs`; do not make the onboarding
+script a generic media-operation proxy.
+
 ## Installation boundary
 
 An installation plan should name the package manager, target scope, expected
