@@ -10,7 +10,7 @@ FFmpeg Media Toolkit is a professional, agent-friendly TypeScript CLI and plugin
 
 ## Identity
 
-- **Plugin:** `ffmpeg-media-toolkit`
+- **Plugin:** `cecilialabs-ffmpeg`
 - **npm package:** `@cecilialabs/ffmpeg`
 - **CLI binary:** `cecilia-ffmpeg`
 - **MCP binary:** `cecilia-ffmpeg-mcp`
@@ -288,7 +288,7 @@ See [test-suite and fixture architecture](docs/development/test-suite-and-fixtur
 
 `plugin.json` remains conformant with the closed Agent Plugins 1.0.0 manifest schema. Portable metadata uses the standard fields. Cecil-IA Labs runtime/documentation metadata remains under `extensions.com.cecilialabs.ffmpeg`, while OpenAI directory presentation metadata is defined under `extensions.com.openai.interface`.
 
-Skills remain portable components discovered from the standard fixed `skills/` directory rather than a non-standard manifest field. The public OpenAI v1.3.0 submission is intentionally Skills-only because the bundled MCP server is a local stdio server rather than a public HTTPS MCP endpoint.
+Skills remain portable components discovered from the standard fixed `skills/` directory rather than a non-standard manifest field. The public OpenAI v1.3.0 submission is branded **Cecil-IA Labs FFmpeg** and is intentionally Skills-only because the bundled MCP server is a local stdio server rather than a public HTTPS MCP endpoint.
 
 Branding assets:
 
