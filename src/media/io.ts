@@ -68,20 +68,13 @@ async function pathExists(target: string): Promise<boolean> {
   }
 }
 
-export interface OutputTransaction {
-  output: string;
-  temporary: string;
-  finalize(): Promise<void>;
-  cleanup(): Promise<void>;
-}
-
-export async function prepareOutputTransaction(options: {
+export interface OutputPathPreflightOptions {
   source?: string;
   output: string;
   overwrite?: boolean;
-  dryRun?: boolean;
-  keepTemp?: boolean;
-}): Promise<OutputTransaction> {
+}
+
+export async function preflightOutputPath(options: OutputPathPreflightOptions): Promise<string> {
   const output = path.resolve(options.output);
   if (options.source && path.resolve(options.source) === output) {
     throw new ToolkitRuntimeError("E_CONFIG_CONFLICT", "Input and output paths must be different.", {
@@ -98,11 +91,35 @@ export async function prepareOutputTransaction(options: {
       cause: error,
     });
   }
+
   if (exists && !options.overwrite) {
     throw new ToolkitRuntimeError("E_IO_OUTPUT_EXISTS", `Output already exists: ${output}`, {
       details: { output, hint: "Pass --overwrite to replace it." },
     });
   }
+
+  return output;
+}
+
+export interface OutputTransaction {
+  output: string;
+  temporary: string;
+  finalize(): Promise<void>;
+  cleanup(): Promise<void>;
+}
+
+export async function prepareOutputTransaction(options: {
+  source?: string;
+  output: string;
+  overwrite?: boolean;
+  dryRun?: boolean;
+  keepTemp?: boolean;
+}): Promise<OutputTransaction> {
+  const output = await preflightOutputPath({
+    ...(options.source !== undefined ? { source: options.source } : {}),
+    output: options.output,
+    ...(options.overwrite !== undefined ? { overwrite: options.overwrite } : {}),
+  });
 
   const parsed = path.parse(output);
   const temporary = path.join(
