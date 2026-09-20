@@ -6,7 +6,7 @@ import { convertFile, targetExtension } from "../conversion/index.js";
 import type { ConversionReport } from "../conversion/types.js";
 import { normalizeMedia } from "../diagnostics/index.js";
 import type { RepairReport } from "../diagnostics/types.js";
-import { resolveReadableFile } from "../media/io.js";
+import { preflightOutputPath, resolveReadableFile } from "../media/io.js";
 import type { MediaInfo } from "../types/contracts.js";
 import { changeVideoSpeed, trimVideoRange, trimVideoStart, upscaleVideo } from "../video/index.js";
 import type { VideoOperationReport } from "../video/types.js";
@@ -289,13 +289,11 @@ export async function executePipeline(
   const input = loaded.document.input;
   const source = await resolveReadableFile(input, loaded.baseDirectory);
   const output = finalOutput(loaded, options.output);
-  if (path.resolve(source) === path.resolve(output)) {
-    throw new ToolkitRuntimeError(
-      "E_CONFIG_CONFLICT",
-      "Pipeline input and final output paths must be different.",
-      { details: { source, output } },
-    );
-  }
+  await preflightOutputPath({
+    source,
+    output,
+    overwrite: options.overwrite ?? false,
+  });
 
   const declarations = expandPipelineSteps(loaded.document);
   validatePipelineOutput(loaded.document, declarations, output);
