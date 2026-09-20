@@ -16,12 +16,14 @@ for (const relative of [
   "src/core/progress.ts",
   "src/core/progress-context.ts",
   "src/cli/progress-renderer.ts",
+  "src/cli/icons.ts",
+  "test/cli/semantic-ux.test.ts",
   "test/core/progress.test.ts",
   "test/core/progress-runtime.integration.test.ts",
   "test/cli/progress-renderer.test.ts",
-  "docs/milestone-13/ux-progress-agent-output.md",
+  "docs/development/ux-progress-agent-output.md",
 ]) {
-  assert((await stat(path.join(root, relative))).isFile(), `Missing Milestone 13 file: ${relative}`);
+  assert((await stat(path.join(root, relative))).isFile(), `Missing UX/progress file: ${relative}`);
 }
 
 const runner = await text("src/core/ffmpeg-runner.ts");
@@ -41,6 +43,16 @@ assert(program.includes("--no-color"), "CLI must expose --no-color.");
 const colors = await text("src/cli/colors.ts");
 assert(colors.includes("NO_COLOR"), "Human color output must honor NO_COLOR.");
 assert(colors.includes("FORCE_COLOR"), "Human color output must honor FORCE_COLOR.");
+assert(colors.includes("CLI_ICONS"), "Human output must use semantic icons.");
+
+const progressRenderer = await text("src/cli/progress-renderer.ts");
+assert(progressRenderer.includes("progressSourceIcon"), "TTY progress must expose semantic source icons.");
+assert(progressRenderer.includes("friendly"), "Progress renderer must separate friendly TTY decoration from plain output.");
+
+const icons = await text("src/cli/icons.ts");
+for (const icon of ["🎬", "🖼️", "🎧", "🔄", "🧩", "📡", "⚡", "🚀", "⌛"]) {
+  assert(icons.includes(icon), `Semantic icon catalog is missing ${icon}`);
+}
 
 const schema = JSON.parse(await text("specs/output-envelope.schema.json"));
 assert(schema.properties?.progress?.$ref === "#/$defs/progress", "JSON envelope schema must expose structured progress.");
@@ -54,4 +66,4 @@ const packageJson = JSON.parse(await text("package.json"));
 assert(packageJson.scripts?.["verify:ux"] === "node scripts/verify-ux.mjs", "Missing verify:ux package script.");
 assert(packageJson.scripts?.validate?.includes("verify:ux"), "validate must include verify:ux.");
 
-console.log("Milestone 13 UX/progress/agent-output structure: PASS");
+console.log("UX/progress UX/progress/agent-output structure: PASS");

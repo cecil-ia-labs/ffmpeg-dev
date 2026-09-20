@@ -34,7 +34,7 @@ const required = [
   "assets/logo.svg",
   "assets/screenshots/cli-overview.svg",
   "assets/screenshots/skills-overview.svg",
-  "docs/milestone-11/plugin-packaging.md",
+  "docs/development/plugin-packaging.md",
   "skills/ffmpeg-environment/SKILL.md",
   "skills/ffmpeg-video-editing/SKILL.md",
   "skills/ffmpeg-audio/SKILL.md",
@@ -55,4 +55,4 @@ for (const file of files) {
   }
 }
 
-console.log(`Milestone 11 npm pack dry-run: PASS (${files.size} packaged files)`);
+console.log(`Plugin packaging npm pack dry-run: PASS (${files.size} packaged files)`);

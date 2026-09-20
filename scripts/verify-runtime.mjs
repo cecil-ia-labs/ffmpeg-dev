@@ -32,7 +32,7 @@ const required = [
   "test/core/binary-resolver.test.ts",
   "test/core/ffmpeg-runner.test.ts",
   "test/core/ffprobe-runner.test.ts",
-  "docs/milestone-2/runtime.md",
+  "docs/development/runtime.md",
 ];
 
 for (const path of required) await stat(new URL(path, root));
@@ -56,7 +56,7 @@ function versionAtLeast(version, minimum) {
 }
 assert(versionAtLeast(pkg.version, "0.1.0-alpha.2"), "Runtime verifier requires version >= 0.1.0-alpha.2");
 assert(plugin.version === pkg.version, "Plugin/package version mismatch");
-assert(!pkg.dependencies?.execa, "Milestone 2 runtime should not depend on execa");
+assert(!pkg.dependencies?.execa, "Runtime runtime should not depend on execa");
 
 const processSource = await readText("src/core/command-result.ts");
 assert(processSource.includes('from "node:child_process"'), "Runtime boundary must use node:child_process");
@@ -76,4 +76,4 @@ for (const field of ["executed", "stdoutTruncated", "stderrTruncated"]) {
 }
 
 console.log(`Runtime verification passed for ${pkg.name}@${pkg.version}`);
-console.log(`Checked ${required.length} Milestone 2 files and runtime safety invariants.`);
+console.log(`Checked ${required.length} Runtime files and runtime safety invariants.`);

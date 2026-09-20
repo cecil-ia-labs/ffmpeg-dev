@@ -1,4 +1,4 @@
-import { readFile, readdir, stat } from "node:fs/promises";
+import { readFile, stat } from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -12,16 +12,19 @@ async function readJson(relative) {
   return JSON.parse(await readFile(path.join(root, relative), "utf8"));
 }
 
-const legacyFiles = (await readdir(path.join(root, "legacy/bash")))
-  .filter((name) => name.endsWith(".sh"))
-  .map((name) => `legacy/bash/${name}`)
-  .sort();
 const migration = await readJson("test/fixtures/legacy-migration-map.json");
-const mapped = migration.migrations.map((entry) => entry.legacy).sort();
-assert(JSON.stringify(mapped) === JSON.stringify(legacyFiles), "Legacy migration integration map must cover every Bash script exactly once.");
+const mapped = migration.migrations.map((entry) => entry.legacy);
+assert(mapped.length === 21, "Legacy migration integration map must preserve all 21 historical Bash migrations.");
+assert(new Set(mapped).size === mapped.length, "Legacy migration integration map must not contain duplicate script identifiers.");
+for (const legacy of mapped) {
+  assert(
+    typeof legacy === "string" && legacy.startsWith("legacy/bash/") && legacy.endsWith(".sh"),
+    `Invalid historical legacy script identifier: ${legacy}`,
+  );
+}
 assert(migration.integrationTest.endsWith(".integration.test.ts"), "Legacy migration map must target an integration test.");
 const migrationSource = await readFile(path.join(root, migration.integrationTest), "utf8");
-for (const legacy of legacyFiles) {
+for (const legacy of mapped) {
   assert(migrationSource.includes(legacy), `Missing explicit integration test case for ${legacy}`);
 }
 
@@ -50,4 +53,4 @@ for (const [layer, relative] of Object.entries(layers)) {
 const fixtureTest = await readFile(path.join(root, layers.ffmpegIntegration), "utf8");
 assert(fixtureTest.includes("probeMedia"), "Fixture regression must verify media properties with FFprobe-backed probeMedia.");
 
-console.log(`Milestone 12 test-suite structure: PASS (${legacyFiles.length} legacy migrations, ${manifest.fixtures.length} fixture recipes)`);
+console.log(`Test-suite structure: PASS (${mapped.length} historical migrations, ${manifest.fixtures.length} fixture recipes)`);

@@ -1,13 +1,13 @@
 import type { Command } from "commander";
 
-import { runDoctorAction, runEnvironmentCapabilitiesAction, runEnvironmentInstallAction, runEnvironmentVersionAction, runProbeAction } from "./actions/milestone-3.js";
-import { runTrimEndAction, runTrimRangeAction, runTrimStartAction, runVideoFromImageAction, runVideoRestoreAction, runVideoSpeedAction, runVideoUpscaleAction } from "./actions/milestone-4.js";
-import { runAudioAddSilenceAction, runAudioAttachAction, runAudioDetectSilenceAction, runAudioRemoveSilenceAction, runAudioSilenceAction, runAudioTelephonyAction } from "./actions/milestone-5.js";
-import { runConvertBatchAction, runConvertFileAction } from "./actions/milestone-6.js";
-import { runComposeConcatAction, runComposeSlideshowAction, runComposeTransitionAction } from "./actions/milestone-7.js";
-import { runDiagnoseAction, runRepairNormalizeAction, runRepairTimestampsAction } from "./actions/milestone-8.js";
-import { runStreamCameraAction, runStreamFileAction } from "./actions/milestone-9.js";
-import { runImageConvertAction, runImageExtractAction } from "./actions/milestone-13-5.js";
+import { runDoctorAction, runEnvironmentCapabilitiesAction, runEnvironmentInstallAction, runEnvironmentVersionAction, runProbeAction } from "./actions/environment.js";
+import { runTrimEndAction, runTrimRangeAction, runTrimStartAction, runVideoFromImageAction, runVideoRestoreAction, runVideoSpeedAction, runVideoUpscaleAction } from "./actions/video.js";
+import { runAudioAddSilenceAction, runAudioAttachAction, runAudioDetectSilenceAction, runAudioRemoveSilenceAction, runAudioSilenceAction, runAudioTelephonyAction } from "./actions/audio.js";
+import { runConvertBatchAction, runConvertFileAction } from "./actions/conversion.js";
+import { runComposeConcatAction, runComposeSlideshowAction, runComposeTransitionAction } from "./actions/composition.js";
+import { runDiagnoseAction, runRepairNormalizeAction, runRepairTimestampsAction } from "./actions/diagnostics.js";
+import { runStreamCameraAction, runStreamFileAction } from "./actions/streaming.js";
+import { runImageConvertAction, runImageExtractAction } from "./actions/image.js";
 
 export type CommandAction = (command: Command, positional: readonly unknown[]) => Promise<void> | void;
 

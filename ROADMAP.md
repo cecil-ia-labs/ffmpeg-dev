@@ -1005,7 +1005,8 @@ audio: wav, mp3, aac, m4a, flac, opus, ogg
 
 # Milestone 14 — Documentation & Migration Guide
 
-**Target:** `v0.9.9`
+**Target:** `v0.9.9`  
+**Status:** ✅ Complete
 
 ### Documentation
 
@@ -1015,6 +1016,7 @@ docs/
 ├── installation.md
 ├── cli-reference.md
 ├── video.md
+├── image.md
 ├── audio.md
 ├── conversion.md
 ├── composition.md
@@ -1025,27 +1027,47 @@ docs/
 └── migration-from-bash.md
 ```
 
-### Migration table
+### Migration
 
-Document mappings such as:
+- all 21 legacy Bash scripts documented;
+- canonical v0.9.9 command shown for each migration;
+- compatibility aliases called out explicitly;
+- historical semantic corrections documented for μ-law/GSM, GIF→WebM, misleading WebSocket naming, and upscale naming.
+
+### Human UX
+
+Interactive TTY output adds semantic emoji/icon cues on top of the stronger color palette:
 
 ```text
-crop-x-seconds-from-start.sh
-    ↓
-video trim-start
+🎬 video
+🖼️ image
+🎧 audio
+🔄 convert
+🧩 compose
+📡 stream
+🔎 diagnose
+🛠️ repair
 ```
 
-and:
+Progress example:
 
 ```text
-concat-all-mp4-in-folder-with-fade.sh
-    ↓
-compose concat --transition fade
+🎬 clip.mp4 | ▶️ 67% | 🎞️ 2411 frames | ⚡ 100.0 fps | 🚀 3.70x | ⌛ ETA 00:00:12
 ```
+
+Machine contracts remain unchanged: `--json` has no ANSI/emoji decoration; non-TTY progress stays plain; `--no-color` suppresses friendly decoration.
+
+### Quality
+
+- `verify:docs` checks all required guides;
+- every public leaf command from `specs/command-tree.json` must appear in the CLI reference;
+- all 21 legacy scripts from the migration map must appear in the migration guide;
+- hardware acceleration docs are explicitly scoped as future behavior;
+- semantic UX has dedicated tests.
 
 ### Acceptance Criteria
 
-Users should not need to inspect source code to understand any public command.
+✅ Users can understand every public command and every legacy migration path without inspecting source code.
 
 ---
 

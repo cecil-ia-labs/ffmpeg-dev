@@ -1,5 +1,41 @@
 # Changelog
 
+## 0.9.9 — Milestone 14 — Documentation & Migration Guide
+
+### Added
+
+- Complete public documentation set for installation, getting started, CLI reference, video, image, audio, conversion, composition, streaming, diagnostics, batch processing, hardware acceleration status, and Bash migration.
+- Full canonical mapping for all 21 legacy Bash utilities.
+- `verify:docs` documentation coverage gate.
+- Semantic CLI icon catalog.
+- Friendly TTY icons for command help, operation summaries, warnings/errors, and FFmpeg progress.
+- Semantic progress cues for percent, frames, processing FPS, speed multiplier, and ETA.
+- Dedicated semantic UX tests.
+
+### Changed
+
+- Package/plugin version advanced to `0.9.9`.
+- Skills updated to the canonical pre-v1 command taxonomy and expanded media capabilities.
+- Human TTY output uses stronger semantic color + icon cues.
+- `--no-color` now suppresses both ANSI styling and friendly semantic icons.
+- README now acts as the documentation entry point.
+
+### Compatibility
+
+- JSON output remains decoration-free and structurally unchanged.
+- Non-TTY progress remains plain text.
+- `video restore`, `audio attach`, and `audio add-silence` remain documented compatibility aliases.
+- Hardware acceleration documentation does not claim the future Milestone 17 automatic-selection behavior is already implemented.
+
+### Validation
+
+Run locally before merge:
+
+```bash
+npm run validate
+```
+
+
 ## 0.9.8 — Milestone 13.5 — Media Capability Expansion & CLI Polish
 
 ### Added

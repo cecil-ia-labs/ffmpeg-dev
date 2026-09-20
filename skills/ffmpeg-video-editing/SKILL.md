@@ -30,7 +30,7 @@ Identify:
 - desired temporal range or speed factor;
 - output path when the default is unsuitable;
 - whether audio must be preserved, retimed, or dropped;
-- target resolution/profile for restore work.
+- target resolution/profile and fit mode for upscale work.
 
 ## Preflight
 
@@ -46,7 +46,9 @@ cecilia-ffmpeg video trim-end <input> --seconds <n>
 cecilia-ffmpeg video trim <input> --start <n> --end <n>
 cecilia-ffmpeg video speed <input> --factor <n>
 cecilia-ffmpeg video from-image <image> --duration <n>
-cecilia-ffmpeg video restore <input> --resolution <WxH>
+cecilia-ffmpeg video upscale <input> --resolution <WxH>
+cecilia-ffmpeg video attach-audio <video> <audio>
+cecilia-ffmpeg video add-silence <video>
 ```
 
 Prefer the toolkit over constructing arbitrary shell commands for supported operations.
@@ -75,7 +77,7 @@ Probe the result and verify the properties relevant to the request: duration, di
 
 - If copy trim is inaccurate, switch to accurate re-encode mode.
 - If speed change causes audio issues, use the toolkit's audio tempo policy rather than changing video PTS alone.
-- If restore output is incompatible with the target workflow, normalize to explicit dimensions/FPS/pixel format.
+- If upscale output is incompatible with the target workflow, normalize to explicit dimensions/FPS/pixel format/fit. `video restore` remains a compatibility alias.
 - If decoding/timestamp errors appear, hand off to `ffmpeg-diagnostics`.
 
 ## Safety and determinism

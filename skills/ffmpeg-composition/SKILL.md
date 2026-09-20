@@ -14,7 +14,9 @@ Use for:
 - concatenating multiple clips;
 - adding transitions between clips;
 - composing two clips with a specific transition;
-- image slideshows;
+- image slideshows in vertical-stack or sequence style;
+- sequence slideshows with transitions/include/exclude selection;
+- `zoomin` and explicit custom `zoomout` transitions;
 - workflows requiring normalization before `xfade`.
 
 ## Do not use
@@ -29,7 +31,7 @@ Identify:
 - transition type and duration;
 - target dimensions/FPS;
 - audio policy;
-- slideshow duration/direction where relevant.
+- slideshow duration/style/direction, transition, include/exclude patterns, and output format where relevant.
 
 ## Preflight
 
@@ -42,6 +44,7 @@ cecilia-ffmpeg compose concat <inputs...>
 cecilia-ffmpeg compose concat <inputs...> --transition fade
 cecilia-ffmpeg compose transition <left> <right>
 cecilia-ffmpeg compose slideshow <directory>
+cecilia-ffmpeg compose slideshow <directory> --style sequence --transition zoomin
 ```
 
 For supported operations, prefer `npx @cecilialabs/ffmpeg ...` over constructing arbitrary FFmpeg shell commands.

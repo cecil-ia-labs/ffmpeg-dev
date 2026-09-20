@@ -4,11 +4,11 @@
   "migrations": [
     {
       "legacy": "legacy/bash/add-audio-2-clip.sh",
-      "equivalent": "audio attach"
+      "equivalent": "video attach-audio"
     },
     {
       "legacy": "legacy/bash/add-silence-2-clip.sh",
-      "equivalent": "audio add-silence"
+      "equivalent": "video add-silence"
     },
     {
       "legacy": "legacy/bash/concat-all-mp4-in-folder-with-fade.sh",
@@ -80,11 +80,11 @@
     },
     {
       "legacy": "legacy/bash/upscale-video-to-fhd.sh",
-      "equivalent": "video restore 1920x1080"
+      "equivalent": "video upscale 1920x1080"
     },
     {
       "legacy": "legacy/bash/upscale-video-to-hd.sh",
-      "equivalent": "video restore 1280x720"
+      "equivalent": "video upscale 1280x720"
     }
   ]
 }

@@ -34,8 +34,8 @@ const required = [
   "src/conversion/convert.ts",
   "src/conversion/batch.ts",
   "src/conversion/index.ts",
-  "src/cli/actions/milestone-6.ts",
-  "src/cli/milestone-6-options.ts",
+  "src/cli/actions/conversion.ts",
+  "src/cli/conversion-options.ts",
   "test/conversion/conversion-builders.test.ts",
   "test/conversion/batch-discovery.test.ts",
   "test/conversion/conversion.integration.test.ts",
@@ -46,11 +46,11 @@ const required = [
 for (const file of required) await stat(file);
 
 const pkg = JSON.parse(await readFile("package.json", "utf8"));
-if (!versionAtLeast(pkg.version, "0.4.0")) throw new Error(`Milestone 6 requires package version >= 0.4.0, got ${pkg.version}`);
+if (!versionAtLeast(pkg.version, "0.4.0")) throw new Error(`Conversion requires package version >= 0.4.0, got ${pkg.version}`);
 
 const registry = await readFile("src/cli/action-registry.ts", "utf8");
 for (const command of ["convert file", "convert batch"]) {
-  if (!registry.includes(command)) throw new Error(`Missing Milestone 6 action: ${command}`);
+  if (!registry.includes(command)) throw new Error(`Missing Conversion action: ${command}`);
 }
 const profiles = await readFile("src/conversion/profiles.ts", "utf8");
 for (const token of ["jpeg", "wav", "mp3", "aac", "m4a", "flac", "opus", "ogg", "libx264", "libmp3lame", "pcm_s16le"]) {
@@ -98,7 +98,7 @@ try {
 
   const batchRoot = path.join(directory, "batch");
   await mkdir(path.join(batchRoot, "nested"), { recursive: true });
-  console.log("Milestone 6 conversion verifier: PASS");
+  console.log("Conversion conversion verifier: PASS");
   console.log("routes: legacy visual routes plus MP4/JPEG targets and typed audio conversion profiles");
   console.log("batch engine: structural support for recursion, patterns, concurrency, failure modes, hierarchy, existing-output policy, progress, and JSON reports");
 } finally {

@@ -8,7 +8,7 @@ const required = [
   "src/video/speed.ts",
   "src/video/from-image.ts",
   "src/video/restore.ts",
-  "src/cli/actions/milestone-4.ts",
+  "src/cli/actions/video.ts",
   "test/video/video-builders.test.ts",
   "test/video/video.integration.test.ts",
 ];
@@ -35,7 +35,7 @@ if (!versionAtLeast(pkg.version, "0.2.0")) throw new Error(`Expected package ver
 
 const registry = await readFile("src/cli/action-registry.ts", "utf8");
 for (const command of ["video trim-start", "video trim-end", "video trim", "video speed", "video from-image", "video upscale", "video restore", "video attach-audio", "video add-silence"]) {
-  if (!registry.includes(command)) throw new Error(`Missing Milestone 4 action: ${command}`);
+  if (!registry.includes(command)) throw new Error(`Missing Video editing action: ${command}`);
 }
 
 const io = await readFile("src/media/io.ts", "utf8");
@@ -43,4 +43,4 @@ if (!io.includes("E_IO_OUTPUT_EXISTS") || !io.includes("cecilia-ffmpeg")) {
   throw new Error("Output safety/atomic staging policy is not present.");
 }
 
-console.log("Milestone 4 video foundation verified.");
+console.log("Video editing video foundation verified.");

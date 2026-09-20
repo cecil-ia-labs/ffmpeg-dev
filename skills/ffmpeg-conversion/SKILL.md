@@ -11,12 +11,10 @@ Use this skill for supported single-file and batch format conversions.
 
 Use for:
 
-- MP4 → WebM;
-- MP4 → GIF;
-- MP4 → animated WebP;
-- WebM → GIF;
-- WebP → PNG;
-- GIF → WebM;
+- video conversion between MP4/WebM and supported animation targets;
+- image conversion among GIF, WebP, PNG, and JPEG/JPG;
+- audio conversion among WAV, MP3, AAC, M4A, FLAC, Opus, and Ogg;
+- extracting an audio-only target from media that contains video;
 - directory batch conversions with selection and output policies.
 
 ## Do not use
@@ -58,7 +56,7 @@ Batch reports should distinguish discovered, attempted, succeeded, failed, and s
 
 ## Validation
 
-Verify target codec/container/image format, stream presence, dimensions/FPS where relevant, and all requested batch items.
+Verify target codec/container/image/audio format, stream presence, dimensions/FPS or sample-rate/channel properties where relevant, and all requested batch items.
 
 ## Error recovery
 

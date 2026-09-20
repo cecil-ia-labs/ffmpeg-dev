@@ -5,7 +5,7 @@ description: Attach, generate, detect, remove, and transcode audio with FFmpeg, 
 
 # FFmpeg Audio
 
-Use this skill for audio-first workflows, including audio tracks on video.
+Use this skill for audio-first workflows. For attaching or adding silence tracks to video, prefer the canonical `video attach-audio` / `video add-silence` commands; the older audio-domain aliases remain compatible.
 
 ## Activation scope
 
@@ -38,9 +38,9 @@ Probe media when stream presence matters. Never assume a video lacks audio. For 
 ## Preferred toolkit commands
 
 ```bash
-cecilia-ffmpeg audio attach <video> <audio>
+cecilia-ffmpeg video attach-audio <video> <audio>
 cecilia-ffmpeg audio silence
-cecilia-ffmpeg audio add-silence <video>
+cecilia-ffmpeg video add-silence <video>
 cecilia-ffmpeg audio detect-silence <input> --json
 cecilia-ffmpeg audio remove-silence <input>
 cecilia-ffmpeg audio telephony <input>
