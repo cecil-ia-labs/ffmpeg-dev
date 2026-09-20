@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 
 import {
+  HARDWARE_RUNTIME_PROBE_SIZE,
   hardwareEncoderName,
   hardwareFilterSuffix,
   hardwareGlobalArgs,
@@ -38,6 +39,10 @@ function selection(
 }
 
 describe("Milestone 17 hardware selection primitives", () => {
+  it("uses an encoder-safe runtime probe frame size", () => {
+    expect(HARDWARE_RUNTIME_PROBE_SIZE).toBe("256x256");
+  });
+
   it("maps compatible encoders and excludes unsupported backend/codec pairs", () => {
     expect(hardwareEncoderName("nvenc", "h264")).toBe("h264_nvenc");
     expect(hardwareEncoderName("qsv", "vp9")).toBe("vp9_qsv");
