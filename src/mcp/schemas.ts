@@ -89,7 +89,6 @@ export const mediaConcatInputSchema = z.object({
   fit: z.enum(["contain", "cover", "stretch"]).optional(),
   background: nonEmpty.optional(),
   to: z.enum(["mp4", "webm"]).default("mp4"),
-  ...mcpHardwareShape,
   ...mcpRuntimeShape,
 }).strict();
 
@@ -129,6 +128,7 @@ export const mediaRestoreInputSchema = z.object({
   fit: z.enum(["contain", "cover", "stretch"]).optional(),
   background: nonEmpty.optional(),
   to: z.enum(["mp4", "webm"]).default("mp4"),
+  ...mcpHardwareShape,
   ...mcpRuntimeShape,
 }).strict();
 
