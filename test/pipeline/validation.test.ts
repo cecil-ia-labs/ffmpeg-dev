@@ -130,4 +130,20 @@ describe("pipeline output validation", () => {
     })).toThrow(/declared output codec/i);
   });
 
+
+  it("rejects more than 256 directly declared steps at schema validation time", () => {
+    const repeated = Array.from(
+      { length: 257 },
+      () => "  - trim:\n      start: 1",
+    ).join("\n");
+
+    expect(() => parsePipelineText([
+      "input: input.mp4",
+      "steps:",
+      repeated,
+      "output:",
+      "  path: final.mp4",
+    ].join("\n"))).toThrow(/schema/i);
+  });
+
 });
