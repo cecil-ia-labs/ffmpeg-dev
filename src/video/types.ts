@@ -1,3 +1,4 @@
+import type { HardwareRuntimeOptions } from "../hardware/types.js";
 import type { MediaFit } from "../media/fit.js";
 import type { CommandExecution, MediaInfo, ToolkitWarning, TrimMode } from "../types/contracts.js";
 
@@ -27,7 +28,7 @@ export interface VideoOperationReport {
   details: Record<string, unknown>;
 }
 
-export interface VideoRuntimeOptions {
+export interface VideoRuntimeOptions extends HardwareRuntimeOptions {
   output?: string;
   overwrite?: boolean;
   dryRun?: boolean;
