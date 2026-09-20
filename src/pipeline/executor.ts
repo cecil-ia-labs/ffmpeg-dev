@@ -2,6 +2,8 @@ import path from "node:path";
 
 import { TemporaryWorkspace } from "../core/temp-files.js";
 import { ToolkitRuntimeError } from "../core/errors.js";
+import { convertFile, targetExtension } from "../conversion/index.js";
+import type { ConversionReport } from "../conversion/types.js";
 import { normalizeMedia } from "../diagnostics/index.js";
 import type { RepairReport } from "../diagnostics/types.js";
 import { resolveReadableFile } from "../media/io.js";
@@ -37,6 +39,7 @@ function videoFormatForPath(target: string): "mp4" | "webm" {
 }
 
 function intermediateExtension(current: string, step: PipelineStep): string {
+  if ("convert" in step) return targetExtension(step.convert.to);
   if ("resize" in step && step.resize.to !== undefined) return `.${step.resize.to}`;
   return path.extname(current) || ".mp4";
 }
@@ -72,6 +75,23 @@ function fromVideoReport(
   };
 }
 
+function fromConversionReport(
+  index: number,
+  report: ConversionReport,
+): PipelineStepReport {
+  return {
+    index,
+    kind: "convert",
+    input: report.source,
+    output: report.output,
+    planned: report.planned,
+    invocation: report.invocation,
+    durationMs: report.execution.durationMs,
+    warnings: report.warnings,
+    details: report.details,
+  };
+}
+
 function fromRepairReport(
   index: number,
   kind: "normalize" | "audio",
@@ -88,6 +108,36 @@ function fromRepairReport(
     warnings: report.warnings,
     details: report.details,
   };
+}
+
+async function executeConvert(
+  index: number,
+  input: string,
+  output: string,
+  step: Extract<PipelineStep, { convert: unknown }>,
+  runtime: PipelineRuntimeOptions,
+  final: boolean,
+): Promise<{ step: PipelineStepReport; media: MediaInfo | undefined }> {
+  const convert = step.convert;
+  const report = await convertFile(input, {
+    ...commonRuntime(runtime, output, final),
+    to: convert.to,
+    ...(convert.fps !== undefined ? { fps: convert.fps } : {}),
+    ...(convert.width !== undefined ? { width: convert.width } : {}),
+    ...(convert.height !== undefined ? { height: convert.height } : {}),
+    ...(convert.fit !== undefined ? { fit: convert.fit } : {}),
+    ...(convert.background !== undefined ? { background: convert.background } : {}),
+    ...(convert.quality !== undefined ? { quality: convert.quality } : {}),
+    ...(convert.maxColors !== undefined ? { maxColors: convert.maxColors } : {}),
+    ...(convert.loop !== undefined ? { loop: convert.loop } : {}),
+    ...(convert.audioBitrate !== undefined ? { audioBitrate: convert.audioBitrate } : {}),
+    ...(convert.sampleRate !== undefined ? { sampleRate: convert.sampleRate } : {}),
+    ...(convert.channels !== undefined ? { channels: convert.channels } : {}),
+    ...(convert.hardware !== undefined ? { hardware: convert.hardware } : {}),
+    ...(convert.hardwareDevice !== undefined ? { hardwareDevice: convert.hardwareDevice } : {}),
+    ...(convert.hardwareStrict !== undefined ? { hardwareStrict: convert.hardwareStrict } : {}),
+  });
+  return { step: fromConversionReport(index, report), media: report.outputMedia };
 }
 
 async function executeNormalize(
@@ -268,7 +318,9 @@ export async function executePipeline(
               ? await executeNormalize(index, current, stepOutput, declaration, options, isFinal)
               : kind === "audio" && "audio" in declaration
                 ? await executeAudioNormalize(index, current, stepOutput, declaration, options, isFinal)
-                : undefined;
+                : kind === "convert" && "convert" in declaration
+                  ? await executeConvert(index, current, stepOutput, declaration, options, isFinal)
+                  : undefined;
 
       if (result === undefined) {
         throw new ToolkitRuntimeError("E_OPERATION_UNSUPPORTED", `Pipeline step "${kind}" is not executable in the current implementation phase.`, {
