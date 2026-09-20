@@ -50,7 +50,7 @@ if (!ui) throw new Error("Missing extensions.com.openai.interface.");
 if (openai.apps !== undefined) throw new Error("Skills-only bundle must not declare extensions.com.openai.apps.");
 if (ui.screenshots !== undefined) throw new Error("Skills-only bundle must not declare interface.screenshots.");
 if (plugin.name !== "ffmpeg-media-toolkit") throw new Error(`Unexpected plugin name: ${plugin.name}.`);
-if (typeof plugin.version !== "string" || !/^\\d+\\.\\d+\\.\\d+(?:-[0-9A-Za-z.-]+)?$/.test(plugin.version)) {
+if (typeof plugin.version !== "string" || !/^\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?$/.test(plugin.version)) {
   throw new Error(`Plugin version is not valid semver: ${plugin.version}.`);
 }
 NODE
