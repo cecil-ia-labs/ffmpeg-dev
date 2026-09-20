@@ -67,6 +67,10 @@
         {
           "name": "ffmpeg-diagnostics",
           "path": "./skills/ffmpeg-diagnostics/SKILL.md"
+        },
+        {
+          "name": "ffmpeg-pipelines",
+          "path": "./skills/ffmpeg-pipelines/SKILL.md"
         }
       ],
       "npm": {

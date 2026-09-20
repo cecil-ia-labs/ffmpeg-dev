@@ -1,6 +1,6 @@
 # FFmpeg Media Toolkit Skills
 
-Milestone 10 installs seven professional-level, independently usable skills:
+The package installs eight professional-level, independently usable skills:
 
 | Skill | Primary scope |
 |---|---|
@@ -11,6 +11,7 @@ Milestone 10 installs seven professional-level, independently usable skills:
 | `ffmpeg-composition` | Concat, transitions, slideshows |
 | `ffmpeg-streaming` | Camera/file streaming and transport planning |
 | `ffmpeg-diagnostics` | Diagnosis and observation-driven repair |
+| `ffmpeg-pipelines` | Declarative YAML pipelines, presets, and multi-step execution |
 
 Each skill contains a `SKILL.md` with portable YAML front matter and a `references/` directory.
 
@@ -62,6 +63,7 @@ Current MCP mappings relevant to the Skills include:
 - conversion: `media_convert`;
 - composition: `media_concat`;
 - diagnostics: `media_diagnose`, `media_probe`;
-- streaming: no MCP tool in v1.2.
+- streaming: no dedicated MCP streaming tool;
+- pipelines: `media_run_pipeline`.
 
 The v1.2 hardware policy is available through `media_convert`, `media_restore`, and the corresponding CLI operations where documented.
