@@ -15,6 +15,7 @@ import type { CommandExecution, ToolkitWarning } from "../../types/contracts.js"
 import { colorEnabled, colorizeError, colorizeHumanOutput, colorizeWarning } from "../colors.js";
 import { CliProgressReporter } from "../progress-renderer.js";
 import { validateGlobalCliOptions, type GlobalCliOptions } from "../global-options.js";
+import { preflightExplicitCliOutput } from "../output-preflight.js";
 
 export interface ActionPayload<T> {
   data: T;
@@ -50,6 +51,7 @@ export async function executeAction<T>(
   });
 
   try {
+    await preflightExplicitCliOutput(command, options);
     const payload = await withProgressObserver(progress.onEvent, async () =>
       await operation(options, signals.signal),
     );
