@@ -4,7 +4,7 @@ import { renderCommandForDisplay } from "../core/command-result.js";
 import { ToolkitRuntimeError } from "../core/errors.js";
 import { runFFmpeg } from "../core/ffmpeg-runner.js";
 import { selectHardwareEncoding, type HardwareEncodingSelection } from "../hardware/index.js";
-import { prepareOutputTransaction, resolveReadableFile } from "../media/io.js";
+import { preflightOutputPath, prepareOutputTransaction, resolveReadableFile } from "../media/io.js";
 import { probeMedia } from "../media/probe.js";
 import { assertSupportedConversion, buildConversionPlan, inferConversionFormat, targetExtension } from "./profiles.js";
 import type { ConversionFormat, ConversionReport, ConvertFileRequest } from "./types.js";
@@ -31,6 +31,9 @@ export async function convertFile(input: string, request: ConvertFileRequest): P
   }
   assertSupportedConversion(sourceFormat, request.to);
 
+  const output = deriveConversionOutputPath(source, request.to, request.output, request.cwd);
+  await preflightOutputPath({ source, output, overwrite: request.overwrite ?? false });
+
   const inputProbe = await probeMedia(source, {
     ...(request.ffprobePath !== undefined ? { ffprobePath: request.ffprobePath } : {}),
     ...(request.verbose !== undefined ? { verbose: request.verbose } : {}),
@@ -41,7 +44,6 @@ export async function convertFile(input: string, request: ConvertFileRequest): P
     throw new ToolkitRuntimeError("E_PROBE_FAILED", "Source media information is unavailable.", { details: { source } });
   }
 
-  const output = deriveConversionOutputPath(source, request.to, request.output, request.cwd);
   const media = inputProbe.media;
   let hardware: HardwareEncodingSelection | undefined;
   if (request.to === "mp4" || request.to === "webm") {
