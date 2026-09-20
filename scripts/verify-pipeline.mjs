@@ -28,6 +28,8 @@ for (const relative of [
   "src/pipeline/validation.ts",
   "src/pipeline/executor.ts",
   "src/pipeline/index.ts",
+  "src/pipeline/inspection.ts",
+  "src/pipeline/inline.ts",
   "specs/pipeline.schema.json",
   "test/pipeline/trim.integration.test.ts",
   "test/pipeline/speed.integration.test.ts",
@@ -86,10 +88,17 @@ const parser = await text("src/pipeline/parser.ts");
 assert(parser.includes('require("js-yaml")'), "Pipeline loader must use the declared YAML parser.");
 assert(parser.includes("pipelineDocumentSchema.parse"), "Parsed YAML must pass through the typed schema.");
 
+const inline = await text("src/pipeline/inline.ts");
+for (const token of ["parsePipelineInvocation", "--step", "pipelineDocumentSchema.safeParse", "validate", "print", "run"]) {
+  assert(inline.includes(token), "Inline pipeline parser is missing: " + token);
+}
+
 const commandSpec = await text("src/cli/command-spec.ts");
 const actionRegistry = await text("src/cli/action-registry.ts");
-assert(commandSpec.includes('syntax: "run <pipeline>"'), "CLI command tree must expose run <pipeline>.");
-assert(actionRegistry.includes('"cecilia-ffmpeg run": runPipelineAction'), "CLI action registry must route run to the pipeline action.");
+assert(commandSpec.includes('syntax: "pipeline [tokens...]"'), "CLI command tree must expose the namespaced pipeline command.");
+assert(!commandSpec.includes('syntax: "run <pipeline>"'), "Top-level run command must be removed.");
+assert(actionRegistry.includes('"cecilia-ffmpeg pipeline": runPipelineAction'), "CLI action registry must route pipeline to the pipeline action.");
+assert(!actionRegistry.includes('"cecilia-ffmpeg run": runPipelineAction'), "Top-level run action must be removed.");
 
 const mcpServer = await text("src/mcp/server.ts");
 const mcpAdapters = await text("src/mcp/adapters.ts");
@@ -98,7 +107,8 @@ assert(mcpAdapters.includes("executePipeline("), "MCP pipeline adapter must reus
 
 const skill = await text("skills/ffmpeg-pipelines/SKILL.md");
 assert(skill.includes("media_run_pipeline"), "Pipeline skill must prefer the MCP pipeline tool.");
-assert(skill.includes("cecilia-ffmpeg run"), "Pipeline skill must document the CLI runner.");
+assert(skill.includes("cecilia-ffmpeg pipeline"), "Pipeline skill must document the namespaced CLI runner.");
+assert(!skill.includes("cecilia-ffmpeg run"), "Pipeline skill must not document the removed top-level runner.");
 
 const pipelineDir = path.join(root, "src/pipeline");
 for (const entry of await readdir(pipelineDir, { withFileTypes: true })) {
@@ -107,4 +117,4 @@ for (const entry of await readdir(pipelineDir, { withFileTypes: true })) {
   assert(!/node:child_process|from\s+["']child_process["']/.test(source), "Pipeline module must not execute child processes directly: " + entry.name);
 }
 
-console.log("Milestone 18 pipeline & preset system: PASS");
+console.log("Milestone 21 namespaced pipeline CLI: PASS");

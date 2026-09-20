@@ -3,6 +3,7 @@ import { describe, expect, it } from "vitest";
 import { buildProgram, CLI_HEADLINE } from "../../src/cli/program.js";
 
 const expectedTopLevelCommands = [
+  "pipeline",
   "doctor",
   "probe",
   "environment",

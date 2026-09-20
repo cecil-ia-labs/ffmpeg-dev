@@ -108,7 +108,7 @@
   },
   "pipeline": {
     "schemaVersion": 1,
-    "cliCommand": "run <pipeline>",
+    "cliCommand": "pipeline <file> <validate|print|run>",
     "mcpTool": "media_run_pipeline",
     "parser": "js-yaml@^4.3.2",
     "steps": [

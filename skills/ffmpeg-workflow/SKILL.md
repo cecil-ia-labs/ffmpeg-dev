@@ -68,17 +68,16 @@ for example:
 
     cecilia-ffmpeg video trim INPUT --start 00:00:05 --end 00:00:20 --output OUTPUT
 
-For the current v1.3 pipeline baseline, validate and execute with:
+For pipelines, validate, inspect, and execute with:
 
-    cecilia-ffmpeg run pipeline.yaml --dry-run
-    cecilia-ffmpeg run pipeline.yaml
+    cecilia-ffmpeg pipeline pipeline.yaml validate
+    cecilia-ffmpeg pipeline pipeline.yaml print
+    cecilia-ffmpeg pipeline pipeline.yaml run --dry-run
+    cecilia-ffmpeg pipeline pipeline.yaml run
 
 If the global binary is unavailable:
 
-    npm exec --yes --package=@cecilialabs/ffmpeg -- cecilia-ffmpeg run pipeline.yaml --dry-run
-
-The roadmap's future pipeline namespace and Skill-associated runtime scripts
-must not be presented as implemented until their milestone lands.
+    npm exec --yes --package=@cecilialabs/ffmpeg -- cecilia-ffmpeg pipeline pipeline.yaml run --dry-run
 
 ## Native FFmpeg fallback
 

@@ -115,7 +115,7 @@ Supported policy values are `software`, `auto`, `nvenc`, `qsv`, `vaapi`, and `vi
 `media_run_pipeline` executes the same v1 YAML document as:
 
 ```bash
-cecilia-ffmpeg run pipeline.yaml
+cecilia-ffmpeg pipeline pipeline.yaml run
 ```
 
 Example:

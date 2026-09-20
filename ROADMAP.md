@@ -4,7 +4,7 @@
 > **Package:** @cecilialabs/ffmpeg
 > **Current baseline:** v1.3.0 on master
 > **Next architectural line:** planned v2.0.0
-> **Status:** Milestone 20 implementation in progress; later milestones remain planned
+> **Status:** Milestone 21 implementation in progress; later milestones remain planned
 
 This roadmap replaces the previous MCP-centered evolution plan. It records the
 post-v1.3 architectural decision and defines the work required to make the
@@ -452,6 +452,8 @@ npm run validate:release
 - test script invocation, cancellation, output envelopes, and safe paths.
 
 ### Milestone 21 — Namespaced pipeline CLI
+
+**Status:** implemented on `codex/milestone-21-namespaced-pipeline-cli`
 
 - move pipeline execution under pipeline;
 - add file validate, print, and run actions;

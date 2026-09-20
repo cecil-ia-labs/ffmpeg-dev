@@ -14,9 +14,9 @@
     "keep-temp"
   ],
   "commands": {
-    "run": {
+    "pipeline": {
       "args": [
-        "pipeline"
+        "tokens..."
       ]
     },
     "doctor": {},
