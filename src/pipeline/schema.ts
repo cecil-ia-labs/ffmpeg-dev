@@ -108,8 +108,8 @@ export const pipelineStepSchema = z.union([
 export const pipelineDocumentSchema = z.object({
   version: z.literal(1).default(1),
   input: nonEmpty,
-  presets: z.record(z.string().trim().min(1), z.array(pipelineStepSchema).min(1)).default({}),
-  steps: z.array(pipelineStepSchema).min(1),
+  presets: z.record(z.string().trim().min(1), z.array(pipelineStepSchema).min(1).max(256)).default({}),
+  steps: z.array(pipelineStepSchema).min(1).max(256),
   output: z.object({
     path: nonEmpty,
     codec: z.enum(["h264", "vp9"]).optional(),
