@@ -65,7 +65,7 @@ Usage:
 
 Options:
   --dry-run             Pack and run npm publish --dry-run without publishing
-  --skip-validate       Skip npm run validate
+  --skip-validate       Skip npm run validate:release
   --allow-non-master    Permit a dry-run from a non-master branch
   --tag <tag>           npm dist-tag (latest, next, beta, alpha, ...)
   --otp <code>          npm 2FA one-time password
@@ -173,8 +173,8 @@ success "$PACKAGE_NAME@$PACKAGE_VERSION is available for publication"
 
 if [[ "$SKIP_VALIDATE" != true ]]; then
   section "Validation"
-  npm run validate
-  success "Validation passed"
+  npm run validate:release
+  success "Release validation passed"
 else
   warn "Validation skipped by explicit request"
 fi

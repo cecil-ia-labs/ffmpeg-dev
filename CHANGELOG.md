@@ -1,6 +1,24 @@
 # Changelog
 
-## Unreleased — Milestone 14.5 — CLI Installation & Release Workflow
+## 1.0.0 — Unreleased — Milestone 15 — Stable CLI Release
+
+### Started
+
+- Stable v1.0.0 package/plugin/runtime version line.
+- Machine-readable stable release contract in `specs/stable-release-contract.json`.
+- `verify:release` for semantic version, package/plugin identity, CLI surface, Skills, migration coverage, and no-shell-runtime guarantees.
+- `validate:release` as the publication-quality superset of the regular validation chain.
+- Public npm `publishConfig.access` for the scoped package.
+- Stable release architecture and completion checklist.
+- Clean npm tarball installation verifier covering the generated executable and package import.
+- Cross-platform CLI/doctor smoke runner.
+- GitHub Actions v1 release matrix with full Linux validation plus macOS/Windows smoke coverage.
+
+### Release policy
+
+Milestone 15 is a stabilization milestone. Public CLI/API changes require explicit compatibility review; new media capabilities are deferred unless they fix a v1 release blocker.
+
+## Pre-v1 hardening — Milestone 14.5 — CLI Installation & Release Workflow
 
 ### Added
 

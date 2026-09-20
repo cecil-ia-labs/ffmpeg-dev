@@ -22,6 +22,7 @@
 - [Development and architecture notes](development/README.md)
 
 - [Hardware acceleration status](hardware-acceleration.md)
+- [Platform support & release validation](platform-support.md)
 - [Migration from legacy Bash](migration-from-bash.md)
 - [UX/progress architecture](development/ux-progress-agent-output.md)
 - [Media capability expansion](development/media-capability-expansion.md)

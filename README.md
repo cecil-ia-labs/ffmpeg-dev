@@ -1,7 +1,7 @@
 # FFmpeg Media Toolkit
 
-**Release status:** `0.9.9` — Documentation complete; CLI installation/release hardening in 14.5  
-**Version:** `0.9.9`
+**Release status:** `1.0.0` — Stable CLI release in progress  
+**Version:** `1.0.0`
 
 **Cecil-IA Labs · FFmpeg Media Toolkit**
 
@@ -19,7 +19,7 @@ FFmpeg Media Toolkit is a professional, agent-friendly TypeScript CLI and plugin
 
 ## Release status
 
-The v0.9.9 documentation and migration phase is merged and complete. The 14.5 release-hardening pass adds the direct CLI installation/link workflow, safe maintainer publication flow, and branded CLI headline before the v1 stabilization milestone. The public CLI documentation, 21-script Bash migration guide, synchronized Skills, semantic TTY UX, JSON contract, and non-TTY behavior remain intact.
+The pre-v1 documentation, migration, installation, and publication hardening phases are complete. Milestone 15 freezes the stable v1.0.0 release contract and focuses on compatibility, clean installation, cross-platform smoke validation, packaging, and final publication evidence. New media capabilities are deferred unless required to resolve a release blocker.
 
 Implemented now:
 
@@ -86,6 +86,7 @@ The public CLI is now documented without requiring source inspection:
 - [Diagnostics & repair](docs/diagnostics.md)
 - [Batch processing](docs/batch-processing.md)
 - [Hardware acceleration status](docs/hardware-acceleration.md)
+- [Platform support & release validation](docs/platform-support.md)
 - [Migration from Bash](docs/migration-from-bash.md)
 
 Interactive human output now uses semantic icons in addition to the stronger color palette:

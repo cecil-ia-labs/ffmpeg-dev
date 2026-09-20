@@ -106,7 +106,7 @@ prepack -> npm run build
 Publication retains the existing quality gate:
 
 ```text
-prepublishOnly -> npm run validate
+prepublishOnly -> npm run validate:release
 ```
 
 Repository maintainers also have `scripts/publish-npm.sh`, which is intentionally excluded from the npm package. Its release flow is:
@@ -116,7 +116,7 @@ clean master
   -> origin/master parity
   -> npm authentication
   -> duplicate-version check
-  -> npm run validate
+  -> npm run validate:release
   -> npm pack
   -> tarball inspection
   -> npm publish
@@ -142,6 +142,8 @@ The npm package also contains the Agent Plugin manifest, Skills, assets, specs, 
 
 ## Platform notes
 
-Linux is the primary validation platform before v1. Camera capture uses V4L2 on Linux, AVFoundation on macOS, and DirectShow on Windows when selected.
+Linux is the full release-validation platform for v1. macOS and Windows receive clean-install and CLI/doctor smoke validation in the release workflow. Camera capture uses V4L2 on Linux, AVFoundation on macOS, and DirectShow on Windows when selected.
 
 Platform-specific FFmpeg installation is intentionally outside the toolkit's runtime responsibility.
+
+See [Platform support & release validation](platform-support.md) for the v1 test matrix and hosted-CI limitations.
