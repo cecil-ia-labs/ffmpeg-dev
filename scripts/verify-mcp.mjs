@@ -12,6 +12,7 @@ const expectedTools = [
   "media_remove_silence",
   "media_generate_silence",
   "media_restore",
+  "media_run_pipeline",
   "media_diagnose",
 ];
 
@@ -79,6 +80,7 @@ for (const domainCall of [
   "removeSilence(",
   "generateSilence(",
   "upscaleVideo(",
+  "executePipeline(",
   "diagnoseMedia(",
 ]) {
   assert(adapters.includes(domainCall), "MCP adapter does not reuse domain function: " + domainCall);
@@ -97,4 +99,4 @@ assert(extension?.binary === "cecilia-ffmpeg-mcp", "Plugin extension MCP binary 
 assert(extension?.transport === "stdio", "Milestone 16 MCP transport must be stdio.");
 assert(JSON.stringify(extension?.tools) === JSON.stringify(expectedTools), "Plugin MCP tool catalog mismatch.");
 
-console.log(`Milestone 16 MCP server: PASS (${expectedTools.length} tools, stdio, shared domain implementation)`);
+console.log(`MCP server: PASS (${expectedTools.length} tools, stdio, shared domain implementation)`);

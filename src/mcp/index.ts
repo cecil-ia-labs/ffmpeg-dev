@@ -13,6 +13,7 @@ export {
   mediaProbeAdapter,
   mediaRemoveSilenceAdapter,
   mediaRestoreAdapter,
+  mediaRunPipelineAdapter,
   mediaTrimAdapter,
 } from "./adapters.js";
 

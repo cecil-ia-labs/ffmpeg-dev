@@ -1,7 +1,7 @@
 import { ToolkitRuntimeError } from "../core/errors.js";
 import { encodingArgs, resolveEncodingProfile } from "./encoding.js";
 import { executeVideoTransform, inspectInput, positiveFinite, requireVideo } from "./helpers.js";
-import { deriveOutputPath, resolveReadableFile } from "./io.js";
+import { deriveOutputPath, preflightOutputPath, resolveReadableFile } from "./io.js";
 import type { SpeedAudioMode, SpeedVideoRequest, VideoOperationReport } from "./types.js";
 
 export function buildAtempoChain(factor: number): string {
@@ -34,11 +34,12 @@ export async function changeVideoSpeed(input: string, request: SpeedVideoRequest
   const source = await resolveReadableFile(input, request.cwd);
   const factor = positiveFinite(request.factor, "factor");
   const audioMode = validateAudioMode(request.audio);
+  const suffixFactor = Number(factor.toFixed(6)).toString();
+  const output = deriveOutputPath(source, `speed-${suffixFactor}x`, request.output, { ...(request.cwd !== undefined ? { cwd: request.cwd } : {}) });
+  await preflightOutputPath({ source, output, overwrite: request.overwrite ?? false });
   const media = await inspectInput(source, request);
   requireVideo(media, source);
 
-  const suffixFactor = Number(factor.toFixed(6)).toString();
-  const output = deriveOutputPath(source, `speed-${suffixFactor}x`, request.output, { ...(request.cwd !== undefined ? { cwd: request.cwd } : {}) });
   const profile = resolveEncodingProfile(output);
   const hasSyncedAudio = audioMode === "sync" && media.audio.length > 0;
   const args = [

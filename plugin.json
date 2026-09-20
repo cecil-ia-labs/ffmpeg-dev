@@ -1,8 +1,8 @@
 {
   "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
   "name": "ffmpeg-media-toolkit",
-  "version": "1.2.0",
-  "description": "Professional FFmpeg and FFprobe workflows backed by a deterministic TypeScript CLI for media editing, conversion, composition, diagnostics, audio processing, and streaming.",
+  "version": "1.3.0",
+  "description": "Professional FFmpeg and FFprobe workflows with deterministic CLI, MCP tools, hardware acceleration, Skills, and declarative media pipelines.",
   "author": {
     "name": "Cecil-IA Labs",
     "url": "https://github.com/cecil-ia-labs"
@@ -67,6 +67,10 @@
         {
           "name": "ffmpeg-diagnostics",
           "path": "./skills/ffmpeg-diagnostics/SKILL.md"
+        },
+        {
+          "name": "ffmpeg-pipelines",
+          "path": "./skills/ffmpeg-pipelines/SKILL.md"
         }
       ],
       "npm": {
@@ -86,6 +90,7 @@
           "media_remove_silence",
           "media_generate_silence",
           "media_restore",
+          "media_run_pipeline",
           "media_diagnose"
         ]
       },

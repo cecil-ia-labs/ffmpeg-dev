@@ -27,6 +27,7 @@ These documents preserve implementation rationale, validation evidence, compatib
 ## Agent and distribution layers
 
 - [MCP server](mcp-server.md)
+- [Pipeline & preset system](pipeline-and-presets.md)
 
 - [Stable v1 release](stable-cli-release.md)
 

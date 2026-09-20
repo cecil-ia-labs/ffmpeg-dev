@@ -8,6 +8,7 @@ const skills = [
   "ffmpeg-composition",
   "ffmpeg-streaming",
   "ffmpeg-diagnostics",
+  "ffmpeg-pipelines",
 ];
 
 const requiredSections = [
@@ -57,4 +58,4 @@ for (const skill of skills) {
   if (!info.isFile() || info.size === 0) throw new Error(`${skill}: reference is empty`);
 }
 
-console.log(`Milestone 10 professional skills: PASS (${skills.length} skills)`);
+console.log(`Professional skills: PASS (${skills.length} skills)`);

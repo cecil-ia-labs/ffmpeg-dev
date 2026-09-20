@@ -1,5 +1,49 @@
 # Changelog
 
+## 1.3.0 — Unreleased — Milestone 18 — Pipeline & Preset System
+
+### Added
+
+- Declarative YAML pipeline v1 schema and loader.
+- Public `cecilia-ffmpeg run <pipeline>` command.
+- Sequential typed execution for trim, speed, resize, normalization, roadmap-compatible `audio.normalize`, and conversion steps.
+- Isolated temporary workspace for intermediate media with optional `--keep-temp` preservation.
+- Local reusable named presets with nested expansion, unknown-reference errors, and cycle detection.
+- Pipeline-level dry-run that validates schema, input, presets, step order, and final output contracts without fabricating intermediates.
+- Output codec/extension/final-step consistency validation.
+- Final FFprobe codec assertion against the produced artifact.
+- Protection against final-output/original-input path collisions.
+- Cross-command eager output preflight: local file destinations are checked before expensive media work; batch `existing=error` validates all planned outputs before workers start.
+- Deterministic preset safety limits: 32 nesting levels and 256 expanded concrete steps.
+- Public package API for loading, expanding, validating, and executing pipelines.
+- `media_run_pipeline` MCP tool, increasing the MCP catalog from 9 to 10 tools.
+- Dedicated `ffmpeg-pipelines` professional Skill and schema reference, increasing the bundled Skill catalog from 7 to 8.
+- Public pipeline/preset documentation and Getting Started examples.
+- `verify:pipeline` architecture/release gate and pipeline-specific unit/integration coverage.
+- Direct runtime dependency on `js-yaml@^4.3.2`.
+
+### Architecture
+
+Pipeline execution is an orchestration layer over existing typed domains:
+
+```text
+YAML
+  -> schema validation
+  -> preset expansion
+  -> output-contract validation
+  -> typed domain steps
+  -> shared FFmpeg/FFprobe runtime
+```
+
+The pipeline layer does not invoke child processes directly and does not route MCP through CLI adapters.
+
+### Compatibility
+
+- Existing single-operation CLI/API/MCP behavior remains unchanged.
+- Relative media paths resolve from the pipeline file directory.
+- Software encoding and existing hardware-selection defaults are preserved inside hardware-aware pipeline steps.
+- Pipeline dry-run performs planning/validation only; actual multi-step execution creates real intermediate media in an isolated workspace.
+
 ## 1.2.0 — 2026-09-20 — Milestone 17 — Advanced Hardware Acceleration
 
 ### Added

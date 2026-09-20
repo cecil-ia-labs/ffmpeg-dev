@@ -11,6 +11,7 @@ const skills = [
   "ffmpeg-composition",
   "ffmpeg-streaming",
   "ffmpeg-diagnostics",
+  "ffmpeg-pipelines",
 ] as const;
 
 const requiredHeadings = [
@@ -28,7 +29,7 @@ const requiredHeadings = [
   "## References",
 ] as const;
 
-describe("Milestone 10 professional skills", () => {
+describe("professional skills catalog", () => {
   for (const skill of skills) {
     it(`${skill} is self-contained and has professional workflow sections`, async () => {
       const file = path.resolve("skills", skill, "SKILL.md");
@@ -43,7 +44,7 @@ describe("Milestone 10 professional skills", () => {
     });
   }
 
-  it("installs exactly the intended Milestone 10 skill directories", async () => {
-    expect(skills).toHaveLength(7);
+  it("installs the intended skill directories", async () => {
+    expect(skills).toHaveLength(8);
   });
 });

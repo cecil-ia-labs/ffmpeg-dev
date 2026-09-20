@@ -10,6 +10,7 @@ import {
   mediaProbeAdapter,
   mediaRemoveSilenceAdapter,
   mediaRestoreAdapter,
+  mediaRunPipelineAdapter,
   mediaTrimAdapter,
 } from "./adapters.js";
 import { executeMcpOperation } from "./runtime.js";
@@ -22,6 +23,7 @@ import {
   mediaProbeInputSchema,
   mediaRemoveSilenceInputSchema,
   mediaRestoreInputSchema,
+  mediaRunPipelineInputSchema,
   mediaTrimInputSchema,
 } from "./schemas.js";
 
@@ -34,6 +36,7 @@ export const MCP_TOOL_NAMES = [
   "media_remove_silence",
   "media_generate_silence",
   "media_restore",
+  "media_run_pipeline",
   "media_diagnose",
 ] as const;
 
@@ -46,6 +49,7 @@ const instructions = [
   "Outputs never overwrite an existing destination unless overwrite=true is explicit.",
   "Use dry_run=true when the user wants a validated FFmpeg plan without mutating media.",
   "media_restore uses the toolkit's canonical upscale/restoration implementation.",
+  "media_run_pipeline executes the same declarative YAML pipeline engine as the CLI run command.",
 ].join(" ");
 
 export function createMediaMcpServer(): McpServer {
@@ -155,6 +159,19 @@ export function createMediaMcpServer(): McpServer {
     },
     async (args, ctx) => await executeMcpOperation(
       async () => await mediaRestoreAdapter(args, ctx.mcpReq.signal),
+    ),
+  );
+
+  server.registerTool(
+    "media_run_pipeline",
+    {
+      title: "Run media pipeline",
+      description: "Execute a declarative YAML pipeline with reusable presets through the shared typed media domains.",
+      inputSchema: mediaRunPipelineInputSchema,
+      annotations: { readOnlyHint: false, destructiveHint: false, idempotentHint: false },
+    },
+    async (args, ctx) => await executeMcpOperation(
+      async () => await mediaRunPipelineAdapter(args, ctx.mcpReq.signal),
     ),
   );
 

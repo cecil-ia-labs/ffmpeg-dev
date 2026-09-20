@@ -1,7 +1,7 @@
 import path from "node:path";
 
 import { ToolkitRuntimeError } from "../core/errors.js";
-import { deriveOutputPath, resolveReadableFile } from "../media/io.js";
+import { deriveOutputPath, preflightOutputPath, resolveReadableFile } from "../media/io.js";
 import { resolveEncodingProfile } from "../video/encoding.js";
 import { audioCodecForVideoContainer, audioEncodingArgs, resolveAudioEncodingProfile, resolveVideoMode } from "./encoding.js";
 import { executeAudioTransform, formatNumber, inspectAudioInput, integerInRange, positiveFinite, requireVideo } from "./helpers.js";
@@ -33,6 +33,7 @@ export async function generateSilence(request: GenerateSilenceRequest = {}): Pro
   const output = request.output === undefined
     ? defaultSilenceOutput(request.cwd)
     : path.resolve(request.cwd ?? process.cwd(), request.output);
+  await preflightOutputPath({ output, overwrite: request.overwrite ?? false });
   const encoding = resolveAudioEncodingProfile(output);
 
   return await executeAudioTransform({
@@ -54,6 +55,9 @@ export async function generateSilence(request: GenerateSilenceRequest = {}): Pro
 
 export async function addSilenceToVideo(input: string, request: AddSilenceRequest = {}): Promise<AudioOperationReport> {
   const source = await resolveReadableFile(input, request.cwd);
+  const output = deriveOutputPath(source, "silent-audio", request.output, { ...(request.cwd !== undefined ? { cwd: request.cwd } : {}) });
+  await preflightOutputPath({ source, output, overwrite: request.overwrite ?? false });
+
   const media = await inspectAudioInput(source, request);
   requireVideo(media, source);
   if (media.audio.length > 0 && !request.replaceExisting) {
@@ -64,7 +68,6 @@ export async function addSilenceToVideo(input: string, request: AddSilenceReques
   const sampleRate = integerInRange(Math.trunc(request.sampleRate ?? 48_000), "sampleRate", 1_000, 384_000);
   const channels = integerInRange(Math.trunc(request.channels ?? 2), "channels", 1, 32);
   const channelLayout = channelLayoutFor(channels, request.channelLayout);
-  const output = deriveOutputPath(source, "silent-audio", request.output, { ...(request.cwd !== undefined ? { cwd: request.cwd } : {}) });
   const videoMode = resolveVideoMode(media, output, request.videoMode);
   const audioCodec = audioCodecForVideoContainer(output);
   const videoProfile = videoMode === "encode" ? resolveEncodingProfile(output) : undefined;

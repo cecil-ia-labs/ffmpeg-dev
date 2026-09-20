@@ -4,11 +4,12 @@ import { MCP_TOOL_NAMES, createMediaMcpServer } from "../../src/mcp/server.js";
 import {
   mediaConvertInputSchema,
   mediaGenerateSilenceInputSchema,
+  mediaRunPipelineInputSchema,
   mediaTrimInputSchema,
 } from "../../src/mcp/schemas.js";
 
-describe("Milestone 16 MCP server surface", () => {
-  it("registers the frozen initial media tool catalog", () => {
+describe("MCP server surface", () => {
+  it("registers the current media tool catalog", () => {
     expect(MCP_TOOL_NAMES).toEqual([
       "media_probe",
       "media_trim",
@@ -18,6 +19,7 @@ describe("Milestone 16 MCP server surface", () => {
       "media_remove_silence",
       "media_generate_silence",
       "media_restore",
+      "media_run_pipeline",
       "media_diagnose",
     ]);
     expect(createMediaMcpServer()).toBeDefined();
@@ -54,6 +56,14 @@ describe("Milestone 16 MCP server surface", () => {
       hardware: "auto",
       hardware_device: "/dev/dri/renderD128",
       hardware_strict: true,
+    });
+
+    const pipeline = mediaRunPipelineInputSchema.parse({ pipeline: "pipeline.yaml", dry_run: true });
+    expect(pipeline).toMatchObject({
+      pipeline: "pipeline.yaml",
+      dry_run: true,
+      overwrite: false,
+      keep_temp: false,
     });
 
     const silence = mediaGenerateSilenceInputSchema.parse({});

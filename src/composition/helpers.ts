@@ -3,7 +3,7 @@ import path from "node:path";
 import { renderCommandForDisplay } from "../core/command-result.js";
 import { ToolkitRuntimeError } from "../core/errors.js";
 import { runFFmpeg } from "../core/ffmpeg-runner.js";
-import { prepareOutputTransaction, resolveReadableFile } from "../media/io.js";
+import { preflightOutputPath, prepareOutputTransaction, resolveReadableFile } from "../media/io.js";
 import { probeMedia } from "../media/probe.js";
 import type { MediaInfo, ToolkitWarning } from "../types/contracts.js";
 import type { CompositionOperation, CompositionReport, CompositionRuntimeOptions } from "./types.js";
@@ -57,6 +57,22 @@ export function deriveCompositionOutput(source: string, suffix: string, explicit
   return path.join(parsed.dir, `${parsed.name}.${suffix}.${format}`);
 }
 
+export async function preflightCompositionOutput(
+  sources: readonly string[],
+  output: string,
+  overwrite = false,
+): Promise<string> {
+  const absoluteOutput = path.resolve(output);
+  const collision = sources.find((source) => path.resolve(source) === absoluteOutput);
+  if (collision !== undefined) {
+    throw new ToolkitRuntimeError("E_CONFIG_CONFLICT", "Composition output must differ from every input path.", {
+      details: { output: absoluteOutput, sources },
+    });
+  }
+
+  return await preflightOutputPath({ output: absoluteOutput, overwrite });
+}
+
 export async function executeComposition(options: {
   operation: CompositionOperation;
   sources: string[];
@@ -67,12 +83,11 @@ export async function executeComposition(options: {
   warnings?: ToolkitWarning[];
   details?: Record<string, unknown>;
 }): Promise<CompositionReport> {
-  const absoluteOutput = path.resolve(options.output);
-  if (options.sources.some((source) => path.resolve(source) === absoluteOutput)) {
-    throw new ToolkitRuntimeError("E_CONFIG_CONFLICT", "Composition output must differ from every input path.", {
-      details: { output: absoluteOutput, sources: options.sources },
-    });
-  }
+  const absoluteOutput = await preflightCompositionOutput(
+    options.sources,
+    options.output,
+    options.runtime.overwrite ?? false,
+  );
 
   const transaction = await prepareOutputTransaction({
     output: absoluteOutput,

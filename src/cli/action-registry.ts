@@ -8,10 +8,12 @@ import { runComposeConcatAction, runComposeSlideshowAction, runComposeTransition
 import { runDiagnoseAction, runRepairNormalizeAction, runRepairTimestampsAction } from "./actions/diagnostics.js";
 import { runStreamCameraAction, runStreamFileAction } from "./actions/streaming.js";
 import { runImageConvertAction, runImageExtractAction } from "./actions/image.js";
+import { runPipelineAction } from "./actions/pipeline.js";
 
 export type CommandAction = (command: Command, positional: readonly unknown[]) => Promise<void> | void;
 
 const ACTIONS: Readonly<Record<string, CommandAction>> = {
+  "cecilia-ffmpeg run": runPipelineAction,
   "cecilia-ffmpeg doctor": runDoctorAction,
   "cecilia-ffmpeg probe": runProbeAction,
   "cecilia-ffmpeg environment capabilities": runEnvironmentCapabilitiesAction,

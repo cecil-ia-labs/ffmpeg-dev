@@ -1,6 +1,6 @@
 # MCP Server
 
-FFmpeg Media Toolkit v1.2.0 exposes its typed media operations as Model Context Protocol tools through a dedicated stdio server.
+FFmpeg Media Toolkit v1.3.0 exposes its typed media operations as Model Context Protocol tools through a dedicated stdio server.
 
 ## Install
 
@@ -62,7 +62,7 @@ Do not use the package-only `npx` shorthand as a shorthand: the package intentio
 
 The server uses stdio. Standard output is reserved for MCP protocol traffic; diagnostics from the server process go to standard error.
 
-## Initial tool catalog
+## Tool catalog
 
 | MCP tool                 | Domain implementation | Purpose                                    |
 | ------------------------ | --------------------- | ------------------------------------------ |
@@ -74,6 +74,7 @@ The server uses stdio. Standard output is reserved for MCP protocol traffic; dia
 | `media_remove_silence`   | `removeSilence()`     | silence removal for audio-only media       |
 | `media_generate_silence` | `generateSilence()`   | silent audio generation                    |
 | `media_restore`          | `upscaleVideo()`      | canonical restoration/upscale pipeline     |
+| `media_run_pipeline`     | `executePipeline()`    | declarative YAML pipeline/preset execution  |
 | `media_diagnose`         | `diagnoseMedia()`     | structural/decode/freeze diagnostics       |
 
 The MCP layer does **not** invoke the CLI. It calls the same typed domain functions that the CLI adapters use.
@@ -109,6 +110,26 @@ In v1.2, `media_convert` and `media_restore` also expose the hardware policy:
 
 Supported policy values are `software`, `auto`, `nvenc`, `qsv`, `vaapi`, and `videotoolbox`; actual codec/backend compatibility is validated by the toolkit.
 
+## Declarative pipeline tool
+
+`media_run_pipeline` executes the same v1 YAML document as:
+
+```bash
+cecilia-ffmpeg run pipeline.yaml
+```
+
+Example:
+
+```json
+{
+  "pipeline": "/workspace/pipeline.yaml",
+  "dry_run": true,
+  "overwrite": false
+}
+```
+
+The pipeline path may be relative to `cwd`. Relative media paths inside the document resolve from the pipeline file directory.
+
 ## Safety behavior
 
 - Existing outputs are not overwritten unless `overwrite=true` is explicit.
@@ -129,7 +150,7 @@ Domain errors are returned as tool errors with the toolkit's existing error code
 
 ## Transport scope
 
-v1.2.0 continues to ship the local stdio MCP server introduced in v1.1. A hosted Streamable HTTP deployment is intentionally outside this milestone because it requires explicit hosting, origin/host validation, authentication, and deployment policy rather than merely another media adapter.
+v1.3.0 continues to ship the local stdio MCP server introduced in v1.1 and adds declarative pipeline execution through `media_run_pipeline`. A hosted Streamable HTTP deployment is intentionally outside this milestone because it requires explicit hosting, origin/host validation, authentication, and deployment policy rather than merely another media adapter.
 
 ## Included MCP Configuration
 The repository ships a VS Code workspace MCP configuration for local development:

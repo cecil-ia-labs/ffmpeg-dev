@@ -4,7 +4,7 @@ import { buildFitFilters } from "../media/fit.js";
 import { encodingArgs, resolveEncodingProfile } from "./encoding.js";
 import { executeVideoTransform, inspectInput, positiveFinite, requireVideo } from "./helpers.js";
 import { resolveVideoHardware, hardwareReportDetails } from "./hardware.js";
-import { deriveOutputPath, resolveReadableFile } from "./io.js";
+import { deriveOutputPath, preflightOutputPath, resolveReadableFile } from "./io.js";
 import type { RestoreProfile, RestoreVideoRequest, VideoOperation, VideoOperationReport } from "./types.js";
 
 function validateProfile(value: RestoreProfile | undefined): RestoreProfile {
@@ -55,14 +55,15 @@ async function transformVideo(
     throw new ToolkitRuntimeError("E_USAGE_INVALID_ARGUMENT", "crf must be between 0 and 63.", { details: { crf } });
   }
   const preset = request.preset ?? (profileName === "aggressive" ? "slow" : "medium");
-  const media = await inspectInput(source, request);
-  requireVideo(media, source);
-
   const to = request.to ?? "mp4";
   const output = deriveOutputPath(source, `${operation}-${width}x${height}`, request.output, {
     ...(request.cwd !== undefined ? { cwd: request.cwd } : {}),
     defaultExtension: `.${to}`,
   });
+  await preflightOutputPath({ source, output, overwrite: request.overwrite ?? false });
+
+  const media = await inspectInput(source, request);
+  requireVideo(media, source);
   const encoding = resolveEncodingProfile(output, { crf, preset });
   const hardware = await resolveVideoHardware(to, request);
   const baseFilter = buildRestoreFilter(width, height, profileName, request);

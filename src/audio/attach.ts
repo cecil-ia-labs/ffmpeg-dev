@@ -1,5 +1,5 @@
 import { ToolkitRuntimeError } from "../core/errors.js";
-import { deriveOutputPath, resolveReadableFile } from "../media/io.js";
+import { deriveOutputPath, preflightOutputPath, resolveReadableFile } from "../media/io.js";
 import { resolveEncodingProfile } from "../video/encoding.js";
 import { audioCodecForVideoContainer, resolveVideoMode } from "./encoding.js";
 import { executeAudioTransform, inspectAudioInput, requireAudio, requireVideo } from "./helpers.js";
@@ -16,12 +16,14 @@ function validateAttachMode(value: AttachAudioMode | undefined): AttachAudioMode
 export async function attachAudio(videoInput: string, audioInput: string, request: AttachAudioRequest = {}): Promise<AudioOperationReport> {
   const video = await resolveReadableFile(videoInput, request.cwd);
   const audio = await resolveReadableFile(audioInput, request.cwd);
-  const [videoMedia, audioMedia] = await Promise.all([inspectAudioInput(video, request), inspectAudioInput(audio, request)]);
-  requireVideo(videoMedia, video);
-  requireAudio(audioMedia, audio);
   const mode = validateAttachMode(request.mode);
   const pad = request.pad ?? true;
   const output = deriveOutputPath(video, mode === "replace" ? "audio-replaced" : "audio-attached", request.output, { ...(request.cwd !== undefined ? { cwd: request.cwd } : {}) });
+  await preflightOutputPath({ source: video, output, overwrite: request.overwrite ?? false });
+
+  const [videoMedia, audioMedia] = await Promise.all([inspectAudioInput(video, request), inspectAudioInput(audio, request)]);
+  requireVideo(videoMedia, video);
+  requireAudio(audioMedia, audio);
   const videoMode = resolveVideoMode(videoMedia, output, request.videoMode);
   const audioCodec = audioCodecForVideoContainer(output);
   const encodeProfile = videoMode === "encode" ? resolveEncodingProfile(output) : undefined;

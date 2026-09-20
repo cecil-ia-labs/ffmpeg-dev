@@ -1,8 +1,8 @@
 # FFmpeg Media Toolkit
 
-**Release status:** `1.2.0` — Advanced hardware acceleration
+**Release status:** `1.3.0` — Declarative pipelines & presets implementation complete; validation pending
 
-**Version:** `1.2.0`
+**Version:** `1.3.0`
 
 **Cecil-IA Labs · FFmpeg Media Toolkit**
 
@@ -21,10 +21,11 @@ FFmpeg Media Toolkit is a professional, agent-friendly TypeScript CLI and plugin
 
 ## Release status
 
-v1.1.0 is published on npm with the stable CLI plus the stdio MCP server. Milestone 17 advances the package to v1.2.0 with typed hardware encoder selection, runtime verification, deterministic software fallback, expanded NVENC/NVDEC/QSV/VAAPI/VideoToolbox capability metadata, and hardware-aware CLI/MCP conversion paths.
+v1.2.0 is published with runtime-verified hardware acceleration. Milestone 18 advances the package to v1.3.0 with declarative YAML pipelines, reusable presets, a public `run <pipeline>` CLI command, `media_run_pipeline` MCP execution, and a dedicated pipeline-authoring Skill.
 
 Implemented now:
 
+- `run <pipeline>`;
 - `doctor`;
 - `environment version`;
 - `environment capabilities`;
@@ -80,6 +81,7 @@ The public CLI is now documented without requiring source inspection:
 - [Installation](docs/installation.md)
 - [CLI reference](docs/cli-reference.md)
 - [MCP server](docs/mcp.md)
+- [Declarative pipelines & presets](docs/pipelines.md)
 - [Video](docs/video.md)
 - [Image](docs/image.md)
 - [Audio](docs/audio.md)
@@ -121,7 +123,7 @@ A host can launch it directly:
 }
 ```
 
-The initial tool catalog is:
+The MCP tool catalog is:
 
 ```text
 media_probe
@@ -132,6 +134,7 @@ media_attach_audio
 media_remove_silence
 media_generate_silence
 media_restore
+media_run_pipeline
 media_diagnose
 ```
 
@@ -144,6 +147,20 @@ MCP tool -> src/mcp/adapters.ts -> existing typed domain function -> core FFmpeg
 It does not invoke CLI actions and does not create another child-process execution boundary. MCP cancellation is propagated into the same `AbortSignal` used by domain operations. Successful tool calls return both JSON text content and MCP structured content.
 
 See [MCP server](docs/mcp.md) and [MCP architecture](docs/development/mcp-server.md).
+
+## Declarative pipelines & presets
+
+Milestone 18 introduces declarative YAML workflows that compose existing typed operations:
+
+```bash
+cecilia-ffmpeg run pipeline.yaml
+```
+
+A pipeline can chain trim, speed, resize, normalization, conversion, and reusable named presets. Multi-step execution uses isolated intermediate files, while `--dry-run` validates and expands the job without mutating media.
+
+MCP-enabled agents can run the same document through `media_run_pipeline`.
+
+See [Declarative pipelines & presets](docs/pipelines.md).
 
 ## Hardware acceleration
 
@@ -311,7 +328,8 @@ skills/
 ├── ffmpeg-conversion/
 ├── ffmpeg-composition/
 ├── ffmpeg-streaming/
-└── ffmpeg-diagnostics/
+├── ffmpeg-diagnostics/
+└── ffmpeg-pipelines/
 ```
 
 Each skill contains a portable `SKILL.md` plus a `references/` directory. The core execution policy is:
@@ -793,6 +811,7 @@ Composition normalizes geometry, constant frame rate, pixel format, timebase, an
 
 ```text
 cecilia-ffmpeg
+├── run <pipeline>
 ├── doctor
 ├── probe <input>
 ├── environment

@@ -4,6 +4,7 @@ import path from "node:path";
 import { performance } from "node:perf_hooks";
 
 import { exitCodeForError, isToolkitRuntimeError, ToolkitRuntimeError, toToolkitError } from "../core/index.js";
+import { preflightOutputPath } from "../media/io.js";
 import { convertFile } from "./convert.js";
 import { assertSupportedConversion, isExtensionForFormat, targetExtension } from "./profiles.js";
 import { matchesAnyPattern } from "./patterns.js";
@@ -170,6 +171,12 @@ export async function convertBatch(directoryInput: string, request: ConvertBatch
     throw new ToolkitRuntimeError("E_CONFIG_CONFLICT", "Multiple batch inputs resolve to the same output path.", {
       details: { collisions, hint: "Preserve hierarchy or choose a different output directory." },
     });
+  }
+
+  if (existing === "error") {
+    await Promise.all(plannedOutputs.map(async ({ item, output }) => {
+      await preflightOutputPath({ source: item.input, output, overwrite: false });
+    }));
   }
 
   const startedAt = new Date();

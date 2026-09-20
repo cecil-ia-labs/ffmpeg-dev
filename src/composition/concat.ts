@@ -1,7 +1,7 @@
 import { ToolkitRuntimeError } from "../core/errors.js";
 import { encodingArgs, resolveEncodingProfile } from "../video/encoding.js";
 import { FilterGraphBuilder } from "./filter-graph.js";
-import { deriveCompositionOutput, durationSeconds, executeComposition, inspectCompositionInput, requireVideoStreams, resolveCompositionFiles } from "./helpers.js";
+import { deriveCompositionOutput, durationSeconds, executeComposition, inspectCompositionInput, preflightCompositionOutput, requireVideoStreams, resolveCompositionFiles } from "./helpers.js";
 import { AUDIO_NORMALIZATION_FILTERS, resolveVideoNormalization, videoNormalizationFilters } from "./normalization.js";
 import { COMPOSITION_TRANSITIONS, xfadeFilter } from "./transitions.js";
 import type { CompositionAudioMode, CompositionReport, ConcatRequest } from "./types.js";
@@ -17,6 +17,9 @@ function resolveAudioMode(requested: CompositionAudioMode | undefined, allHaveAu
 
 export async function concatMedia(inputs: readonly string[], request: ConcatRequest = {}): Promise<CompositionReport> {
   const sources = await resolveCompositionFiles(inputs, request);
+  const output = deriveCompositionOutput(sources[0]!, "concat", request.output, request.cwd, request.to ?? "mp4");
+  await preflightCompositionOutput(sources, output, request.overwrite ?? false);
+
   const media = await Promise.all(sources.map(async (source) => await inspectCompositionInput(source, request)));
   requireVideoStreams(media, sources);
 
@@ -85,7 +88,6 @@ export async function concatMedia(inputs: readonly string[], request: ConcatRequ
     outputDuration = durations.reduce((sum, value) => sum + value, 0);
   }
 
-  const output = deriveCompositionOutput(sources[0]!, "concat", request.output, request.cwd, request.to ?? "mp4");
   const encoding = resolveEncodingProfile(output);
   const args: string[] = [];
   for (const source of sources) args.push("-i", source);

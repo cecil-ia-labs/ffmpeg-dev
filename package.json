@@ -13,9 +13,10 @@
   "dependencies": {
     "commander": "^14.0.0",
     "zod": "^4.2.0",
-    "@modelcontextprotocol/server": "^2.0.0"
+    "@modelcontextprotocol/server": "^2.0.0",
+    "js-yaml": "^4.3.2"
   },
-  "description": "Agent-friendly FFmpeg toolkit with CLI, MCP tools, and typed hardware acceleration.",
+  "description": "Agent-friendly FFmpeg toolkit with CLI, MCP tools, hardware acceleration, and declarative pipelines.",
   "devDependencies": {
     "@eslint/js": "^9.34.0",
     "@types/node": "^22.15.0",
@@ -72,7 +73,7 @@
     "url": "git+https://github.com/cecil-ia-labs/ffmpeg-dev.git"
   },
   "scripts": {
-    "build": "tsc -p tsconfig.build.json",
+    "build": "tsc -p tsconfig.build.json && node scripts/prepare-binaries.mjs",
     "check": "tsc -p tsconfig.json --noEmit",
     "cli": "tsx src/cli.ts",
     "codex:cleanup": "node scripts/codex-environment-cleanup.mjs",
@@ -91,7 +92,7 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "unlink:cli": "npm unlink --global @cecilialabs/ffmpeg",
-    "validate": "npm run verify:foundation && npm run verify:runtime && npm run verify:inspection && npm run verify:video && npm run verify:audio && npm run verify:conversion && npm run verify:composition && npm run verify:diagnostics && npm run verify:streaming && npm run verify:skills && npm run verify:plugin && npm run verify:test-suite && npm run verify:fixtures && npm run verify:ux && npm run verify:media-expansion && npm run verify:docs && npm run verify:distribution && npm run verify:mcp && npm run verify:hardware && npm run check && npm run lint && npm run test && npm run build && npm run verify:package",
+    "validate": "npm run verify:foundation && npm run verify:runtime && npm run verify:inspection && npm run verify:video && npm run verify:audio && npm run verify:conversion && npm run verify:composition && npm run verify:diagnostics && npm run verify:streaming && npm run verify:skills && npm run verify:plugin && npm run verify:test-suite && npm run verify:fixtures && npm run verify:ux && npm run verify:media-expansion && npm run verify:docs && npm run verify:distribution && npm run verify:mcp && npm run verify:hardware && npm run verify:output-preflight && npm run verify:pipeline && npm run check && npm run lint && npm run test && npm run build && npm run verify:package",
     "verify:audio": "node scripts/verify-audio.mjs",
     "verify:composition": "node scripts/verify-composition.mjs",
     "verify:conversion": "node scripts/verify-conversion.mjs",
@@ -116,11 +117,13 @@
     "smoke:platform": "node scripts/smoke-platform.mjs",
     "mcp": "tsx src/mcp.ts",
     "verify:mcp": "node scripts/verify-mcp.mjs",
-    "verify:hardware": "node scripts/verify-hardware.mjs"
+    "verify:hardware": "node scripts/verify-hardware.mjs",
+    "verify:pipeline": "node scripts/verify-pipeline.mjs",
+    "verify:output-preflight": "node scripts/verify-output-preflight.mjs"
   },
   "type": "module",
   "types": "./dist/index.d.ts",
-  "version": "1.2.0",
+  "version": "1.3.0",
   "publishConfig": {
     "access": "public"
   }

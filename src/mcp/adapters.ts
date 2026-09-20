@@ -3,6 +3,7 @@ import { concatMedia } from "../composition/index.js";
 import { convertFile } from "../conversion/index.js";
 import { diagnoseMedia } from "../diagnostics/index.js";
 import { probeMedia } from "../media/index.js";
+import { executePipeline, loadPipelineFile } from "../pipeline/index.js";
 import { trimVideoRange, upscaleVideo } from "../video/index.js";
 import { runtimeOptions } from "./runtime.js";
 import type {
@@ -12,6 +13,7 @@ import type {
   MediaDiagnoseInput,
   MediaGenerateSilenceInput,
   MediaProbeInput,
+  MediaRunPipelineInput,
   MediaRemoveSilenceInput,
   MediaRestoreInput,
   MediaTrimInput,
@@ -117,6 +119,20 @@ export async function mediaRestoreAdapter(input: MediaRestoreInput, signal: Abor
     hardware: input.hardware,
     ...(input.hardware_device !== undefined ? { hardwareDevice: input.hardware_device } : {}),
     hardwareStrict: input.hardware_strict,
+  });
+}
+
+export async function mediaRunPipelineAdapter(input: MediaRunPipelineInput, signal: AbortSignal) {
+  const loaded = await loadPipelineFile(input.pipeline, input.cwd ?? process.cwd());
+  return await executePipeline(loaded, {
+    ...(input.output !== undefined ? { output: input.output } : {}),
+    overwrite: input.overwrite,
+    dryRun: input.dry_run,
+    verbose: input.verbose,
+    ...(input.ffmpeg_path !== undefined ? { ffmpegPath: input.ffmpeg_path } : {}),
+    ...(input.ffprobe_path !== undefined ? { ffprobePath: input.ffprobe_path } : {}),
+    signal,
+    keepTemp: input.keep_temp,
   });
 }
 

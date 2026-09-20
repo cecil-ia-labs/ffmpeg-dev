@@ -15,6 +15,7 @@ describe("command tree", () => {
   it("contains representative domain leaves", () => {
     const commands = flatten(COMMAND_TREE);
 
+    expect(commands).toContain("run");
     expect(commands).toContain("video trim-start");
     expect(commands).toContain("audio telephony");
     expect(commands).toContain("video upscale");
