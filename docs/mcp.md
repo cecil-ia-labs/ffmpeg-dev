@@ -58,7 +58,7 @@ Without a global install, invoke the intended package binary explicitly:
 }
 ```
 
-Do not use `npx @cecilialabs/ffmpeg` as a shorthand: the package intentionally exposes both the CLI and MCP binaries.
+Do not use the package-only `npx` shorthand as a shorthand: the package intentionally exposes both the CLI and MCP binaries.
 
 The server uses stdio. Standard output is reserved for MCP protocol traffic; diagnostics from the server process go to standard error.
 
