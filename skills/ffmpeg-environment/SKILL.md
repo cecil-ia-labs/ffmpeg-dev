@@ -26,14 +26,26 @@ Collect only what is needed:
 ## Preflight workflow
 
 1. Prefer the toolkit:
-   `npx @cecilialabs/ffmpeg doctor`.
+   `cecilia-ffmpeg doctor`.
 2. For machine-readable capability data, use:
-   `npx @cecilialabs/ffmpeg environment capabilities --json`.
+   `cecilia-ffmpeg environment capabilities --json`.
 3. For version checks, use:
-   `npx @cecilialabs/ffmpeg environment version --json`.
+   `cecilia-ffmpeg environment version --json`.
 4. For media inspection, use:
-   `npx @cecilialabs/ffmpeg probe <input> --json`.
+   `cecilia-ffmpeg probe <input> --json`.
 5. Do not infer runtime support from package names or operating-system assumptions when the toolkit can inspect it directly.
+
+## Toolkit surface selection
+
+Use the highest-level toolkit surface available to the host:
+
+1. If the connected MCP server exposes `media_probe` and the task is media inspection, prefer that tool.
+2. For `doctor`, version checks, and capability inspection, use the global `cecilia-ffmpeg` binary.
+3. If the global binary is unavailable, use:
+   `npm exec --yes --package=@cecilialabs/ffmpeg -- cecilia-ffmpeg <command>`.
+4. Use native FFmpeg/FFprobe only when the toolkit lacks the required inspection or the user explicitly requests native syntax.
+
+MCP v1.2 does not expose `doctor` or `environment capabilities`; do not invent MCP tools for those operations.
 
 ## Preferred toolkit commands
 
