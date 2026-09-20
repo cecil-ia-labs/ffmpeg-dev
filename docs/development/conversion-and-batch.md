@@ -50,11 +50,11 @@ Unsupported pairs fail before FFmpeg execution with `E_OPERATION_UNSUPPORTED`.
 ## Single-file CLI
 
 ```bash
-npx @cecilialabs/ffmpeg convert file ./clip.mp4 --to webm
+cecilia-ffmpeg convert file ./clip.mp4 --to webm
 ```
 
 ```bash
-npx @cecilialabs/ffmpeg convert file ./clip.mp4 \
+cecilia-ffmpeg convert file ./clip.mp4 \
   --to gif \
   --fps 12 \
   --width 720 \
@@ -62,7 +62,7 @@ npx @cecilialabs/ffmpeg convert file ./clip.mp4 \
 ```
 
 ```bash
-npx @cecilialabs/ffmpeg convert file ./clip.mp4 \
+cecilia-ffmpeg convert file ./clip.mp4 \
   --to webp \
   --fps 10 \
   --quality 82 \
@@ -74,7 +74,7 @@ Conversion-specific tuning controls are optional. Target defaults are determinis
 ## Batch CLI
 
 ```bash
-npx @cecilialabs/ffmpeg convert batch ./clips \
+cecilia-ffmpeg convert batch ./clips \
   --from mp4 \
   --to webm
 ```
@@ -82,7 +82,7 @@ npx @cecilialabs/ffmpeg convert batch ./clips \
 Recursive selection with filters:
 
 ```bash
-npx @cecilialabs/ffmpeg convert batch ./clips \
+cecilia-ffmpeg convert batch ./clips \
   --from mp4 \
   --to gif \
   --recursive \
@@ -160,7 +160,7 @@ Parallelism controls the number of files converted concurrently. Each file still
 A dry run performs read-only source inspection so the plan can correctly account for streams such as audio, but does not execute the mutating FFmpeg conversion:
 
 ```bash
-npx @cecilialabs/ffmpeg --dry-run --json convert file ./clip.mp4 --to webm
+cecilia-ffmpeg --dry-run --json convert file ./clip.mp4 --to webm
 ```
 
 For batch jobs, every selected item is planned through `convertFile()` and appears in the batch report.
