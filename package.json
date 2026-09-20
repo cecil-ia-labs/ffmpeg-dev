@@ -78,7 +78,7 @@
     "link:cli": "npm run build && npm link",
     "lint": "eslint .",
     "prepack": "npm run build",
-    "prepublishOnly": "npm run validate",
+    "prepublishOnly": "npm run validate:release",
     "setup:cli": "node scripts/setup-local-cli.mjs",
     "test": "vitest run",
     "test:watch": "vitest",
@@ -101,9 +101,14 @@
     "verify:streaming": "node scripts/verify-streaming.mjs",
     "verify:test-suite": "node scripts/verify-test-suite.mjs",
     "verify:ux": "node scripts/verify-ux.mjs",
-    "verify:video": "node scripts/verify-video.mjs"
+    "verify:video": "node scripts/verify-video.mjs",
+    "verify:release": "node scripts/verify-release.mjs",
+    "validate:release": "npm run validate && npm run verify:release"
   },
   "type": "module",
   "types": "./dist/index.d.ts",
-  "version": "0.9.9"
+  "version": "1.0.0",
+  "publishConfig": {
+    "access": "public"
+  }
 }
