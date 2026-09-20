@@ -1,7 +1,7 @@
 # FFmpeg Media Toolkit
 
-**Release status:** `1.1.0` — MCP Server implementation in progress  
-**Version:** `1.1.0`
+**Release status:** `1.2.0` — Advanced hardware acceleration implementation in progress  
+**Version:** `1.2.0`
 
 **Cecil-IA Labs · FFmpeg Media Toolkit**
 
@@ -20,7 +20,7 @@ FFmpeg Media Toolkit is a professional, agent-friendly TypeScript CLI and plugin
 
 ## Release status
 
-v1.0.0 is published on npm and released on GitHub. Milestone 16 advances the package to v1.1.0 by adding a Model Context Protocol server as a sibling adapter to the stable CLI. The MCP layer reuses the existing typed media-domain functions and core FFmpeg/FFprobe runtime rather than duplicating media implementations.
+v1.1.0 is published on npm with the stable CLI plus the stdio MCP server. Milestone 17 advances the package to v1.2.0 with typed hardware encoder selection, runtime verification, deterministic software fallback, expanded NVENC/NVDEC/QSV/VAAPI/VideoToolbox capability metadata, and hardware-aware CLI/MCP conversion paths.
 
 Implemented now:
 
@@ -144,6 +144,37 @@ It does not invoke CLI actions and does not create another child-process executi
 
 See [MCP server](docs/mcp.md) and [MCP architecture](docs/development/mcp-server.md).
 
+## Hardware acceleration
+
+v1.2.0 adds a typed hardware encoder policy while preserving software encoding as the default:
+
+```text
+software | auto | nvenc | qsv | vaapi | videotoolbox
+```
+
+Example:
+
+```bash
+cecilia-ffmpeg convert file ./input.webm \
+  --to mp4 \
+  --hardware auto
+```
+
+The selector first checks FFmpeg-reported encoder capabilities, then performs a small runtime usability probe before committing to a hardware backend. If no compatible candidate works, it falls back to the software encoder and emits a structured warning. Use `--hardware-strict` when fallback is not acceptable.
+
+Supported hardware-aware operations currently include:
+
+- `convert file`;
+- `convert batch`;
+- `video from-image`;
+- `video upscale` / `video restore`;
+- MCP `media_convert`;
+- MCP `media_restore`.
+
+NVDEC/CUVID is surfaced in capability inspection, while automatic decode-path insertion remains conservative in v1.2 because filtered workflows require explicit hardware-frame upload/download negotiation.
+
+See [Hardware acceleration](docs/hardware-acceleration.md).
+
 ## Media capability expansion
 
 The pre-v1 CLI now uses a shared visual-fit vocabulary:
@@ -167,11 +198,11 @@ audio: wav, mp3, aac, m4a, flac, opus, ogg
 Examples:
 
 ```bash
-npx tsx src/cli.ts image convert ./photo.jpg --to webp --quality 85
-npx tsx src/cli.ts image extract ./clip.mp4 --at 12.5 --to jpeg
-npx tsx src/cli.ts convert file ./call.wav --to mp3 --audio-bitrate 128k
-npx tsx src/cli.ts video upscale ./source.mp4 --resolution 1920x1080 --fit cover --to mp4
-npx tsx src/cli.ts compose slideshow ./images --style sequence --transition zoomin --to webm
+cecilia-ffmpeg image convert ./photo.jpg --to webp --quality 85
+cecilia-ffmpeg image extract ./clip.mp4 --at 12.5 --to jpeg
+cecilia-ffmpeg convert file ./call.wav --to mp3 --audio-bitrate 128k
+cecilia-ffmpeg video upscale ./source.mp4 --resolution 1920x1080 --fit cover --to mp4
+cecilia-ffmpeg compose slideshow ./images --style sequence --transition zoomin --to webm
 ```
 
 Composition now includes `zoomin` and an explicit custom `zoomout` transition. Slideshow supports vertical-stack and sequence styles, repeatable include/exclude patterns, transitions in sequence mode, and MP4/WebM/GIF/WebP outputs.
@@ -198,7 +229,7 @@ Human mode renders progress on stderr while keeping the final command result on 
 Agent mode remains one JSON envelope on stdout:
 
 ```bash
-npx @cecilialabs/ffmpeg video speed input.mp4 --factor 2 --json
+cecilia-ffmpeg video speed input.mp4 --factor 2 --json
 ```
 
 The envelope can include structured per-run progress fields such as `percentage`, `frame`, `fps`, `speedMultiplier`, `etaSeconds`, and whether the total duration was estimated.
@@ -300,10 +331,10 @@ See [professional Skills architecture](docs/development/professional-skills.md).
 ## Diagnostics & repair
 
 ```bash
-npx tsx src/cli.ts diagnose ./broken.mp4
-npx tsx src/cli.ts diagnose ./broken.mp4 --deep --json
-npx tsx src/cli.ts repair timestamps ./broken.mp4 --mode reencode --fps 30 --output ./fixed.mp4
-npx tsx src/cli.ts repair normalize ./source.mp4 --width 1920 --height 1080 --fps 30 --output ./normalized.mp4
+cecilia-ffmpeg diagnose ./broken.mp4
+cecilia-ffmpeg diagnose ./broken.mp4 --deep --json
+cecilia-ffmpeg repair timestamps ./broken.mp4 --mode reencode --fps 30 --output ./fixed.mp4
+cecilia-ffmpeg repair normalize ./source.mp4 --width 1920 --height 1080 --fps 30 --output ./normalized.mp4
 ```
 
 Diagnostics combine FFprobe structure, a read-only FFmpeg decode scan, optional supplied stderr logs, and optional `freezedetect`. Repair outputs are staged transactionally, reprobed, and re-diagnosed.
@@ -313,7 +344,7 @@ Diagnostics combine FFprobe structure, a read-only FFmpeg decode scan, optional 
 Camera to HTTP MPEG-TS:
 
 ```bash
-npx tsx src/cli.ts stream camera \
+cecilia-ffmpeg stream camera \
   --device /dev/video0 \
   --input-format v4l2 \
   --framerate 15 \
@@ -329,7 +360,7 @@ npx tsx src/cli.ts stream camera \
 File to SRT:
 
 ```bash
-npx tsx src/cli.ts stream file ./clip.mp4 \
+cecilia-ffmpeg stream file ./clip.mp4 \
   --transport srt \
   --url 'srt://receiver.example:9000?mode=caller'
 ```
@@ -381,7 +412,15 @@ cecilia-ffmpeg --help
 cecilia-ffmpeg doctor
 ```
 
-No `postinstall` hook modifies the user's shell. npm exposes the command through the package `bin` mapping.
+The package also installs `cecilia-ffmpeg-mcp`. All public CLI examples below assume this global installation and use `cecilia-ffmpeg ...` directly.
+
+Without a global install, name the intended executable explicitly:
+
+```bash
+npm exec --yes --package=@cecilialabs/ffmpeg -- cecilia-ffmpeg doctor
+```
+
+No `postinstall` hook modifies the user's shell. npm exposes the commands through the package `bin` mapping.
 
 For a development checkout:
 
@@ -416,10 +455,10 @@ See [Installation](docs/installation.md) for the complete global/local/release f
 ## Environment inspection
 
 ```bash
-npx tsx src/cli.ts doctor
-npx tsx src/cli.ts environment version
-npx tsx src/cli.ts environment capabilities
-npx tsx src/cli.ts probe ./video.mp4
+cecilia-ffmpeg doctor
+cecilia-ffmpeg environment version
+cecilia-ffmpeg environment capabilities
+cecilia-ffmpeg probe ./video.mp4
 ```
 
 Add `--json` to receive the stable result envelope.
@@ -431,7 +470,7 @@ Add `--json` to receive the stable result envelope.
 Accurate/deterministic default:
 
 ```bash
-npx tsx src/cli.ts video trim-start ./clip.mp4 \
+cecilia-ffmpeg video trim-start ./clip.mp4 \
   --seconds 40 \
   --mode auto \
   --output ./clip.trimmed.mp4
@@ -440,7 +479,7 @@ npx tsx src/cli.ts video trim-start ./clip.mp4 \
 Fast stream-copy mode:
 
 ```bash
-npx tsx src/cli.ts video trim-start ./clip.mp4 \
+cecilia-ffmpeg video trim-start ./clip.mp4 \
   --seconds 40 \
   --mode copy
 ```
@@ -450,7 +489,7 @@ npx tsx src/cli.ts video trim-start ./clip.mp4 \
 ### Remove time from the end
 
 ```bash
-npx tsx src/cli.ts video trim-end ./clip.mp4 \
+cecilia-ffmpeg video trim-end ./clip.mp4 \
   --seconds 3.5 \
   --output ./clip.short.mp4
 ```
@@ -458,7 +497,7 @@ npx tsx src/cli.ts video trim-end ./clip.mp4 \
 ### Extract a range
 
 ```bash
-npx tsx src/cli.ts video trim ./clip.mp4 \
+cecilia-ffmpeg video trim ./clip.mp4 \
   --start 12.5 \
   --end 30 \
   --output ./segment.mp4
@@ -467,7 +506,7 @@ npx tsx src/cli.ts video trim ./clip.mp4 \
 or:
 
 ```bash
-npx tsx src/cli.ts video trim ./clip.mp4 \
+cecilia-ffmpeg video trim ./clip.mp4 \
   --start 12.5 \
   --duration 17.5
 ```
@@ -477,7 +516,7 @@ npx tsx src/cli.ts video trim ./clip.mp4 \
 Keep audio synchronized:
 
 ```bash
-npx tsx src/cli.ts video speed ./clip.mp4 \
+cecilia-ffmpeg video speed ./clip.mp4 \
   --factor 2.5 \
   --audio sync
 ```
@@ -485,7 +524,7 @@ npx tsx src/cli.ts video speed ./clip.mp4 \
 Drop audio intentionally:
 
 ```bash
-npx tsx src/cli.ts video speed ./clip.mp4 \
+cecilia-ffmpeg video speed ./clip.mp4 \
   --factor 2.5 \
   --audio drop
 ```
@@ -495,7 +534,7 @@ Audio synchronization uses chained `atempo` filters when necessary.
 ### Create video from a still image
 
 ```bash
-npx tsx src/cli.ts video from-image ./poster.png \
+cecilia-ffmpeg video from-image ./poster.png \
   --duration 5 \
   --resolution 1920x1080 \
   --fps 30 \
@@ -509,7 +548,7 @@ The input aspect ratio is preserved using scale + pad.
 Balanced profile:
 
 ```bash
-npx tsx src/cli.ts video upscale ./source.mp4 \
+cecilia-ffmpeg video upscale ./source.mp4 \
   --resolution 1920x1080 \
   --profile balanced \
   --output ./restored.mp4
@@ -518,7 +557,7 @@ npx tsx src/cli.ts video upscale ./source.mp4 \
 Aggressive profile:
 
 ```bash
-npx tsx src/cli.ts video upscale ./source.mp4 \
+cecilia-ffmpeg video upscale ./source.mp4 \
   --resolution 1920x1080 \
   --profile aggressive \
   --crf 14 \
@@ -533,7 +572,7 @@ The toolkit never treats `1280x720` as FHD or `720x404` as HD. Resolution semant
 ### Attach or replace audio on video
 
 ```bash
-npx tsx src/cli.ts video attach-audio ./video.mp4 ./voice.wav \
+cecilia-ffmpeg video attach-audio ./video.mp4 ./voice.wav \
   --mode replace \
   --output ./video.with-audio.mp4
 ```
@@ -545,7 +584,7 @@ Video handling is explicit with `--video-mode auto|copy|encode`. `auto` stream-c
 ### Generate silence
 
 ```bash
-npx tsx src/cli.ts audio silence \
+cecilia-ffmpeg audio silence \
   --duration 1 \
   --sample-rate 48000 \
   --channels 2 \
@@ -557,7 +596,7 @@ If no output is supplied, the default is `./silence.wav`. Common layouts are inf
 ### Add a silent track to video
 
 ```bash
-npx tsx src/cli.ts video add-silence ./video-without-audio.mp4 \
+cecilia-ffmpeg video add-silence ./video-without-audio.mp4 \
   --output ./video-with-silent-audio.mp4
 ```
 
@@ -566,7 +605,7 @@ The command refuses to destroy existing audio implicitly. Use `--replace-existin
 ### Detect silence
 
 ```bash
-npx tsx src/cli.ts audio detect-silence ./speech.wav \
+cecilia-ffmpeg audio detect-silence ./speech.wav \
   --noise-db -30 \
   --min-duration 0.5 \
   --json
@@ -577,7 +616,7 @@ The package parses FFmpeg `silencedetect` diagnostics into typed intervals conta
 ### Remove silence
 
 ```bash
-npx tsx src/cli.ts audio remove-silence ./speech.wav \
+cecilia-ffmpeg audio remove-silence ./speech.wav \
   --noise-db -30 \
   --min-duration 0.5 \
   --keep-silence 0.05 \
@@ -591,7 +630,7 @@ The current safety model deliberately limits this command to audio-only inputs. 
 G.711 μ-law, G.711 A-law, GSM, and PCM are represented as distinct profiles rather than conflated by filename.
 
 ```bash
-npx tsx src/cli.ts audio telephony ./input.wav \
+cecilia-ffmpeg audio telephony ./input.wav \
   --codec mulaw \
   --container wav \
   --sample-rate 8000 \
@@ -602,7 +641,7 @@ npx tsx src/cli.ts audio telephony ./input.wav \
 GSM is a separate codec/container path:
 
 ```bash
-npx tsx src/cli.ts audio telephony ./input.wav \
+cecilia-ffmpeg audio telephony ./input.wav \
   --codec gsm \
   --container gsm \
   --output ./voice.gsm
@@ -613,13 +652,13 @@ npx tsx src/cli.ts audio telephony ./input.wav \
 ### Convert one file
 
 ```bash
-npx tsx src/cli.ts convert file ./clip.mp4 --to webm
+cecilia-ffmpeg convert file ./clip.mp4 --to webm
 ```
 
 GIF conversion uses an inline FFmpeg palette pipeline:
 
 ```bash
-npx tsx src/cli.ts convert file ./clip.mp4 \
+cecilia-ffmpeg convert file ./clip.mp4 \
   --to gif \
   --fps 12 \
   --width 720 \
@@ -629,7 +668,7 @@ npx tsx src/cli.ts convert file ./clip.mp4 \
 Animated WebP is generated directly by FFmpeg and does not require `webpmux`:
 
 ```bash
-npx tsx src/cli.ts convert file ./clip.mp4 \
+cecilia-ffmpeg convert file ./clip.mp4 \
   --to webp \
   --fps 10 \
   --quality 82 \
@@ -647,7 +686,7 @@ audio: wav, mp3, aac, m4a, flac, opus, ogg
 ### Convert a folder
 
 ```bash
-npx tsx src/cli.ts convert batch ./clips \
+cecilia-ffmpeg convert batch ./clips \
   --from mp4 \
   --to webm
 ```
@@ -655,7 +694,7 @@ npx tsx src/cli.ts convert batch ./clips \
 Recursive filtered batch:
 
 ```bash
-npx tsx src/cli.ts convert batch ./clips \
+cecilia-ffmpeg convert batch ./clips \
   --from mp4 \
   --to gif \
   --recursive \
@@ -670,7 +709,7 @@ The batch engine supports `error`, `skip`, and `replace` existing-output strateg
 ## Dry-run
 
 ```bash
-npx tsx src/cli.ts video trim-start ./clip.mp4 \
+cecilia-ffmpeg video trim-start ./clip.mp4 \
   --seconds 40 \
   --dry-run
 ```
@@ -730,13 +769,13 @@ Use `--overwrite` explicitly when replacement is intended.
 ## Composition examples
 
 ```bash
-npx @cecilialabs/ffmpeg compose concat a.mp4 b.mp4 \
+cecilia-ffmpeg compose concat a.mp4 b.mp4 \
   --transition fade --transition-duration 1 --output final.mp4
 
-npx @cecilialabs/ffmpeg compose transition left.mp4 right.mp4 \
+cecilia-ffmpeg compose transition left.mp4 right.mp4 \
   --transition dissolve --duration 0.75 --output transition.mp4
 
-npx @cecilialabs/ffmpeg compose slideshow ./images \
+cecilia-ffmpeg compose slideshow ./images \
   --direction up --duration 10 --output slideshow.mp4
 ```
 
