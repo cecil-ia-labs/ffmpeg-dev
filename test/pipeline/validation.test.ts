@@ -83,4 +83,29 @@ describe("pipeline output validation", () => {
     }
   });
 
+
+  it("rejects a final output that would replace the original pipeline input", async () => {
+    const workspace = await mkdtemp(path.join(os.tmpdir(), "cecilia-pipeline-input-collision-test-"));
+    try {
+      await writeFile(path.join(workspace, "input.mp4"), "placeholder");
+      const pipelineFile = path.join(workspace, "pipeline.yaml");
+      await writeFile(pipelineFile, [
+        "input: input.mp4",
+        "steps:",
+        "  - trim:",
+        "      start: 1",
+        "  - speed:",
+        "      factor: 1.1",
+        "output:",
+        "  path: input.mp4",
+      ].join("\n"));
+
+      await expect(
+        executePipeline(await loadPipelineFile(pipelineFile), { dryRun: true, overwrite: true }),
+      ).rejects.toThrow(/input and final output paths must be different/i);
+    } finally {
+      await rm(workspace, { recursive: true, force: true });
+    }
+  });
+
 });
