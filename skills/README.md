@@ -16,13 +16,32 @@ Each skill contains a `SKILL.md` with portable YAML front matter and a `referenc
 
 ## Shared policy
 
-For operations implemented by this toolkit, prefer:
+For operations implemented by this toolkit, use this order:
 
-```bash
-npx @cecilialabs/ffmpeg ...
+```text
+matching connected MCP tool
+        ↓ unavailable / not exposed
+global cecilia-ffmpeg binary
+        ↓ unavailable
+npm exec --yes --package=@cecilialabs/ffmpeg -- cecilia-ffmpeg ...
+        ↓ capability not implemented or explicit native request
+native FFmpeg / FFprobe
 ```
 
-over constructing arbitrary FFmpeg shell commands.
+The global installation is the recommended public setup:
+
+```bash
+npm install -g @cecilialabs/ffmpeg
+```
+
+After installation, examples should use the canonical binaries directly:
+
+```bash
+cecilia-ffmpeg ...
+cecilia-ffmpeg-mcp
+```
+
+Do not use the ambiguous shorthand `npx @cecilialabs/ffmpeg ...`: since v1.1 the npm package exposes both the CLI and MCP binaries, so a package runner must name the intended executable explicitly.
 
 Use native FFmpeg only when:
 
@@ -31,20 +50,18 @@ Use native FFmpeg only when:
 
 All skills require explicit input/output intent, probe-driven decisions when media properties matter, deterministic behavior, and validation of produced artifacts.
 
-
 ## MCP-enabled hosts
 
-v1.1.0 also exposes a local stdio MCP server through `cecilia-ffmpeg-mcp`. In a host with that server connected, supported media work may use the corresponding MCP tools instead of constructing CLI commands manually.
+The MCP tools and CLI are sibling adapters over the same typed domain implementation. Skills should prefer a matching connected MCP tool when one exists, but must not invent MCP capabilities that are not in the current catalog.
 
-The policy remains unchanged at the capability level:
+Current MCP mappings relevant to the Skills include:
 
-```text
-supported toolkit capability
-    -> prefer the toolkit surface available to the host
-       (MCP tool, TypeScript API, or cecilia-ffmpeg CLI)
+- environment/inspection: `media_probe`;
+- video: `media_trim`, `media_restore`;
+- audio: `media_attach_audio`, `media_generate_silence`, `media_remove_silence`;
+- conversion: `media_convert`;
+- composition: `media_concat`;
+- diagnostics: `media_diagnose`, `media_probe`;
+- streaming: no MCP tool in v1.2.
 
-unsupported capability or explicit native request
-    -> native FFmpeg fallback
-```
-
-The MCP tools and CLI are sibling adapters over the same typed domain implementation; Skills should not assume they are separate media engines.
+The v1.2 hardware policy is available through `media_convert`, `media_restore`, and the corresponding CLI operations where documented.
