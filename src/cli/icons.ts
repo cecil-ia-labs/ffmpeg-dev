@@ -1,3 +1,4 @@
+import { normalLog } from './colors.js';
 export const CLI_ICONS = {
   success: "✅",
   error: "❌",
@@ -35,11 +36,11 @@ const COMMAND_ICONS: ReadonlyArray<readonly [string, string]> = [
   ["cecilia-ffmpeg video speed", "⚡"],
   ["cecilia-ffmpeg video from-image", "🖼️"],
   ["cecilia-ffmpeg video upscale", "📐"],
-  ["cecilia-ffmpeg video restore", "📐"],
+  ["cecilia-ffmpeg video restore", "🛠️"],
   ["cecilia-ffmpeg video attach-audio", "🎧"],
   ["cecilia-ffmpeg video add-silence", "🔇"],
   ["cecilia-ffmpeg image extract", "📸"],
-  ["cecilia-ffmpeg image convert", "🖼️"],
+  ["cecilia-ffmpeg image convert", "🔄"],
   ["cecilia-ffmpeg audio detect-silence", "🔎"],
   ["cecilia-ffmpeg audio remove-silence", "✂️"],
   ["cecilia-ffmpeg audio silence", "🔇"],
@@ -60,14 +61,14 @@ const COMMAND_ICONS: ReadonlyArray<readonly [string, string]> = [
 ];
 
 export function iconForCommandPath(path: string): string {
-  return COMMAND_ICONS.find(([prefix]) => path.startsWith(prefix))?.[1] ?? "•";
+  return COMMAND_ICONS.find(([prefix]) => path.startsWith(`${prefix}`))?.[1] ?? "•";
 }
 
 export function decorateCommandDescription(path: string, description: string): string {
-  return `${iconForCommandPath(path)}\t\b\b\b${description}`;
+  return `\t\t${iconForCommandPath(path)}\t\b\b\b\b${normalLog(description)}`;
 }
 
 export function progressSourceIcon(source: string | undefined): string {
-  if (source && /^[a-z][a-z0-9+.-]*:\/\//i.test(source)) return CLI_ICONS.stream;
-  return CLI_ICONS.video;
+  if (source && /^[a-z][a-z0-9+.-]*:\/\//i.test(source)) return `${CLI_ICONS.stream}`;
+  return `${CLI_ICONS.video}`;
 }

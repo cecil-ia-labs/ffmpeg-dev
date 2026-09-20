@@ -1,9 +1,11 @@
 import type { Command } from "commander";
 
 import {
-  brandCyan,
+  // brandCyan,
   brandGreen,
-  brandMagenta,
+  brandWhite,
+  normalLog,
+  normalWhite
 } from "./colors.js";
 
 export function configureSemanticHelp(command: Command, enabled: boolean): void {
@@ -11,10 +13,12 @@ export function configureSemanticHelp(command: Command, enabled: boolean): void 
 
   command.configureHelp({
     styleTitle: brandGreen,
-    styleUsage: brandCyan,
-    styleCommandText: brandCyan,
-    styleSubcommandTerm: brandGreen,
-    styleOptionTerm: brandCyan,
-    styleArgumentTerm: brandMagenta,
+    styleUsage: brandWhite,
+    // styleCommandText: brandWhite,
+    styleCommandText: brandGreen,
+    // styleSubcommandTerm: brandMagenta,
+    styleSubcommandTerm: brandWhite,
+    styleOptionTerm: normalWhite,
+    styleArgumentTerm: normalLog,
   });
 }

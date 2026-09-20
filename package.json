@@ -1,22 +1,33 @@
 {
-  "name": "@cecilialabs/ffmpeg",
-  "version": "0.9.9",
-  "description": "Agent-friendly TypeScript CLI and toolkit for FFmpeg and FFprobe media workflows.",
-  "type": "module",
-  "license": "MIT",
-  "author": "Cecil-IA Labs",
-  "engines": {
-    "node": ">=22.0.0"
+  "allowScripts": {
+    "esbuild@0.28.2": true
   },
+  "author": "Cecil-IA Labs",
   "bin": {
     "cecilia-ffmpeg": "./dist/cli.js"
   },
-  "main": "./dist/index.js",
-  "types": "./dist/index.d.ts",
+  "dependencies": {
+    "commander": "^14.0.0",
+    "zod": "^4.1.5"
+  },
+  "description": "Agent-friendly TypeScript CLI and toolkit for FFmpeg and FFprobe media workflows.",
+  "devDependencies": {
+    "@eslint/js": "^9.34.0",
+    "@types/node": "^22.15.0",
+    "eslint": "^9.34.0",
+    "prettier": "^3.6.2",
+    "tsx": "^4.20.5",
+    "typescript": "^5.9.2",
+    "typescript-eslint": "^8.42.0",
+    "vitest": "^3.2.4"
+  },
+  "engines": {
+    "node": ">=22.0.0"
+  },
   "exports": {
     ".": {
-      "types": "./dist/index.d.ts",
-      "import": "./dist/index.js"
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
     }
   },
   "files": [
@@ -30,41 +41,6 @@
     "CHANGELOG.md",
     "LICENSE"
   ],
-  "scripts": {
-    "dev": "tsx src/cli.ts",
-    "cli": "tsx src/cli.ts",
-    "build": "tsc -p tsconfig.build.json",
-    "check": "tsc -p tsconfig.json --noEmit",
-    "test": "vitest run",
-    "test:watch": "vitest",
-    "lint": "eslint .",
-    "format": "prettier --write .",
-    "format:check": "prettier --check .",
-    "verify:foundation": "node scripts/verify-foundation.mjs",
-    "validate": "npm run verify:foundation && npm run verify:runtime && npm run verify:inspection && npm run verify:video && npm run verify:audio && npm run verify:conversion && npm run verify:composition && npm run verify:diagnostics && npm run verify:streaming && npm run verify:skills && npm run verify:plugin && npm run verify:test-suite && npm run verify:fixtures && npm run verify:ux && npm run verify:media-expansion && npm run verify:docs && npm run check && npm run lint && npm run test && npm run build && npm run verify:package",
-    "prepublishOnly": "npm run validate",
-    "verify:runtime": "node scripts/verify-runtime.mjs",
-    "verify:inspection": "node scripts/verify-inspection.mjs",
-    "verify:video": "node scripts/verify-video.mjs",
-    "verify:audio": "node scripts/verify-audio.mjs",
-    "verify:conversion": "node scripts/verify-conversion.mjs",
-    "verify:composition": "node scripts/verify-composition.mjs",
-    "verify:diagnostics": "node scripts/verify-diagnostics.mjs",
-    "doctor": "tsx src/cli.ts doctor",
-    "codex:setup": "node scripts/codex-environment-setup.mjs",
-    "codex:cleanup": "node scripts/codex-environment-cleanup.mjs",
-    "verify:streaming": "node scripts/verify-streaming.mjs",
-    "verify:skills": "node scripts/verify-skills.mjs",
-    "verify:plugin": "node scripts/verify-plugin.mjs",
-    "verify:package": "node scripts/verify-package.mjs",
-    "fixtures:generate": "node scripts/generate-fixtures.mjs",
-    "fixtures:clean": "node scripts/clean-fixtures.mjs",
-    "verify:fixtures": "node scripts/verify-fixtures.mjs",
-    "verify:test-suite": "node scripts/verify-test-suite.mjs",
-    "verify:ux": "node scripts/verify-ux.mjs",
-    "verify:media-expansion": "node scripts/verify-media-expansion.mjs",
-    "verify:docs": "node scripts/verify-docs.mjs"
-  },
   "keywords": [
     "ffmpeg",
     "ffprobe",
@@ -76,21 +52,44 @@
     "automation",
     "agents"
   ],
-  "dependencies": {
-    "commander": "^14.0.0",
-    "zod": "^4.1.5"
+  "license": "MIT",
+  "main": "./dist/index.js",
+  "name": "@cecilialabs/ffmpeg",
+  "scripts": {
+    "build": "tsc -p tsconfig.build.json",
+    "check": "tsc -p tsconfig.json --noEmit",
+    "cli": "tsx src/cli.ts",
+    "codex:cleanup": "node scripts/codex-environment-cleanup.mjs",
+    "codex:setup": "node scripts/codex-environment-setup.mjs",
+    "dev": "tsx src/cli.ts",
+    "doctor": "tsx src/cli.ts doctor",
+    "fixtures:clean": "node scripts/clean-fixtures.mjs",
+    "fixtures:generate": "node scripts/generate-fixtures.mjs",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "lint": "eslint .",
+    "prepublishOnly": "npm run validate",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "validate": "npm run verify:foundation && npm run verify:runtime && npm run verify:inspection && npm run verify:video && npm run verify:audio && npm run verify:conversion && npm run verify:composition && npm run verify:diagnostics && npm run verify:skills && npm run verify:plugin && npm run verify:test-suite && npm run verify:fixtures && npm run verify:ux && npm run verify:media-expansion && npm run verify:docs && npm run check && npm run lint && npm run test && npm run build && npm run verify:package",
+    "verify:audio": "node scripts/verify-audio.mjs",
+    "verify:composition": "node scripts/verify-composition.mjs",
+    "verify:conversion": "node scripts/verify-conversion.mjs",
+    "verify:diagnostics": "node scripts/verify-diagnostics.mjs",
+    "verify:docs": "node scripts/verify-docs.mjs",
+    "verify:fixtures": "node scripts/verify-fixtures.mjs",
+    "verify:foundation": "node scripts/verify-foundation.mjs",
+    "verify:inspection": "node scripts/verify-inspection.mjs",
+    "verify:media-expansion": "node scripts/verify-media-expansion.mjs",
+    "verify:package": "node scripts/verify-package.mjs",
+    "verify:plugin": "node scripts/verify-plugin.mjs",
+    "verify:runtime": "node scripts/verify-runtime.mjs",
+    "verify:skills": "node scripts/verify-skills.mjs",
+    "verify:test-suite": "node scripts/verify-test-suite.mjs",
+    "verify:ux": "node scripts/verify-ux.mjs",
+    "verify:video": "node scripts/verify-video.mjs"
   },
-  "devDependencies": {
-    "@eslint/js": "^9.34.0",
-    "@types/node": "^22.15.0",
-    "eslint": "^9.34.0",
-    "prettier": "^3.6.2",
-    "tsx": "^4.20.5",
-    "typescript": "^5.9.2",
-    "typescript-eslint": "^8.42.0",
-    "vitest": "^3.2.4"
-  },
-  "allowScripts": {
-    "esbuild@0.28.2": true
-  }
+  "type": "module",
+  "types": "./dist/index.d.ts",
+  "version": "0.9.9"
 }

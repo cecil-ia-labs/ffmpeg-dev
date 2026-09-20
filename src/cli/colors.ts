@@ -10,12 +10,18 @@ export const codes = {
   yellow: `${ESC}93m`,
   red: `${ESC}91m`,
   magenta: `${ESC}95m`,
+  log: `${ESC}38;2;110;130;125m`,
+  // log: `${ESC}38;2;0;255;140m`,
   white: `${ESC}97m`,
 } as const;
 
 export function wrap(text: string, ...styles: string[]): string {
   if (styles.length === 0) return text;
   return `${styles.join("")}${text}${codes.reset}`;
+}
+
+function normalColor(text: string, color: string): string {
+  return wrap(text, color);
 }
 
 function boldColor(text: string, color: string): string {
@@ -26,7 +32,20 @@ export function brandCyan(text: string): string {
   return boldColor(text, codes.cyan);
 }
 
+
+export function normalCyan(text: string): string {
+  return normalColor(text, codes.cyan);
+}
+
 export function brandGreen(text: string): string {
+  return boldColor(text, codes.green);
+}
+
+export function brandYellow(text: string): string {
+  return boldColor(text, codes.yellow);
+}
+
+export function normalGreen(text: string): string {
   return boldColor(text, codes.green);
 }
 
@@ -34,8 +53,21 @@ export function brandMagenta(text: string): string {
   return boldColor(text, codes.magenta);
 }
 
+export function normalMagenta(text: string): string {
+  return normalColor(text, codes.magenta);
+}
+
 export function brandWhite(text: string): string {
   return boldColor(text, codes.white);
+}
+
+
+export function normalWhite(text: string): string {
+  return normalColor(text, codes.white);
+}
+
+export function normalLog(text: string): string {
+  return normalColor(text, codes.log);
 }
 
 export function colorEnabled(
@@ -110,34 +142,34 @@ export function colorizeHumanOutput(text: string, enabled: boolean): string {
 
   return text.split("\n").map((line, index) => {
     if (index === 0 && !line.includes(":")) {
-      return `${iconForHeader(line)} ${brandCyan(line)}`;
+      return `${iconForHeader(line)}\t\b\b\b\b${normalLog(line)}`;
     }
 
     const separator = line.indexOf(":");
-    if (separator <= 0) return line;
+    if (separator <= 0) return `${normalLog(line)}`;
     const label = line.slice(0, separator + 1);
     const value = line.slice(separator + 1);
     const icon = labelIcon(label);
 
     if (label === "Output:" || label === "Result:" || label === "Succeeded:") {
-      return `${icon} ${brandGreen(label)}${brandGreen(value)}`;
+      return `${icon}\t\b\b\b\b${brandCyan(label)}${normalLog(value)}`;
     }
     if (label === "Failed:") {
-      return `${icon} ${boldColor(label, codes.red)}${boldColor(value, codes.red)}`;
+      return `${icon}\t\b\b\b\b${boldColor(label, codes.red)}${boldColor(value, codes.red)}`;
     }
     if (label === "Skipped:") {
-      return `${icon} ${boldColor(label, codes.yellow)}${boldColor(value, codes.yellow)}`;
+      return `${icon}\t\b\b\b\b${brandCyan(label)}${normalLog(value)}`;
     }
     if (label === "Command:") {
-      return `${icon} ${brandCyan(label)}${brandCyan(value)}`;
+      return `${icon}\t\b\b\b\b${brandCyan(label)}${normalLog(value)}`;
     }
     if (["Transport:", "Container:", "Video:", "Audio:", "Format:", "Resolution:"].includes(label)) {
-      return `${icon} ${brandMagenta(label)}${brandMagenta(value)}`;
+      return `${icon}\t\b\b\b\b${brandCyan(label)}${normalLog(value)}`;
     }
     if (["Duration:", "Discovered:", "Attempted:", "Parallelism:"].includes(label)) {
-      return `${icon} ${brandCyan(label)}${brandWhite(value)}`;
+      return `${icon}\t\b\b\b\b${brandCyan(label)}${normalLog(value)}`;
     }
-    return `${icon} ${brandCyan(label)}${brandWhite(value)}`;
+    return `${icon}\t\b\b\b\b${brandCyan(label)}${normalLog(value)}`;
   }).join("\n");
 }
 
@@ -145,27 +177,21 @@ export function colorizeProgressLine(text: string, enabled: boolean): string {
   if (!enabled) return text;
 
   return text
-    .split(" | ")
-    .map((part) => {
-      if (part.includes("%")) return brandGreen(part);
-      if (part.includes("ETA")) return boldColor(part, codes.yellow);
-      if (part.includes("fps") || part.includes("x")) return brandCyan(part);
-      if (part.includes("frame")) return brandMagenta(part);
-      return brandWhite(part);
-    })
-    .join(` ${brandCyan("│")} `);
+    .split(brandCyan(`\t|`))
+    .map((part) => brandYellow(part))
+    .join(brandCyan(`\t│`));
 }
 
 export function colorizeWarning(code: string, message: string, enabled: boolean): string {
   const prefix = `warning [${code}]`;
   return enabled
-    ? `${CLI_ICONS.warning} ${boldColor(prefix, codes.yellow)}: ${boldColor(message, codes.yellow)}`
+    ? `${CLI_ICONS.warning}\t\b\b\b\b ${boldColor(prefix, codes.yellow)}: ${boldColor(message, codes.yellow)}`
     : `${prefix}: ${message}`;
 }
 
 export function colorizeError(code: string, message: string, enabled: boolean): string {
   const prefix = `error [${code}]`;
   return enabled
-    ? `${CLI_ICONS.error} ${boldColor(prefix, codes.red)}: ${boldColor(message, codes.red)}`
+    ? `${CLI_ICONS.error}\t\b\b\b\b ${boldColor(prefix, codes.red)}: ${boldColor(message, codes.red)}`
     : `${prefix}: ${message}`;
 }

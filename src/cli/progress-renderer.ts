@@ -1,8 +1,8 @@
 import path from "node:path";
 
-import type { ProgressRunSummary, ProgressSummary } from "../types/contracts.js";
 import type { FFmpegProgressEvent } from "../core/progress.js";
-import { colorizeProgressLine } from "./colors.js";
+import type { ProgressRunSummary, ProgressSummary } from "../types/contracts.js";
+import { brandCyan, colorizeProgressLine } from "./colors.js";
 import { CLI_ICONS, progressSourceIcon } from "./icons.js";
 
 export type ProgressWriter = (text: string) => void;
@@ -40,16 +40,17 @@ export function formatHumanProgress(event: FFmpegProgressEvent, friendly = false
 
   if (event.percentage !== undefined) {
     const status = event.state === "end" ? CLI_ICONS.completed : CLI_ICONS.progress;
-    parts.push(friendly ? `${status} ${Math.round(event.percentage)}%` : `${Math.round(event.percentage)}%`);
+    parts.push(friendly ? `${status}\t\b\b\b${Math.round(event.percentage)}%` : `${Math.round(event.percentage)}%`);
   }
+
   if (event.frame !== undefined) {
-    parts.push(friendly ? `${CLI_ICONS.frame} ${event.frame} frames` : `frame ${event.frame}`);
+    parts.push(friendly ? `${CLI_ICONS.frame}\t\b\b\b${event.frame}frames` : `frame ${event.frame}`);
   }
   if (event.fps !== undefined) {
-    parts.push(friendly ? `${CLI_ICONS.fps} ${event.fps.toFixed(1)} fps` : `${event.fps.toFixed(1)} fps`);
+    parts.push(friendly ? `${CLI_ICONS.fps} ${event.fps}fps` : `${event.fps}fps`);
   }
   if (event.speedMultiplier !== undefined) {
-    parts.push(friendly ? `${CLI_ICONS.speed} ${event.speedMultiplier.toFixed(2)}x` : `${event.speedMultiplier.toFixed(2)}x`);
+    parts.push(friendly ? `${CLI_ICONS.speed} ${event.speedMultiplier.toFixed(1)}x` : `${event.speedMultiplier.toFixed(1)}x`);
   }
   if (event.etaSeconds !== undefined) {
     parts.push(
@@ -58,7 +59,7 @@ export function formatHumanProgress(event: FFmpegProgressEvent, friendly = false
         : `ETA ${formatProgressDuration(event.etaSeconds)}`,
     );
   }
-  return parts.join(" | ");
+  return parts.join(brandCyan(`\t| `));
 }
 
 export class CliProgressReporter {
@@ -113,6 +114,7 @@ export class CliProgressReporter {
       this.ttyLineOpen = true;
       if (event.state === "end") {
         this.write("\n");
+        // this.write("\n");
         this.ttyLineOpen = false;
       }
       return;
@@ -125,7 +127,7 @@ export class CliProgressReporter {
     const lastBucket = this.lastBucket.get(event.runId);
     if (event.state === "end" || (bucket !== undefined && bucket !== lastBucket)) {
       if (bucket !== undefined) this.lastBucket.set(event.runId, bucket);
-      this.write(`${formatHumanProgress(event, false)}\n`);
+      this.write(`${formatHumanProgress(event, false)}\n\n`);
     }
   };
 
