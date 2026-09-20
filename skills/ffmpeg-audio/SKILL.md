@@ -45,6 +45,18 @@ Use the highest-level toolkit surface available to the host:
    `npm exec --yes --package=@cecilialabs/ffmpeg -- cecilia-ffmpeg <command>`.
 4. Use native FFmpeg only when the toolkit lacks the required operation or the user explicitly requests native syntax.
 
+## Associated scripts
+
+Use `scripts/run.mjs` with `input.action` set to `attach`, `silence`,
+`add-silence`, `detect-silence`, `remove-silence`, or `telephony`. Audio
+inputs, codec/container choices, and output policy stay explicit in `input`;
+the script returns typed intervals or an FFprobe-backed artifact report.
+
+```bash
+printf '%s\n' '{"context":"codex","input":{"action":"detect-silence","input":"speech.wav","noiseDb":-35,"minDuration":0.5}}' \
+  | node skills/ffmpeg-audio/scripts/run.mjs
+```
+
 ## Preferred toolkit commands
 
 ```bash

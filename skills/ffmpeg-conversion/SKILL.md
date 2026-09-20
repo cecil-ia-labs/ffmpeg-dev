@@ -47,6 +47,18 @@ Use the highest-level toolkit surface available to the host:
 
 For MP4/H.264 and WebM/VP9 targets, the CLI and `media_convert` also accept the current hardware policy introduced in v1.2: `software`, `auto`, `nvenc`, `qsv`, `vaapi`, or `videotoolbox` where codec/backend support exists.
 
+## Associated scripts
+
+Use `scripts/run.mjs` with `input.action` `file` or `batch`. File requests
+require `input` and `to`; batch requests require `directory`, `from`, and
+`to`. Include selection, concurrency, and existing-output policy in the JSON
+request instead of reproducing traversal in a shell loop.
+
+```bash
+printf '%s\n' '{"context":"codex","input":{"action":"file","input":"clip.mp4","to":"webm","output":"clip.webm"}}' \
+  | node skills/ffmpeg-conversion/scripts/run.mjs
+```
+
 ## Preferred toolkit commands
 
 ```bash

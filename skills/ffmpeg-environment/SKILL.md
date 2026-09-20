@@ -47,6 +47,18 @@ Use the highest-level toolkit surface available to the host:
 
 MCP v1.2 does not expose `doctor` or `environment capabilities`; do not invent MCP tools for those operations.
 
+## Associated scripts
+
+Use `scripts/inspect.mjs` for JSON-in/JSON-out inspection without shell
+parsing. Set `input.action` to `doctor`, `capabilities`, `version`, or `probe`
+and provide `input.input` for a media probe. The script uses the shared Skill
+result envelope and keeps regular Chat in a planned state.
+
+```bash
+printf '%s\n' '{"context":"codex","input":{"action":"capabilities"}}' \
+  | node skills/ffmpeg-environment/scripts/inspect.mjs
+```
+
 ## Preferred toolkit commands
 
 Prefer `@cecilialabs/ffmpeg` over ad-hoc shell parsing of `ffmpeg -version`, `-encoders`, `-filters`, or `ffprobe` output.

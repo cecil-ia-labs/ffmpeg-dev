@@ -45,6 +45,18 @@ Streaming is not exposed through the current MCP tool catalog.
 3. Do not invent an MCP streaming tool.
 4. Use native FFmpeg only for unsupported streaming features or an explicit native-command request.
 
+## Associated scripts
+
+Use `scripts/run.mjs` with `input.action` `file` or `camera`. File requests
+require `input` and `url`; camera requests require `device` and `url`. The
+script produces a validated transport/encoding plan and only reports live
+execution when the active host actually ran it.
+
+```bash
+printf '%s\n' '{"context":"codex","input":{"action":"file","input":"clip.mp4","url":"srt://example.test:9000"}}' \
+  | node skills/ffmpeg-streaming/scripts/run.mjs
+```
+
 ## Preferred toolkit commands
 
 ```bash

@@ -28,6 +28,7 @@ const requiredDocs = [
   "docs/batch-processing.md",
   "docs/hardware-acceleration.md",
   "docs/migration-from-bash.md",
+  "docs/skill-request-examples.md",
 ];
 
 for (const relative of requiredDocs) {
@@ -81,7 +82,7 @@ for (const [relative, content] of [["docs/installation.md", installation], ["doc
 }
 
 const readme = await text("README.md");
-for (const relative of ["getting-started.md", "cli-reference.md", "mcp.md", "pipelines.md", "migration-from-bash.md"]) {
+for (const relative of ["getting-started.md", "cli-reference.md", "mcp.md", "pipelines.md", "migration-from-bash.md", "skill-request-examples.md"]) {
   assert(readme.includes(relative), `README documentation index is missing ${relative}`);
 }
 

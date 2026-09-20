@@ -48,6 +48,19 @@ Use the highest-level toolkit surface available to the host:
    `npm exec --yes --package=@cecilialabs/ffmpeg -- cecilia-ffmpeg <command>`.
 4. Use native FFmpeg only for unsupported transforms or an explicit native-command request.
 
+## Associated scripts
+
+Use `scripts/run.mjs` with `input.action` set to `trim-start`, `trim-end`,
+`trim`, `speed`, `from-image`, `restore`, or `upscale`. Common fields include
+`input`, `output`, `overwrite`, and the operation-specific fields for the
+selected action. The script calls the typed video domain directly and returns
+the shared result envelope.
+
+```bash
+printf '%s\n' '{"context":"codex","input":{"action":"trim-start","input":"clip.mp4","seconds":5,"output":"clip.trimmed.mp4"}}' \
+  | node skills/ffmpeg-video-editing/scripts/run.mjs
+```
+
 ## Preferred toolkit commands
 
 ```bash

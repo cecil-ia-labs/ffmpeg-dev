@@ -51,6 +51,18 @@ Use the highest-level toolkit surface available to the host:
    `npm exec --yes --package=@cecilialabs/ffmpeg -- cecilia-ffmpeg <command>`.
 4. Use native FFmpeg only for unsupported repair cases or an explicit native-command request.
 
+## Associated scripts
+
+Use `scripts/run.mjs` with `input.action` `diagnose`, `repair-timestamps`, or
+`repair-normalize`. Diagnosis accepts an optional log path and deep freeze
+scan settings; repair actions keep the output transactional and return
+before/after issue sets.
+
+```bash
+printf '%s\n' '{"context":"codex","input":{"action":"diagnose","input":"broken.mp4","deep":true}}' \
+  | node skills/ffmpeg-diagnostics/scripts/run.mjs
+```
+
 ## Preferred toolkit commands
 
 ```bash

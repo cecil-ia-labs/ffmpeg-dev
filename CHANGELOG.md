@@ -21,6 +21,13 @@
   opt-in authorization and post-install checks.
 - Namespaced `cecilia-ffmpeg pipeline` validation, plan-printing, execution,
   and inline pipeline parsing for the next pipeline CLI contract.
+- Milestone 22 associated scripts for environment inspection and all six media
+  domain Skills, backed by the shared JSON request/result runner.
+- Canonical intent-routing and JSON request examples covering onboarding,
+  environment, video, audio, conversion, composition, streaming, diagnostics,
+  and pipelines.
+- Skill script catalog verification, executable-bit checks, and per-Skill
+  documentation links for the associated operational entry points.
 
 ### Compatibility
 
