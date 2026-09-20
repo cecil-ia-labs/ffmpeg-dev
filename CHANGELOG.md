@@ -1,5 +1,40 @@
 # Changelog
 
+## Unreleased — Milestone 14.5 — CLI Installation & Release Workflow
+
+### Added
+
+- Interactive `npm run setup:cli` for contributor build/link setup.
+- `link:cli` and `unlink:cli` development commands.
+- Optional, separately consented `~/.bashrc` PATH repair when the npm global bin is not already visible.
+- Repository-only `scripts/publish-npm.sh` release workflow.
+- `verify:distribution` structural gate.
+- Branded CLI help headline: `Cecil-IA Labs · FFmpeg Media Toolkit`.
+
+### Changed
+
+- `prepack` now builds `dist/` before npm tarball generation.
+- `npm run validate` now includes the distribution workflow verifier.
+- Installation docs now distinguish public global install, npx usage, and local contributor linking.
+- Release documentation now formalizes clean-master parity, exact-tarball publication, npm verification, and post-publish Git tagging.
+
+### Safety
+
+- No `postinstall` hook modifies user shell configuration.
+- Local `~/.bashrc` modification requires explicit consent and uses an idempotent managed block.
+- Actual publication is restricted to a clean `master` matching `origin/master`.
+- Release/setup scripts remain outside the npm package allowlist.
+
+### Validation
+
+Before merge:
+
+```bash
+npm run validate
+npm run setup:cli
+./scripts/publish-npm.sh --dry-run --allow-non-master
+```
+
 ## 0.9.9 — Milestone 14 — Documentation & Migration Guide
 
 ### Added

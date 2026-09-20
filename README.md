@@ -3,6 +3,8 @@
 **Release status:** `0.9.9` — Documentation & Migration Guide complete  
 **Version:** `0.9.9`
 
+**Cecil-IA Labs · FFmpeg Media Toolkit**
+
 FFmpeg Media Toolkit is a professional, agent-friendly TypeScript CLI and plugin foundation for deterministic FFmpeg/FFprobe media workflows.
 
 ## Identity
@@ -321,23 +323,47 @@ ffmpeg / ffprobe
 
 Only `src/core/command-result.ts` may execute child processes.
 
-## Install dependencies
+## Install and run the CLI
+
+Recommended public installation:
+
+```bash
+npm install -g @cecilialabs/ffmpeg
+cecilia-ffmpeg --help
+cecilia-ffmpeg doctor
+```
+
+No `postinstall` hook modifies the user's shell. npm exposes the command through the package `bin` mapping.
+
+For a development checkout:
 
 ```bash
 npm install
+npm run setup:cli
 ```
 
-## Development
+The setup asks permission before building/linking and only offers to modify `~/.bashrc` if the npm global bin directory is missing from `PATH`.
+
+Manual equivalent:
 
 ```bash
-npx tsx src/cli.ts --help
+npm run build
+npm link
 ```
 
-or:
+Remove the development link with:
+
+```bash
+npm run unlink:cli
+```
+
+Source-mode development remains available with:
 
 ```bash
 npm run dev -- --help
 ```
+
+See [Installation](docs/installation.md) for the complete global/local/release flow.
 
 ## Environment inspection
 

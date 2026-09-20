@@ -25,6 +25,8 @@ These documents preserve implementation rationale, validation evidence, compatib
 
 ## Agent and distribution layers
 
+- [CLI installation & release workflow](cli-installation-release-workflow.md)
+
 - [Professional Skills](professional-skills.md)
 - [Plugin packaging](plugin-packaging.md)
 - [Test suite & fixtures](test-suite-and-fixtures.md)

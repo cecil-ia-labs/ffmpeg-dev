@@ -1,5 +1,7 @@
 # Getting Started
 
+**Cecil-IA Labs · FFmpeg Media Toolkit**
+
 FFmpeg Media Toolkit is a typed TypeScript CLI around deterministic FFmpeg/FFprobe workflows.
 
 ## Requirements
@@ -13,7 +15,16 @@ Recommended runtime:
 - Node.js 24 LTS
 - a recent FFmpeg build with the encoders/filters required by your workflow
 
-## Run without installing globally
+## Choose how to run the CLI
+
+Recommended global installation:
+
+```bash
+npm install -g @cecilialabs/ffmpeg
+cecilia-ffmpeg doctor
+```
+
+Run without installing globally:
 
 ```bash
 npx @cecilialabs/ffmpeg doctor
@@ -23,8 +34,11 @@ Development checkout:
 
 ```bash
 npm install
-npm run cli -- doctor
+npm run setup:cli
+cecilia-ffmpeg doctor
 ```
+
+`setup:cli` builds and links the local checkout. It only offers to update `~/.bashrc` when the npm global bin directory is not already in `PATH`, and it always asks before changing the shell configuration.
 
 ## First checks
 
