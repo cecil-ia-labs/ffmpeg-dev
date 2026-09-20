@@ -60,6 +60,7 @@ for (const path of requiredFiles) {
 
 const pkg = await readJson("package.json");
 const plugin = await readJson("plugin.json");
+const identity = await readJson("specs/project-identity.json");
 const versionSource = await readText("src/version.ts");
 const versionMatch = versionSource.match(/VERSION\s*=\s*"([^"]+)"/);
 
@@ -70,6 +71,11 @@ assert(plugin.name === "ffmpeg-media-toolkit", "Unexpected plugin name");
 assert(versionMatch, "VERSION constant not found");
 assert(pkg.version === plugin.version, "package.json/plugin.json version mismatch");
 assert(pkg.version === versionMatch[1], "package.json/src version mismatch");
+assert(identity.currentImplementationVersion === pkg.version, "project identity version mismatch");
+assert(identity.npmPackage === pkg.name, "project identity npm package mismatch");
+assert(identity.binary === "cecilia-ffmpeg", "project identity CLI binary mismatch");
+assert(identity.mcpBinary === "cecilia-ffmpeg-mcp", "project identity MCP binary mismatch");
+assert(identity.distribution?.includes("MCP Server"), "project identity must include MCP Server distribution");
 
 const tsconfig = await readJson("tsconfig.json");
 assert(tsconfig.compilerOptions?.strict === true, "TypeScript strict mode is not enabled");
