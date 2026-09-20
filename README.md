@@ -80,6 +80,7 @@ The public CLI is now documented without requiring source inspection:
 - [Installation](docs/installation.md)
 - [CLI reference](docs/cli-reference.md)
 - [MCP server](docs/mcp.md)
+- [Declarative pipelines & presets](docs/pipelines.md)
 - [Video](docs/video.md)
 - [Image](docs/image.md)
 - [Audio](docs/audio.md)
@@ -121,7 +122,7 @@ A host can launch it directly:
 }
 ```
 
-The initial tool catalog is:
+The MCP tool catalog is:
 
 ```text
 media_probe
@@ -132,6 +133,7 @@ media_attach_audio
 media_remove_silence
 media_generate_silence
 media_restore
+media_run_pipeline
 media_diagnose
 ```
 
@@ -144,6 +146,20 @@ MCP tool -> src/mcp/adapters.ts -> existing typed domain function -> core FFmpeg
 It does not invoke CLI actions and does not create another child-process execution boundary. MCP cancellation is propagated into the same `AbortSignal` used by domain operations. Successful tool calls return both JSON text content and MCP structured content.
 
 See [MCP server](docs/mcp.md) and [MCP architecture](docs/development/mcp-server.md).
+
+## Declarative pipelines & presets
+
+Milestone 18 introduces declarative YAML workflows that compose existing typed operations:
+
+```bash
+cecilia-ffmpeg run pipeline.yaml
+```
+
+A pipeline can chain trim, speed, resize, normalization, conversion, and reusable named presets. Multi-step execution uses isolated intermediate files, while `--dry-run` validates and expands the job without mutating media.
+
+MCP-enabled agents can run the same document through `media_run_pipeline`.
+
+See [Declarative pipelines & presets](docs/pipelines.md).
 
 ## Hardware acceleration
 
@@ -793,6 +809,7 @@ Composition normalizes geometry, constant frame rate, pixel format, timebase, an
 
 ```text
 cecilia-ffmpeg
+├── run <pipeline>
 ├── doctor
 ├── probe <input>
 ├── environment

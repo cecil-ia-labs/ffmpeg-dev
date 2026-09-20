@@ -68,6 +68,35 @@ The MCP tools are adapters over the same typed media functions used by the CLI; 
 
 Use `doctor` before codec/filter-sensitive work. Use `probe` before transforms where stream presence, duration, dimensions, FPS, or timestamps matter.
 
+## First pipeline
+
+Create `pipeline.yaml`:
+
+```yaml
+input: ./media/input.mp4
+steps:
+  - trim:
+      start: 2
+  - resize:
+      width: 1280
+      height: 720
+output:
+  path: ./media/output.mp4
+  codec: h264
+```
+
+Plan it:
+
+```bash
+cecilia-ffmpeg run pipeline.yaml --dry-run
+```
+
+Execute it:
+
+```bash
+cecilia-ffmpeg run pipeline.yaml
+```
+
 ## Human vs agent output
 
 Human TTY output uses semantic color and icons:
@@ -105,6 +134,7 @@ Progress can look like:
 - [Installation](installation.md)
 - [CLI Reference](cli-reference.md)
 - [MCP Server](mcp.md)
+- [Declarative Pipelines & Presets](pipelines.md)
 - [Video](video.md)
 - [Image](image.md)
 - [Audio](audio.md)

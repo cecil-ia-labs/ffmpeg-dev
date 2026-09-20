@@ -16,6 +16,18 @@
 --keep-temp           preserve temporary/intermediate artifacts
 ```
 
+## Pipelines
+
+```text
+run <pipeline>
+```
+
+Execute a v1 declarative YAML pipeline. Supported steps are `trim`, `speed`, `resize`, `normalize`, `audio.normalize`, `convert`, and named `preset` references.
+
+Global `--dry-run`, `--json`, `--overwrite`, `--keep-temp`, binary overrides, and `--output` apply to pipeline execution.
+
+See [Declarative pipelines & presets](pipelines.md).
+
 ## Inspection
 
 ### `doctor`
