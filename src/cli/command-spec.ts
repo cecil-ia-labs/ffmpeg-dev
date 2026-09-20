@@ -43,9 +43,14 @@ export const COMMAND_TREE: readonly CommandSpec[] = [
         implementationMilestone: 3,
       },
       {
-        syntax: "install",
-        description: "Reserved system installation workflow.",
-        implementationMilestone: 3,
+        syntax: "check",
+        description: "Check execution context, toolkit installation, FFmpeg, FFprobe, and capabilities.",
+        implementationMilestone: 20,
+      },
+      {
+        syntax: "install [scope]",
+        description: "Plan or explicitly install the toolkit through npm.",
+        implementationMilestone: 20,
       },
     ],
   },

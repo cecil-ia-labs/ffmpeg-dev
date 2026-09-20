@@ -26,5 +26,7 @@ describe("command tree", () => {
     expect(commands).toContain("compose concat");
     expect(commands).toContain("repair timestamps");
     expect(commands).toContain("stream camera");
+    expect(commands).toContain("environment check");
+    expect(commands).toContain("environment install");
   });
 });

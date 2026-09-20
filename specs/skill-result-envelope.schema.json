@@ -1,0 +1,65 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://cecilialabs.example/schemas/ffmpeg-media-toolkit/skill-result-envelope.schema.json",
+  "title": "FFmpeg Media Toolkit Skill Result Envelope",
+  "type": "object",
+  "required": [
+    "schemaVersion",
+    "ok",
+    "operation",
+    "status",
+    "context",
+    "requestId",
+    "startedAt",
+    "finishedAt",
+    "durationMs",
+    "artifacts",
+    "warnings",
+    "next"
+  ],
+  "properties": {
+    "schemaVersion": { "const": "1.0" },
+    "ok": { "type": "boolean" },
+    "operation": { "type": "string", "minLength": 1 },
+    "status": {
+      "enum": ["completed", "planned", "needs-authorization", "needs-input", "cancelled", "failed"]
+    },
+    "context": {
+      "enum": ["chatgpt-regular", "chatgpt-work", "codex", "ide", "terminal", "unknown"]
+    },
+    "requestId": { "type": "string", "minLength": 1 },
+    "startedAt": { "type": "string", "format": "date-time" },
+    "finishedAt": { "type": "string", "format": "date-time" },
+    "durationMs": { "type": "number", "minimum": 0 },
+    "input": {},
+    "output": {},
+    "artifacts": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["kind", "verified"],
+        "properties": {
+          "kind": { "enum": ["file", "directory", "report", "command", "job"] },
+          "path": { "type": "string" },
+          "description": { "type": "string" },
+          "verified": { "type": "boolean" }
+        },
+        "additionalProperties": false
+      }
+    },
+    "warnings": { "type": "array" },
+    "next": { "type": "array", "items": { "type": "string" } },
+    "error": { "anyOf": [{ "type": "null" }, { "type": "object" }] }
+  },
+  "allOf": [
+    {
+      "if": { "properties": { "ok": { "const": true } } },
+      "then": { "properties": { "error": { "type": "null" } } }
+    },
+    {
+      "if": { "properties": { "ok": { "const": false } } },
+      "then": { "required": ["error"] }
+    }
+  ],
+  "additionalProperties": false
+}

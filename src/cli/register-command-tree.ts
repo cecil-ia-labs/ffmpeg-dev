@@ -13,6 +13,7 @@ import { configureCompositionOptions } from "./composition-options.js";
 import { configureDiagnosticsOptions } from "./diagnostics-options.js";
 import { configureStreamingOptions } from "./streaming-options.js";
 import { configureImageOptions } from "./image-options.js";
+import { configureEnvironmentOptions } from "./environment-options.js";
 import { runPlaceholder } from "./placeholder.js";
 
 function commandPath(command: Command): string {
@@ -52,6 +53,7 @@ function registerSpec(parent: Command, spec: CommandSpec): void {
   configureDiagnosticsOptions(command, path);
   configureStreamingOptions(command, path);
   configureImageOptions(command, path);
+  configureEnvironmentOptions(command, path);
   const action = resolveCommandAction(path);
   if (action) {
     command.action((...args: unknown[]) => action(command, args.slice(0, -1)));

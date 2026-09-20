@@ -48,6 +48,8 @@ const required = [
   "skills/ffmpeg-diagnostics/SKILL.md",
   "skills/ffmpeg-pipelines/SKILL.md",
   "skills/ffmpeg-onboarding/SKILL.md",
+  "skills/ffmpeg-onboarding/scripts/check.mjs",
+  "skills/ffmpeg-onboarding/scripts/install.mjs",
   "skills/ffmpeg-workflow/SKILL.md",
 ];
 

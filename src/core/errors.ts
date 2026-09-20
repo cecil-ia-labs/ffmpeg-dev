@@ -13,6 +13,8 @@ export const ERROR_DEFINITIONS: Readonly<Record<ErrorCode, ErrorDefinition>> = {
   E_ENV_FFMPEG_NOT_FOUND: { category: "environment", exitCode: 3, retryable: false },
   E_ENV_FFPROBE_NOT_FOUND: { category: "environment", exitCode: 3, retryable: false },
   E_ENV_UNSUPPORTED_FFMPEG: { category: "environment", exitCode: 3, retryable: false },
+  E_ENV_NPM_NOT_FOUND: { category: "environment", exitCode: 3, retryable: false },
+  E_ENV_INSTALL_FAILED: { category: "environment", exitCode: 3, retryable: true },
   E_CAPABILITY_FILTER_MISSING: { category: "capability", exitCode: 3, retryable: false },
   E_CAPABILITY_ENCODER_MISSING: { category: "capability", exitCode: 3, retryable: false },
   E_INPUT_NOT_FOUND: { category: "input", exitCode: 4, retryable: false },

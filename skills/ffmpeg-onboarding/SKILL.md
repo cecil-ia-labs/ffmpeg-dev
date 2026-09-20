@@ -62,11 +62,28 @@ dynamic proxy, containerized NAT, or network-exposed MCP server. A local stdio
 MCP adapter in the current v1.3 baseline is not a reason to invent a network
 deployment.
 
+## Associated scripts
+
+From a checkout or installed package, send one JSON request on stdin and keep
+the single JSON response as the source of truth:
+
+    printf '%s\n' '{"context":"codex","input":{}}' | node skills/ffmpeg-onboarding/scripts/check.mjs
+
+Plan an installation without changing anything:
+
+    printf '%s\n' '{"context":"codex","input":{"scope":"local"}}' | node skills/ffmpeg-onboarding/scripts/install.mjs
+
+An installation is only applied when the request contains both
+`input.apply: true` and `input.authorized: true`. Supported scopes are
+`global`, `local`, and `npm-exec`. The scripts never edit shell startup files,
+interpolate shell commands, or claim that FFmpeg is ready from npm status alone.
+
 ## Preferred toolkit commands
 
 For a read-only baseline, use:
 
     cecilia-ffmpeg doctor
+    cecilia-ffmpeg environment check --json
     cecilia-ffmpeg environment version --json
     cecilia-ffmpeg environment capabilities --json
 

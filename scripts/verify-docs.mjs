@@ -49,15 +49,15 @@ function leafPaths(commands, prefix = "") {
   return result;
 }
 
-const publicLeaves = leafPaths(commandTree.commands)
-  .filter((command) => command !== "environment install");
+const publicLeaves = leafPaths(commandTree.commands);
 for (const command of publicLeaves) {
   assert(
     cliReference.includes(command),
     `CLI reference is missing public command: ${command}`,
   );
 }
-assert(cliReference.includes("environment install"), "Reserved environment install command must be documented.");
+assert(cliReference.includes("environment check"), "CLI reference must document environment check.");
+assert(cliReference.includes("environment install"), "CLI reference must document environment install.");
 
 const migrationDoc = await text("docs/migration-from-bash.md");
 const migrationMap = JSON.parse(await text("test/fixtures/legacy-migration-map.json"));

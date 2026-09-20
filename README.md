@@ -498,6 +498,7 @@ See [Installation](docs/installation.md) for the complete global/local/release f
 ## Environment inspection
 
 ```bash
+cecilia-ffmpeg environment check --json
 cecilia-ffmpeg doctor
 cecilia-ffmpeg environment version
 cecilia-ffmpeg environment capabilities
@@ -834,7 +835,8 @@ cecilia-ffmpeg
 ├── environment
 │   ├── capabilities
 │   ├── version
-│   └── install                         # reserved
+│   ├── check
+│   └── install [scope]
 ├── video
 │   ├── trim-start <input>
 │   ├── trim-end <input>

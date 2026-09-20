@@ -48,6 +48,18 @@
       "retryable": false
     },
     {
+      "code": "E_ENV_NPM_NOT_FOUND",
+      "category": "environment",
+      "exitCode": 3,
+      "retryable": false
+    },
+    {
+      "code": "E_ENV_INSTALL_FAILED",
+      "category": "environment",
+      "exitCode": 3,
+      "retryable": true
+    },
+    {
       "code": "E_CAPABILITY_FILTER_MISSING",
       "category": "capability",
       "exitCode": 3,

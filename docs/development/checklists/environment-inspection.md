@@ -70,7 +70,8 @@
 - [x] Stable JSON result envelopes preserved.
 - [x] Runtime errors mapped through the shared typed error layer.
 - [x] SIGINT/SIGTERM bridge used by implemented CLI actions.
-- [x] `environment install` remains explicitly reserved instead of mutating the system.
+- [x] `environment check` reports execution context, package/runtime readiness, and capabilities without mutation.
+- [x] `environment install` requires explicit `--apply --authorize` and never mutates shell startup state; system FFmpeg package installation remains outside scope.
 
 ## Validation
 

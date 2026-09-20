@@ -45,10 +45,21 @@ cecilia-ffmpeg doctor
 ## First checks
 
 ```bash
+cecilia-ffmpeg environment check --json
 cecilia-ffmpeg doctor
 cecilia-ffmpeg environment version --json
 cecilia-ffmpeg probe ./media/input.mp4 --json
 ```
+
+Agents that can execute scripts may use the packaged onboarding Skill directly:
+
+```bash
+printf '%s\n' '{"context":"codex","input":{}}' | node skills/ffmpeg-onboarding/scripts/check.mjs
+```
+
+Regular Chat cannot inspect the local host. In that context, copy the printed
+check command to a Work/Codex/IDE/terminal environment and return its JSON
+result before claiming that the runtime or a media file is ready.
 
 ## Agent access through MCP
 
