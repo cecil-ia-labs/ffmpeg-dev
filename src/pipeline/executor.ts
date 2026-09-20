@@ -289,6 +289,13 @@ export async function executePipeline(
   const input = loaded.document.input;
   const source = await resolveReadableFile(input, loaded.baseDirectory);
   const output = finalOutput(loaded, options.output);
+  if (path.resolve(source) === path.resolve(output)) {
+    throw new ToolkitRuntimeError(
+      "E_CONFIG_CONFLICT",
+      "Pipeline input and final output paths must be different.",
+      { details: { source, output } },
+    );
+  }
 
   const declarations = expandPipelineSteps(loaded.document);
   validatePipelineOutput(loaded.document, declarations, output);
