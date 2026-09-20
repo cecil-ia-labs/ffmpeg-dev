@@ -1,3 +1,7 @@
+import { mkdtemp, rm, writeFile } from "node:fs/promises";
+import os from "node:os";
+import path from "node:path";
+
 import { describe, expect, it, beforeAll } from "vitest";
 
 import {
@@ -9,6 +13,7 @@ import {
   mediaProbeAdapter,
   mediaRemoveSilenceAdapter,
   mediaRestoreAdapter,
+  mediaRunPipelineAdapter,
   mediaTrimAdapter,
 } from "../../src/mcp/adapters.js";
 import {
@@ -20,6 +25,7 @@ import {
   mediaProbeInputSchema,
   mediaRemoveSilenceInputSchema,
   mediaRestoreInputSchema,
+  mediaRunPipelineInputSchema,
   mediaTrimInputSchema,
 } from "../../src/mcp/schemas.js";
 import { ensureFixtureMatrix, fixturePath } from "../helpers/fixture-matrix.js";
@@ -91,6 +97,26 @@ describe("Milestone 16 MCP domain adapters", () => {
       signal,
     );
     expect(restored).toMatchObject({ operation: "upscale", planned: true });
+
+    const pipelineDir = await mkdtemp(path.join(os.tmpdir(), "cecilia-mcp-pipeline-"));
+    try {
+      const pipelineFile = path.join(pipelineDir, "pipeline.yaml");
+      await writeFile(pipelineFile, [
+        `input: ${JSON.stringify(video)}`,
+        "steps:",
+        "  - trim:",
+        "      duration: 0.5",
+        "output:",
+        "  path: result.mp4",
+      ].join("\n"));
+      const pipeline = await mediaRunPipelineAdapter(
+        mediaRunPipelineInputSchema.parse({ pipeline: pipelineFile, dry_run: true }),
+        signal,
+      );
+      expect(pipeline).toMatchObject({ operation: "pipeline", planned: true, stepCount: 1 });
+    } finally {
+      await rm(pipelineDir, { recursive: true, force: true });
+    }
 
     const diagnosis = await mediaDiagnoseAdapter(
       mediaDiagnoseInputSchema.parse({ input: video, dry_run: true }),
