@@ -1,7 +1,7 @@
 {
   "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
   "name": "ffmpeg-media-toolkit",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Professional FFmpeg and FFprobe workflows backed by a deterministic TypeScript CLI for media editing, conversion, composition, diagnostics, audio processing, and streaming.",
   "author": {
     "name": "Cecil-IA Labs",
@@ -71,6 +71,22 @@
       "npm": {
         "package": "@cecilialabs/ffmpeg",
         "binary": "cecilia-ffmpeg"
+      },
+      "mcp": {
+        "binary": "cecilia-ffmpeg-mcp",
+        "transport": "stdio",
+        "protocol": "2026-07-28",
+        "tools": [
+          "media_probe",
+          "media_trim",
+          "media_convert",
+          "media_concat",
+          "media_attach_audio",
+          "media_remove_silence",
+          "media_generate_silence",
+          "media_restore",
+          "media_diagnose"
+        ]
       }
     }
   }
