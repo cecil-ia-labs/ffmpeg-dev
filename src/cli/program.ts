@@ -2,7 +2,7 @@ import { Command, Option } from "commander";
 import { ZodError } from "zod";
 
 import { VERSION } from "../version.js";
-import { colorEnabled, normalLog } from "./colors.js";
+import { brandGreen, brandWhite, colorEnabled, normalLog } from "./colors.js";
 import { validateGlobalCliOptions } from "./global-options.js";
 import { configureSemanticHelp } from "./help-style.js";
 import { registerCommandTree } from "./register-command-tree.js";
@@ -11,6 +11,13 @@ function formatZodError(error: ZodError): string {
   return error.issues
     .map((issue) => `${issue.path.join(".") || "options"}: ${issue.message}`)
     .join("; ");
+}
+
+export const CLI_HEADLINE = "Cecil-IA Labs · FFmpeg Media Toolkit";
+
+function formatCliHeadline(friendly: boolean): string {
+  if (!friendly) return CLI_HEADLINE;
+  return `${brandGreen("Cecil-IA Labs")} ${normalLog("·")} ${brandWhite("FFmpeg Media Toolkit")}`;
 }
 
 function friendlyHelpEnabled(): boolean {
@@ -25,7 +32,10 @@ export function buildProgram(): Command {
   program
     .name("cecilia-ffmpeg")
     .description(
-      `${friendly ? "🎞️\t\b\b\b\b" : ""} Agent-friendly TypeScript CLI for deterministic FFmpeg and FFprobe media workflows.`,
+      [
+        formatCliHeadline(friendly),
+        `${friendly ? "🎞️\t\b\b\b\b" : ""} Agent-friendly TypeScript CLI for deterministic FFmpeg and FFprobe media workflows.`,
+      ].join("\n"),
     )
     .version(VERSION, "-V, --version", normalLog("\t\t\t\b\b\b\bdisplay CLI version"))
     .showHelpAfterError()
