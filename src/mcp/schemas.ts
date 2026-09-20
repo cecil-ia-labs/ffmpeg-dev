@@ -5,6 +5,12 @@ const positive = z.number().finite().positive();
 const nonNegative = z.number().finite().min(0);
 const positiveInteger = z.number().int().positive();
 
+export const mcpHardwareShape = {
+  hardware: z.enum(["software", "auto", "nvenc", "qsv", "vaapi", "videotoolbox"]).default("software"),
+  hardware_device: nonEmpty.optional(),
+  hardware_strict: z.boolean().default(false),
+} as const;
+
 export const mcpRuntimeShape = {
   output: nonEmpty.optional(),
   overwrite: z.boolean().default(false),
@@ -64,6 +70,7 @@ export const mediaConvertInputSchema = z.object({
   audio_bitrate: nonEmpty.optional(),
   sample_rate: positiveInteger.optional(),
   channels: positiveInteger.optional(),
+  ...mcpHardwareShape,
   ...mcpRuntimeShape,
 }).strict();
 
@@ -82,6 +89,7 @@ export const mediaConcatInputSchema = z.object({
   fit: z.enum(["contain", "cover", "stretch"]).optional(),
   background: nonEmpty.optional(),
   to: z.enum(["mp4", "webm"]).default("mp4"),
+  ...mcpHardwareShape,
   ...mcpRuntimeShape,
 }).strict();
 
