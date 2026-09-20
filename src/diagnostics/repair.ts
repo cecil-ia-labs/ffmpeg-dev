@@ -3,7 +3,7 @@ import path from "node:path";
 import { renderCommandForDisplay } from "../core/command-result.js";
 import { ToolkitRuntimeError } from "../core/errors.js";
 import { runFFmpeg } from "../core/ffmpeg-runner.js";
-import { deriveOutputPath, prepareOutputTransaction, resolveReadableFile } from "../media/io.js";
+import { deriveOutputPath, preflightOutputPath, prepareOutputTransaction, resolveReadableFile } from "../media/io.js";
 import { probeMedia } from "../media/probe.js";
 import type { MediaInfo, ToolkitWarning } from "../types/contracts.js";
 import { diagnoseMedia } from "./analyze.js";
@@ -57,6 +57,12 @@ async function executeRepair(options: {
   details: Record<string, unknown>;
   warnings?: ToolkitWarning[];
 }): Promise<RepairReport> {
+  await preflightOutputPath({
+    source: options.source,
+    output: options.output,
+    overwrite: options.runtime.overwrite ?? false,
+  });
+
   const beforeReport = await diagnoseMedia(options.source, {
     ...(options.runtime.ffmpegPath !== undefined ? { ffmpegPath: options.runtime.ffmpegPath } : {}),
     ...(options.runtime.ffprobePath !== undefined ? { ffprobePath: options.runtime.ffprobePath } : {}),
@@ -128,8 +134,15 @@ async function executeRepair(options: {
 
 export async function repairTimestamps(input: string, options: RepairTimestampsOptions = {}): Promise<RepairReport> {
   const source = await resolveReadableFile(input, options.cwd);
-  const media = await inputMedia(source, options);
   const mode = options.mode ?? "reencode";
+  if (options.output !== undefined) {
+    await preflightOutputPath({
+      source,
+      output: path.resolve(options.cwd ?? process.cwd(), options.output),
+      overwrite: options.overwrite ?? false,
+    });
+  }
+  const media = await inputMedia(source, options);
   const output = options.output !== undefined
     ? path.resolve(options.output)
     : mode === "remux"
@@ -163,6 +176,13 @@ export async function repairTimestamps(input: string, options: RepairTimestampsO
 
 export async function normalizeMedia(input: string, options: NormalizeMediaOptions = {}): Promise<RepairReport> {
   const source = await resolveReadableFile(input, options.cwd);
+  if (options.output !== undefined) {
+    await preflightOutputPath({
+      source,
+      output: path.resolve(options.cwd ?? process.cwd(), options.output),
+      overwrite: options.overwrite ?? false,
+    });
+  }
   const media = await inputMedia(source, options);
   const output = defaultOutput(source, "normalized", media, options.output);
   const args = ["-i", source, "-map", "0:v:0?", "-map", "0:a:0?"];
