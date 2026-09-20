@@ -86,6 +86,7 @@ The public CLI is now documented without requiring source inspection:
 - [Diagnostics & repair](docs/diagnostics.md)
 - [Batch processing](docs/batch-processing.md)
 - [Hardware acceleration status](docs/hardware-acceleration.md)
+- [Platform support & release validation](docs/platform-support.md)
 - [Migration from Bash](docs/migration-from-bash.md)
 
 Interactive human output now uses semantic icons in addition to the stronger color palette:
