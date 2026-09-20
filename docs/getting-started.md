@@ -2,7 +2,7 @@
 
 **Cecil-IA Labs · FFmpeg Media Toolkit**
 
-FFmpeg Media Toolkit is a typed TypeScript CLI around deterministic FFmpeg/FFprobe workflows.
+FFmpeg Media Toolkit exposes deterministic FFmpeg/FFprobe workflows through a typed TypeScript package, the `cecilia-ffmpeg` CLI, and a local stdio MCP server.
 
 ## Requirements
 
@@ -48,6 +48,22 @@ cecilia-ffmpeg environment version --json
 cecilia-ffmpeg probe ./media/input.mp4 --json
 ```
 
+## Agent access through MCP
+
+A global installation also exposes `cecilia-ffmpeg-mcp`. Configure it as a stdio MCP server in a compatible host:
+
+```json
+{
+  "mcpServers": {
+    "cecilia-ffmpeg": {
+      "command": "cecilia-ffmpeg-mcp"
+    }
+  }
+}
+```
+
+The MCP tools are adapters over the same typed media functions used by the CLI; they do not shell out to the CLI.
+
 Use `doctor` before codec/filter-sensitive work. Use `probe` before transforms where stream presence, duration, dimensions, FPS, or timestamps matter.
 
 ## Human vs agent output
@@ -86,6 +102,7 @@ Progress can look like:
 
 - [Installation](installation.md)
 - [CLI Reference](cli-reference.md)
+- [MCP Server](mcp.md)
 - [Video](video.md)
 - [Image](image.md)
 - [Audio](audio.md)
