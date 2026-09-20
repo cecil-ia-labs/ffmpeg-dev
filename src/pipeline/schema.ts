@@ -13,6 +13,9 @@ const trimStepSchema = z.object({
     duration: positive.optional(),
     mode: z.enum(["auto", "copy", "accurate"]).optional(),
   }).strict().superRefine((value, ctx) => {
+    if (value.start === undefined && value.end === undefined && value.duration === undefined) {
+      ctx.addIssue({ code: "custom", message: "trim requires start, end, or duration.", path: ["start"] });
+    }
     if (value.end !== undefined && value.duration !== undefined) {
       ctx.addIssue({ code: "custom", message: "trim cannot define both end and duration.", path: ["end"] });
     }

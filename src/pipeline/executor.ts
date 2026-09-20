@@ -1,0 +1,180 @@
+import path from "node:path";
+
+import { TemporaryWorkspace } from "../core/temp-files.js";
+import { ToolkitRuntimeError } from "../core/errors.js";
+import { resolveReadableFile } from "../media/io.js";
+import { trimVideoRange, trimVideoStart } from "../video/index.js";
+import type { VideoOperationReport } from "../video/types.js";
+import type {
+  LoadedPipeline,
+  PipelineReport,
+  PipelineRuntimeOptions,
+  PipelineStep,
+  PipelineStepKind,
+  PipelineStepReport,
+} from "./types.js";
+
+function stepKind(step: PipelineStep): PipelineStepKind | "preset" {
+  if ("trim" in step) return "trim";
+  if ("speed" in step) return "speed";
+  if ("resize" in step) return "resize";
+  if ("normalize" in step) return "normalize";
+  if ("audio" in step) return "audio";
+  if ("convert" in step) return "convert";
+  return "preset";
+}
+
+function finalOutput(loaded: LoadedPipeline): string {
+  const target = loaded.document.output.path;
+  return path.isAbsolute(target) ? path.normalize(target) : path.resolve(loaded.baseDirectory, target);
+}
+
+function intermediateExtension(current: string): string {
+  return path.extname(current) || ".mp4";
+}
+
+function commonRuntime(options: PipelineRuntimeOptions, output: string, final: boolean) {
+  return {
+    output,
+    overwrite: final ? (options.overwrite ?? false) : true,
+    dryRun: false,
+    verbose: options.verbose ?? false,
+    ...(options.ffmpegPath !== undefined ? { ffmpegPath: options.ffmpegPath } : {}),
+    ...(options.ffprobePath !== undefined ? { ffprobePath: options.ffprobePath } : {}),
+    ...(options.signal !== undefined ? { signal: options.signal } : {}),
+    keepTemp: false,
+  };
+}
+
+function fromVideoReport(
+  index: number,
+  kind: PipelineStepKind,
+  report: VideoOperationReport,
+): PipelineStepReport {
+  return {
+    index,
+    kind,
+    input: report.source,
+    output: report.output,
+    planned: report.planned,
+    invocation: report.invocation,
+    durationMs: report.execution.durationMs,
+    warnings: report.warnings,
+    details: report.details,
+  };
+}
+
+async function executeTrim(
+  index: number,
+  input: string,
+  output: string,
+  step: Extract<PipelineStep, { trim: unknown }>,
+  runtime: PipelineRuntimeOptions,
+  final: boolean,
+): Promise<{ step: PipelineStepReport; media: VideoOperationReport["outputMedia"] }> {
+  const trim = step.trim;
+  const common = commonRuntime(runtime, output, final);
+  const report = trim.end !== undefined || trim.duration !== undefined
+    ? await trimVideoRange(input, {
+        ...common,
+        start: trim.start ?? 0,
+        ...(trim.end !== undefined ? { end: trim.end } : {}),
+        ...(trim.duration !== undefined ? { duration: trim.duration } : {}),
+        ...(trim.mode !== undefined ? { mode: trim.mode } : {}),
+      })
+    : await trimVideoStart(input, {
+        ...common,
+        seconds: trim.start as number,
+        ...(trim.mode !== undefined ? { mode: trim.mode } : {}),
+      });
+  return { step: fromVideoReport(index, "trim", report), media: report.outputMedia };
+}
+
+function plannedReport(loaded: LoadedPipeline, source: string, output: string): PipelineReport {
+  const steps: PipelineStepReport[] = loaded.document.steps.map((step, offset) => {
+    const kind = stepKind(step);
+    if (kind === "preset") {
+      throw new ToolkitRuntimeError("E_OPERATION_UNSUPPORTED", "Preset expansion is not executable until the preset phase is resolved.", {
+        details: { index: offset + 1 },
+      });
+    }
+    const isFinal = offset === loaded.document.steps.length - 1;
+    return {
+      index: offset + 1,
+      kind,
+      input: offset === 0 ? source : `<pipeline-step-${offset}-output>`,
+      output: isFinal ? output : `<pipeline-step-${offset + 1}-output>`,
+      planned: true,
+      warnings: [],
+      details: { declaration: step },
+    };
+  });
+  return {
+    operation: "pipeline",
+    file: loaded.file,
+    source,
+    output,
+    planned: true,
+    stepCount: steps.length,
+    steps,
+    warnings: [],
+  };
+}
+
+export async function executePipeline(
+  loaded: LoadedPipeline,
+  options: PipelineRuntimeOptions = {},
+): Promise<PipelineReport> {
+  const input = loaded.document.input;
+  const source = await resolveReadableFile(input, loaded.baseDirectory);
+  const output = finalOutput(loaded);
+
+  if (options.dryRun) return plannedReport(loaded, source, output);
+
+  const workspace = await TemporaryWorkspace.create({
+    prefix: "cecilia-ffmpeg-pipeline-",
+    keep: options.keepTemp ?? false,
+  });
+
+  try {
+    let current = source;
+    let outputMedia: VideoOperationReport["outputMedia"];
+    const reports: PipelineStepReport[] = [];
+
+    for (let offset = 0; offset < loaded.document.steps.length; offset += 1) {
+      const declaration = loaded.document.steps[offset] as PipelineStep;
+      const kind = stepKind(declaration);
+      const index = offset + 1;
+      const isFinal = offset === loaded.document.steps.length - 1;
+      const stepOutput = isFinal
+        ? output
+        : workspace.pathFor(`step-${String(index).padStart(3, "0")}-${kind}${intermediateExtension(current)}`);
+
+      if (kind !== "trim" || !("trim" in declaration)) {
+        throw new ToolkitRuntimeError("E_OPERATION_UNSUPPORTED", `Pipeline step "${kind}" is not executable in the current implementation phase.`, {
+          details: { index, kind },
+        });
+      }
+
+      const result = await executeTrim(index, current, stepOutput, declaration, options, isFinal);
+      reports.push(result.step);
+      current = result.step.output;
+      outputMedia = result.media;
+    }
+
+    return {
+      operation: "pipeline",
+      file: loaded.file,
+      source,
+      output,
+      planned: false,
+      stepCount: reports.length,
+      steps: reports,
+      warnings: reports.flatMap((report) => report.warnings),
+      ...(outputMedia !== undefined ? { outputMedia } : {}),
+      ...(options.keepTemp ? { workspace: workspace.directory } : {}),
+    };
+  } finally {
+    await workspace.cleanup();
+  }
+}

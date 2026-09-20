@@ -107,3 +107,42 @@ export interface LoadedPipeline {
   baseDirectory: string;
   document: PipelineDocument;
 }
+
+import type { MediaInfo, ToolkitWarning } from "../types/contracts.js";
+
+export interface PipelineRuntimeOptions {
+  overwrite?: boolean;
+  dryRun?: boolean;
+  verbose?: boolean;
+  ffmpegPath?: string;
+  ffprobePath?: string;
+  signal?: AbortSignal;
+  keepTemp?: boolean;
+}
+
+export type PipelineStepKind = "trim" | "speed" | "resize" | "normalize" | "audio" | "convert";
+
+export interface PipelineStepReport {
+  index: number;
+  kind: PipelineStepKind;
+  input: string;
+  output: string;
+  planned: boolean;
+  invocation?: string;
+  durationMs?: number;
+  warnings: ToolkitWarning[];
+  details: Record<string, unknown>;
+}
+
+export interface PipelineReport {
+  operation: "pipeline";
+  file: string;
+  source: string;
+  output: string;
+  planned: boolean;
+  stepCount: number;
+  steps: PipelineStepReport[];
+  warnings: ToolkitWarning[];
+  outputMedia?: MediaInfo;
+  workspace?: string;
+}
