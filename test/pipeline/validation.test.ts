@@ -4,7 +4,7 @@ import path from "node:path";
 
 import { describe, expect, it } from "vitest";
 
-import { executePipeline, expandPipelineSteps, loadPipelineFile, parsePipelineText, validatePipelineOutput } from "../../src/pipeline/index.js";
+import { executePipeline, expandPipelineSteps, loadPipelineFile, parsePipelineText, validatePipelineOutput, validatePipelineResultCodec } from "../../src/pipeline/index.js";
 
 describe("pipeline output validation", () => {
   it("accepts roadmap H.264 output semantics", () => {
@@ -106,6 +106,28 @@ describe("pipeline output validation", () => {
     } finally {
       await rm(workspace, { recursive: true, force: true });
     }
+  });
+
+
+  it("rejects final media that violates the declared codec assertion", () => {
+    const document = parsePipelineText([
+      "input: source.mkv",
+      "steps:",
+      "  - trim:",
+      "      start: 1",
+      "      mode: copy",
+      "output:",
+      "  path: final.mkv",
+      "  codec: h264",
+    ].join("\n"));
+
+    expect(() => validatePipelineResultCodec(document, {
+      source: "/tmp/final.mkv",
+      format: {},
+      streams: [{ index: 0, codecType: "video", codecName: "vp9" }],
+      video: [{ index: 0, codecType: "video", codecName: "vp9" }],
+      audio: [],
+    })).toThrow(/declared output codec/i);
   });
 
 });
