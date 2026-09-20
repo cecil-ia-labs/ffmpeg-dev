@@ -154,7 +154,7 @@ output:
 - `vp9` requires WebM;
 - the final `convert.to` or `resize.to` must agree with the output extension.
 
-Contradictory declarations fail before the first media mutation. After execution, a declared `output.codec` is also checked against the codec reported by FFprobe for the actual final artifact; this protects codec assertions even when a step uses stream-copy semantics.
+Contradictory declarations fail before the first media mutation. The resolved final output path is also preflighted before any intermediate workspace or media step is started: when the destination already exists and overwrite is not explicit, the pipeline returns `E_IO_OUTPUT_EXISTS` immediately instead of performing expensive preceding steps. After execution, a declared `output.codec` is also checked against the codec reported by FFprobe for the actual final artifact; this protects codec assertions even when a step uses stream-copy semantics.
 
 ## Pipeline safety limits
 
