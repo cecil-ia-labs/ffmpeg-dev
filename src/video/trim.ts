@@ -1,7 +1,7 @@
 import { ToolkitRuntimeError } from "../core/errors.js";
 import type { MediaInfo, ToolkitWarning, TrimMode } from "../types/contracts.js";
 import { encodingArgs, resolveEncodingProfile } from "./encoding.js";
-import { deriveOutputPath, resolveReadableFile } from "./io.js";
+import { deriveOutputPath, preflightOutputPath, resolveReadableFile } from "./io.js";
 import { executeVideoTransform, formatSeconds, inspectInput, nonNegativeFinite, positiveFinite, requireVideo } from "./helpers.js";
 import type { TrimEndRequest, TrimRangeRequest, TrimStartRequest, VideoOperationReport } from "./types.js";
 
@@ -46,6 +46,8 @@ function accurateEncoding(output: string, hasAudio: boolean): string[] {
 export async function trimVideoStart(input: string, request: TrimStartRequest): Promise<VideoOperationReport> {
   const source = await resolveReadableFile(input, request.cwd);
   const seconds = positiveFinite(request.seconds, "seconds");
+  const output = deriveOutputPath(source, "trim-start", request.output, { ...(request.cwd !== undefined ? { cwd: request.cwd } : {}) });
+  await preflightOutputPath({ source, output, overwrite: request.overwrite ?? false });
   const media = await inspectInput(source, request);
   requireVideo(media, source);
   const inputDuration = durationOf(media);
@@ -56,7 +58,6 @@ export async function trimVideoStart(input: string, request: TrimStartRequest): 
   }
 
   const mode = resolveMode(request.mode);
-  const output = deriveOutputPath(source, "trim-start", request.output, { ...(request.cwd !== undefined ? { cwd: request.cwd } : {}) });
   const time = formatSeconds(seconds);
   const args = mode.resolved === "copy"
     ? ["-ss", time, "-i", source, "-map", "0", "-c", "copy", "-avoid_negative_ts", "make_zero"]
@@ -77,6 +78,8 @@ export async function trimVideoStart(input: string, request: TrimStartRequest): 
 export async function trimVideoEnd(input: string, request: TrimEndRequest): Promise<VideoOperationReport> {
   const source = await resolveReadableFile(input, request.cwd);
   const seconds = positiveFinite(request.seconds, "seconds");
+  const output = deriveOutputPath(source, "trim-end", request.output, { ...(request.cwd !== undefined ? { cwd: request.cwd } : {}) });
+  await preflightOutputPath({ source, output, overwrite: request.overwrite ?? false });
   const media = await inspectInput(source, request);
   requireVideo(media, source);
   const inputDuration = durationOf(media);
@@ -91,7 +94,6 @@ export async function trimVideoEnd(input: string, request: TrimEndRequest): Prom
 
   const keepDuration = inputDuration - seconds;
   const mode = resolveMode(request.mode);
-  const output = deriveOutputPath(source, "trim-end", request.output, { ...(request.cwd !== undefined ? { cwd: request.cwd } : {}) });
   const args = mode.resolved === "copy"
     ? ["-i", source, "-t", formatSeconds(keepDuration), "-map", "0", "-c", "copy"]
     : ["-i", source, "-t", formatSeconds(keepDuration), "-map", "0", ...accurateEncoding(output, media.audio.length > 0)];
@@ -120,17 +122,19 @@ export async function trimVideoRange(input: string, request: TrimRangeRequest): 
     throw new ToolkitRuntimeError("E_USAGE_MISSING_ARGUMENT", "video trim requires --end or --duration.");
   }
 
-  const media = await inspectInput(source, request);
-  requireVideo(media, source);
-  const inputDuration = durationOf(media);
   const duration = request.duration !== undefined
     ? positiveFinite(request.duration, "duration")
     : positiveFinite((request.end as number) - start, "duration");
+  const suffixEnd = request.end ?? start + duration;
+  const output = deriveOutputPath(source, `trim-${formatSeconds(start)}-${formatSeconds(suffixEnd)}`, request.output, { ...(request.cwd !== undefined ? { cwd: request.cwd } : {}) });
+  await preflightOutputPath({ source, output, overwrite: request.overwrite ?? false });
+
+  const media = await inspectInput(source, request);
+  requireVideo(media, source);
+  const inputDuration = durationOf(media);
   validateRange(start, duration, inputDuration);
 
   const mode = resolveMode(request.mode);
-  const suffixEnd = request.end ?? start + duration;
-  const output = deriveOutputPath(source, `trim-${formatSeconds(start)}-${formatSeconds(suffixEnd)}`, request.output, { ...(request.cwd !== undefined ? { cwd: request.cwd } : {}) });
   const args = mode.resolved === "copy"
     ? ["-ss", formatSeconds(start), "-i", source, "-t", formatSeconds(duration), "-map", "0", "-c", "copy", "-avoid_negative_ts", "make_zero"]
     : ["-i", source, "-ss", formatSeconds(start), "-t", formatSeconds(duration), "-map", "0", ...accurateEncoding(output, media.audio.length > 0), "-avoid_negative_ts", "make_zero"];
