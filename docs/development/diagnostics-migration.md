@@ -32,7 +32,7 @@ FFprobe + diagnosis validation of the output
 Equivalent explicit repair:
 
 ```bash
-npx @cecilialabs/ffmpeg repair timestamps ./source-code-reference.mp4 \
+cecilia-ffmpeg repair timestamps ./source-code-reference.mp4 \
   --mode reencode \
   --fps 30 \
   --output ./source-code-reference.cfr30.mp4
@@ -41,7 +41,7 @@ npx @cecilialabs/ffmpeg repair timestamps ./source-code-reference.mp4 \
 For a full interoperability normalization:
 
 ```bash
-npx @cecilialabs/ffmpeg repair normalize ./source-code-reference.mp4 \
+cecilia-ffmpeg repair normalize ./source-code-reference.mp4 \
   --fps 30 \
   --pixel-format yuv420p \
   --sample-rate 48000 \
