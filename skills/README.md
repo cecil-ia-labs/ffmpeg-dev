@@ -60,13 +60,25 @@ context, select a domain Skill, and require verified results. They do not
 require a public MCP endpoint, dynamic proxy, containerized NAT, or a new
 network MCP surface.
 
+The onboarding Skill ships executable JSON-in/JSON-out scripts for the
+Milestone 20 environment flow:
+
+```text
+skills/ffmpeg-onboarding/scripts/check.mjs
+skills/ffmpeg-onboarding/scripts/install.mjs
+```
+
+Both use the shared runner contract. `check.mjs` is read-only; `install.mjs`
+requires explicit authorization before it runs npm and always reports the
+post-install readiness check when an installation completes.
+
 ## Architecture transition
 
 The v1.3 implementation still contains the local stdio MCP adapter documented
 below. The next roadmap line moves agent-facing execution to portable
 Skill-associated scripts over the typed CLI/domain runtime. That migration is
-not part of this setup change, so current MCP documentation remains a
-historical/current-baseline reference until the relevant milestone lands.
+not part of this milestone, so current MCP documentation remains a
+historical/current-baseline reference until the removal milestone lands.
 
 ## MCP-enabled hosts
 

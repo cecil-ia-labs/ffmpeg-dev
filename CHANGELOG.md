@@ -11,6 +11,14 @@
 - ffmpeg-onboarding Skill for execution-context and FFmpeg readiness checks.
 - ffmpeg-workflow Skill for request routing, preflight, and artifact
   verification.
+- Milestone 20 shared Skill-script runner with JSON request/result envelopes,
+  context-aware regular-Chat guidance, cancellation, redaction, and safe-path
+  checks.
+- Read-only environment readiness reporting for Node.js, npm, the toolkit,
+  FFmpeg/FFprobe versions, capabilities, hardware metadata, and output-path
+  writability.
+- Explicit global, local, and npm-exec onboarding installation plans with
+  opt-in authorization and post-install checks.
 
 ### Compatibility
 
@@ -18,6 +26,8 @@
   preparation change.
 - The v1.3.0 MCP documentation remains valid for the current local stdio
   baseline until the roadmap migration milestone is implemented.
+- Existing CLI/domain/MCP surfaces remain available; the new `environment
+  check` and `environment install` flows are additive.
 
 ## 1.3.0 — 2026-09-20 — Milestone 18 — Pipeline & Preset System
 

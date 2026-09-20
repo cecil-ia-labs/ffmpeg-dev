@@ -22,7 +22,8 @@ cecilia-ffmpeg
 ├── environment
 │   ├── capabilities
 │   ├── version
-│   └── install                 [reserved]
+│   ├── check
+│   └── install [scope]
 │
 ├── video
 │   ├── trim-start <input>
@@ -60,7 +61,10 @@ cecilia-ffmpeg
     └── file <input>
 ```
 
-`environment install` is reserved in Milestone 0 because system package mutation requires platform-specific policy and explicit confirmation. The environment Skill may provide installation instructions before executable installation automation is implemented.
+`environment check` is a read-only onboarding report. `environment install`
+plans or explicitly runs the fixed npm package flow for `global`, `local`, or
+`npm-exec` scope; `--apply --authorize` is required. System FFmpeg package
+installation and shell startup mutation remain outside the toolkit boundary.
 
 ## 3. Global options
 

@@ -3,8 +3,11 @@ import type { Command } from "commander";
 import { exitCodeForError, ToolkitRuntimeError } from "../../core/index.js";
 import { inspectDoctor, type DoctorReport } from "../../environment/doctor.js";
 import { inspectEnvironmentCapabilities, type EnvironmentCapabilities } from "../../environment/capabilities.js";
+import { inspectEnvironmentReadiness, type EnvironmentCheckReport } from "../../environment/readiness.js";
+import { installCommand, installToolkit, type ToolkitInstallScope } from "../../environment/install.js";
 import { inspectEnvironmentVersions, type EnvironmentVersionReport } from "../../environment/version.js";
 import { probeMedia, type ProbeReport } from "../../media/probe.js";
+import type { SkillExecutionContext } from "../../skill-runtime/types.js";
 import type { MediaStream } from "../../types/contracts.js";
 import { executeAction } from "./shared.js";
 
@@ -144,6 +147,39 @@ function renderProbe(report: ProbeReport): string {
   return lines.join("\n");
 }
 
+function contextOption(command: Command, fallback: SkillExecutionContext = "terminal"): SkillExecutionContext {
+  const value = command.optsWithGlobals()["context"];
+  if (value === undefined) return fallback;
+  if (value === "chatgpt-regular" || value === "chatgpt-work" || value === "codex" || value === "ide" || value === "terminal" || value === "unknown") {
+    return value;
+  }
+  throw new ToolkitRuntimeError("E_USAGE_INVALID_ARGUMENT", "Unknown execution context.", {
+    details: { context: value, supported: ["chatgpt-regular", "chatgpt-work", "codex", "ide", "terminal", "unknown"] },
+  });
+}
+
+function renderEnvironmentCheck(report: EnvironmentCheckReport): string {
+  const lines = [
+    `Environment check: ${report.status.toUpperCase()}`,
+    `Context: ${report.context.name} (${report.context.source})`,
+    `Platform: ${report.observed.platform} ${report.observed.architecture}`,
+    `Node: ${report.runtime.node.version ?? "unknown"} (${report.runtime.node.path ?? "unresolved"})`,
+    `npm: ${report.runtime.npm.version ?? (report.runtime.npm.available ? "available" : "missing")} (${report.runtime.npm.path ?? "unresolved"})`,
+    `Toolkit: ${report.toolkit.available ? report.toolkit.path ?? "available" : "missing"}`,
+    `FFmpeg: ${report.ffmpeg.version ?? (report.ffmpeg.available ? "available" : "missing")} (${report.ffmpeg.path ?? "unresolved"})`,
+    `FFprobe: ${report.ffprobe.version ?? (report.ffprobe.available ? "available" : "missing")} (${report.ffprobe.path ?? "unresolved"})`,
+  ];
+  if (report.capabilities !== undefined) {
+    lines.push(
+      `Capabilities: ${report.capabilities.codecs.length} codecs, ${report.capabilities.encoders.length} encoders, ${report.capabilities.decoders.length} decoders, ${report.capabilities.filters.length} filters`,
+      `Hardware: ${report.capabilities.hardwareAcceleration.methods.join(", ") || "none reported"}`,
+    );
+  }
+  if (report.output !== undefined) lines.push(`Output path: ${report.output.path} (${report.output.writable ? "writable" : "not writable"})`);
+  if (report.next.length > 0) lines.push("Next:\n  " + report.next.join("\n  "));
+  return lines.join("\n");
+}
+
 export async function runDoctorAction(command: Command): Promise<void> {
   await executeAction(command, async (options, signal) => {
     const report = await inspectDoctor({
@@ -185,6 +221,25 @@ export async function runEnvironmentCapabilitiesAction(command: Command): Promis
   }), renderCapabilities);
 }
 
+export async function runEnvironmentCheckAction(command: Command): Promise<void> {
+  await executeAction(command, async (options, signal) => {
+    const raw = command.optsWithGlobals() as Record<string, unknown>;
+    const report = await inspectEnvironmentReadiness({
+      // The CLI is an executable terminal path; callers can override this to
+      // deliberately render the regular-Chat or Work contract.
+      context: contextOption(command, "terminal"),
+      ...(typeof raw["outputPath"] === "string" ? { outputPath: raw["outputPath"] } : {}),
+      ...(typeof raw["toolkitPath"] === "string" ? { toolkitPath: raw["toolkitPath"] } : {}),
+      ...(options.ffmpegPath !== undefined ? { ffmpegPath: options.ffmpegPath } : {}),
+      ...(options.ffprobePath !== undefined ? { ffprobePath: options.ffprobePath } : {}),
+      dryRun: options.dryRun,
+      verbose: options.verbose,
+      signal,
+    });
+    return { data: report, warnings: report.warnings };
+  }, renderEnvironmentCheck);
+}
+
 export async function runProbeAction(command: Command, positional: readonly unknown[]): Promise<void> {
   await executeAction(command, async (options, signal) => {
     const input = positional[0];
@@ -201,12 +256,39 @@ export async function runProbeAction(command: Command, positional: readonly unkn
   }, renderProbe);
 }
 
-export async function runEnvironmentInstallAction(command: Command): Promise<void> {
-  await executeAction(command, async () => {
-    throw new ToolkitRuntimeError(
-      "E_OPERATION_UNSUPPORTED",
-      "Automatic system installation is reserved and intentionally not implemented in the current release. Install FFmpeg with the platform package manager or provide --ffmpeg-path/--ffprobe-path.",
-      { details: { reserved: true, reason: "system package management requires an explicit platform policy" } },
-    );
-  }, () => "");
+export async function runEnvironmentInstallAction(command: Command, positional: readonly unknown[]): Promise<void> {
+  await executeAction(command, async (_options, signal) => {
+    const raw = command.optsWithGlobals() as Record<string, unknown>;
+    const scope = (typeof positional[0] === "string" ? positional[0] : raw["scope"] ?? "npm-exec") as ToolkitInstallScope;
+    if (scope !== "global" && scope !== "local" && scope !== "npm-exec") {
+      throw new ToolkitRuntimeError("E_USAGE_INVALID_ARGUMENT", "Unknown installation scope.", {
+        details: { scope, supported: ["global", "local", "npm-exec"] },
+      });
+    }
+    const apply = raw["apply"] === true;
+    const authorized = raw["authorize"] === true;
+    const install = await installToolkit({
+      scope,
+      context: contextOption(command, "terminal"),
+      authorized: apply && authorized,
+      dryRun: Boolean(_options.dryRun),
+      signal,
+    });
+    const readiness = install.status === "completed"
+      ? await inspectEnvironmentReadiness({ context: contextOption(command, "terminal"), signal })
+      : undefined;
+    return {
+      data: { install, ...(readiness !== undefined ? { readiness } : {}) },
+      ...(install.execution !== undefined ? { execution: install.execution } : {}),
+      ...(install.status === "planned"
+        ? { warnings: [{ code: "W_INSTALL_NOT_APPLIED", message: "Installation was planned only. Pass --apply --authorize to execute it." }] }
+        : {}),
+    };
+  }, (data) => {
+    const plan = data.install.plan;
+    return [
+      `Installation ${data.install.status}: ${installCommand(plan)}`,
+      data.install.status === "planned" ? "Pass --apply --authorize to execute this explicit installation." : "Repeat environment check to verify the installed runtime.",
+    ].join("\n");
+  });
 }

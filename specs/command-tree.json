@@ -29,8 +29,11 @@
       "subcommands": {
         "capabilities": {},
         "version": {},
+        "check": {},
         "install": {
-          "status": "reserved"
+          "args": [
+            "scope?"
+          ]
         }
       }
     },

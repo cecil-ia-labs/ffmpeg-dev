@@ -116,11 +116,32 @@ cecilia-ffmpeg doctor \
 ## Verify the environment
 
 ```bash
+cecilia-ffmpeg environment check --json
 cecilia-ffmpeg doctor
 cecilia-ffmpeg environment capabilities --json
 ```
 
-A successful `doctor` confirms binary resolution and inspects available capabilities. In v1.2, hardware encoding selection performs an additional runtime usability probe before choosing an accelerator; capability discovery alone still does not prove that a device is usable.
+`environment check` is the agent-facing read-only onboarding flow. It reports
+the observed execution context, Node.js/npm, toolkit resolution, FFmpeg and
+FFprobe paths/versions, capabilities, and optional output-path writability.
+It does not install packages or edit shell startup files. In a regular Chat
+context it returns the exact commands to copy into a Work/Codex/IDE/terminal
+environment.
+
+The toolkit installation flow is explicit and reversible:
+
+```bash
+cecilia-ffmpeg environment install global --json
+cecilia-ffmpeg environment install local --apply --authorize --json
+cecilia-ffmpeg environment install npm-exec --apply --authorize --json
+```
+
+The first command is a plan. `--apply --authorize` is required for npm to run;
+the flow supports global, local, and ephemeral `npm exec` use and never
+installs system FFmpeg packages or mutates a shell startup file. Repeat the
+check after installation. In v1.2, hardware encoding selection performs an
+additional runtime usability probe before choosing an accelerator; capability
+discovery alone still does not prove that a device is usable.
 
 ## Packaging and release lifecycle
 

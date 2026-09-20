@@ -1,6 +1,6 @@
 import type { Command } from "commander";
 
-import { runDoctorAction, runEnvironmentCapabilitiesAction, runEnvironmentInstallAction, runEnvironmentVersionAction, runProbeAction } from "./actions/environment.js";
+import { runDoctorAction, runEnvironmentCapabilitiesAction, runEnvironmentCheckAction, runEnvironmentInstallAction, runEnvironmentVersionAction, runProbeAction } from "./actions/environment.js";
 import { runTrimEndAction, runTrimRangeAction, runTrimStartAction, runVideoFromImageAction, runVideoRestoreAction, runVideoSpeedAction, runVideoUpscaleAction } from "./actions/video.js";
 import { runAudioAddSilenceAction, runAudioAttachAction, runAudioDetectSilenceAction, runAudioRemoveSilenceAction, runAudioSilenceAction, runAudioTelephonyAction } from "./actions/audio.js";
 import { runConvertBatchAction, runConvertFileAction } from "./actions/conversion.js";
@@ -18,6 +18,7 @@ const ACTIONS: Readonly<Record<string, CommandAction>> = {
   "cecilia-ffmpeg probe": runProbeAction,
   "cecilia-ffmpeg environment capabilities": runEnvironmentCapabilitiesAction,
   "cecilia-ffmpeg environment version": runEnvironmentVersionAction,
+  "cecilia-ffmpeg environment check": runEnvironmentCheckAction,
   "cecilia-ffmpeg environment install": runEnvironmentInstallAction,
   "cecilia-ffmpeg video trim-start": runTrimStartAction,
   "cecilia-ffmpeg video trim-end": runTrimEndAction,

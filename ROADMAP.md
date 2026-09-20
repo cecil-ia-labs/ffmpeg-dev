@@ -4,7 +4,7 @@
 > **Package:** @cecilialabs/ffmpeg
 > **Current baseline:** v1.3.0 on master
 > **Next architectural line:** planned v2.0.0
-> **Status:** roadmap only; implementation starts in a later milestone
+> **Status:** Milestone 20 implementation in progress; later milestones remain planned
 
 This roadmap replaces the previous MCP-centered evolution plan. It records the
 post-v1.3 architectural decision and defines the work required to make the
@@ -442,6 +442,8 @@ npm run validate:release
 - document security boundaries and explicit installation consent.
 
 ### Milestone 20 — Script runtime and environment flows
+
+**Status:** implemented on `codex/milestone-20-script-runtime`
 
 - create the shared Skill-script runner;
 - implement environment detection and capability reporting;

@@ -59,7 +59,30 @@ Machine-readable environment capability inspection.
 
 Normalized FFmpeg/FFprobe version information.
 
-`environment install` is reserved and not a package-management command.
+### `environment check`
+
+Read-only onboarding check for the execution context, Node.js/npm, toolkit
+resolution, FFmpeg/FFprobe versions, capabilities, and an optional output
+path. It does not install packages or edit shell state:
+
+```bash
+cecilia-ffmpeg environment check --json
+cecilia-ffmpeg environment check --context chatgpt-regular --json
+```
+
+### `environment install [scope]`
+
+Plan or explicitly run the toolkit npm installation flow. The scope is
+`global`, `local`, or `npm-exec`; the default is `npm-exec`:
+
+```bash
+cecilia-ffmpeg environment install local --json
+cecilia-ffmpeg environment install local --apply --authorize --json
+```
+
+`--apply --authorize` is required before npm runs. The flow never installs
+system FFmpeg packages and never edits shell startup files. Run
+`environment check --json` again after an applied install.
 
 ## Video
 
