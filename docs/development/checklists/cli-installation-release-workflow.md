@@ -8,7 +8,7 @@
 
 - [x] Preserve `bin.cecilia-ffmpeg -> ./dist/cli.js`.
 - [x] Document `npm install -g @cecilialabs/ffmpeg`.
-- [x] Keep `npx @cecilialabs/ffmpeg` supported.
+- [x] Keep package-runner usage supported; since v1.1 it must explicitly select `cecilia-ffmpeg` because the package exposes multiple binaries.
 - [x] Do not add a shell-mutating `postinstall`.
 
 ## Local development
