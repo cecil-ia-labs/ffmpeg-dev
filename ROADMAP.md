@@ -1164,7 +1164,7 @@ npx @cecilialabs/ffmpeg compose concat ./clips \
 # Milestone 16 — MCP Server
 
 **Target:** `v1.1.0`  
-**Status:** 🚧 Implementation complete; validation pending
+**Status:** ✅ Released 2026-09-20
 
 ### Objective
 
@@ -1231,7 +1231,8 @@ trimMedia()
 
 # Milestone 17 — Advanced Hardware Acceleration
 
-**Target:** `v1.2.0`
+**Target:** `v1.2.0`  
+**Status:** 🚧 Implementation complete; validation pending
 
 ### Targets
 
@@ -1261,10 +1262,20 @@ software encoder
 Example:
 
 ```bash
-npx @cecilialabs/ffmpeg convert input.mp4 \
+cecilia-ffmpeg convert file input.mp4 \
   --to webm \
   --hardware auto
 ```
+
+Implemented policy:
+
+- `software` remains the compatibility default;
+- `auto` uses platform-aware backend ordering;
+- explicit `nvenc|qsv|vaapi|videotoolbox` selection is supported;
+- compiled encoder visibility is followed by a runtime usability probe;
+- unusable hardware falls back to software unless `--hardware-strict` is set;
+- NVDEC/CUVID is included in capability discovery without silently injecting hardware decode into filter graphs;
+- hardware policy is exposed through CLI, TypeScript API, and MCP `media_convert` / `media_restore`.
 
 ---
 
