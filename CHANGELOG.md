@@ -13,6 +13,7 @@
 - Output codec/extension/final-step consistency validation.
 - Final FFprobe codec assertion against the produced artifact.
 - Protection against final-output/original-input path collisions.
+- Cross-command eager output preflight: local file destinations are checked before expensive media work; batch `existing=error` validates all planned outputs before workers start.
 - Deterministic preset safety limits: 32 nesting levels and 256 expanded concrete steps.
 - Public package API for loading, expanding, validating, and executing pipelines.
 - `media_run_pipeline` MCP tool, increasing the MCP catalog from 9 to 10 tools.
