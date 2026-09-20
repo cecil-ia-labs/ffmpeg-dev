@@ -26,9 +26,23 @@ assert(io.includes("export async function preflightOutputPath"), "Media I/O must
 assert(io.includes("await preflightOutputPath({"), "Output transactions must reuse preflightOutputPath().");
 
 const shared = await text("src/cli/actions/shared.ts");
-assert(shared.includes("preflightExplicitCliOutput"), "CLI action wrapper must run the common output preflight.");
+const cliPreflightCall = shared.indexOf(
+  "await preflightExplicitCliOutput(command, options);",
+);
+const progressObserverCall = shared.indexOf(
+  "const payload = await withProgressObserver(",
+);
+
 assert(
-  shared.indexOf("preflightExplicitCliOutput") < shared.indexOf("withProgressObserver"),
+  cliPreflightCall !== -1,
+  "CLI action wrapper must run the common output preflight.",
+);
+assert(
+  progressObserverCall !== -1,
+  "CLI action wrapper must install the progress observer.",
+);
+assert(
+  cliPreflightCall < progressObserverCall,
   "CLI explicit-output preflight must run before operation progress/execution.",
 );
 
