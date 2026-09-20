@@ -1,6 +1,7 @@
 import path from "node:path";
 
 import { ToolkitRuntimeError } from "../core/errors.js";
+import { hardwareVideoEncodingArgs, type HardwareEncodingSelection } from "../hardware/index.js";
 
 export interface EncodingProfile {
   container: "mp4" | "mov" | "mkv" | "webm";
@@ -9,6 +10,8 @@ export interface EncodingProfile {
   videoQualityArgs: string[];
   audioArgs: string[];
   muxerArgs: string[];
+  softwareCrf: number;
+  softwarePreset?: string;
 }
 
 export function resolveEncodingProfile(output: string, options: { crf?: number; preset?: string } = {}): EncodingProfile {
@@ -24,6 +27,7 @@ export function resolveEncodingProfile(output: string, options: { crf?: number; 
       videoQualityArgs: ["-crf", String(Math.max(0, Math.min(63, crf + 12))), "-b:v", "0"],
       audioArgs: ["-b:a", "128k"],
       muxerArgs: [],
+      softwareCrf: Math.max(0, Math.min(63, crf + 12)),
     };
   }
 
@@ -35,6 +39,8 @@ export function resolveEncodingProfile(output: string, options: { crf?: number; 
       videoQualityArgs: ["-preset", preset, "-crf", String(crf)],
       audioArgs: ["-b:a", "192k"],
       muxerArgs: extension === ".mp4" || extension === ".m4v" || extension === ".mov" ? ["-movflags", "+faststart"] : [],
+      softwareCrf: crf,
+      softwarePreset: preset,
     };
   }
 
@@ -43,10 +49,19 @@ export function resolveEncodingProfile(output: string, options: { crf?: number; 
   });
 }
 
-export function encodingArgs(profile: EncodingProfile, includeAudio: boolean): string[] {
+export function encodingArgs(
+  profile: EncodingProfile,
+  includeAudio: boolean,
+  hardware?: HardwareEncodingSelection,
+): string[] {
+  const videoArgs = hardware === undefined
+    ? ["-c:v", profile.videoCodec, ...profile.videoQualityArgs]
+    : hardwareVideoEncodingArgs(hardware, {
+        softwareCrf: profile.softwareCrf,
+        ...(profile.softwarePreset !== undefined ? { softwarePreset: profile.softwarePreset } : {}),
+      });
   return [
-    "-c:v", profile.videoCodec,
-    ...profile.videoQualityArgs,
+    ...videoArgs,
     ...(includeAudio ? ["-c:a", profile.audioCodec, ...profile.audioArgs] : ["-an"]),
     ...profile.muxerArgs,
   ];
