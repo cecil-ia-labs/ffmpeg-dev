@@ -25,6 +25,8 @@ These documents preserve implementation rationale, validation evidence, compatib
 
 ## Agent and distribution layers
 
+- [Stable v1 release](stable-cli-release.md)
+
 - [CLI installation & release workflow](cli-installation-release-workflow.md)
 
 - [Professional Skills](professional-skills.md)
