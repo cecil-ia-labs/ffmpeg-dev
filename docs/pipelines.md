@@ -153,7 +153,18 @@ output:
 - `vp9` requires WebM;
 - the final `convert.to` or `resize.to` must agree with the output extension.
 
-Contradictory declarations fail before the first media mutation.
+Contradictory declarations fail before the first media mutation. After execution, a declared `output.codec` is also checked against the codec reported by FFprobe for the actual final artifact; this protects codec assertions even when a step uses stream-copy semantics.
+
+## Pipeline safety limits
+
+To keep agent-generated jobs deterministic and bounded:
+
+- preset nesting is limited to 32 levels;
+- expanded executable pipelines are limited to 256 concrete steps;
+- the final output path may not equal the original pipeline input path, even when overwrite is enabled;
+- preset cycles and unknown references are rejected before execution.
+
+These limits apply after named-preset expansion and are enforced by the typed pipeline engine.
 
 ## Intermediate artifacts
 
