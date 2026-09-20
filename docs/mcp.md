@@ -1,6 +1,6 @@
 # MCP Server
 
-FFmpeg Media Toolkit v1.1.0 exposes its typed media operations as Model Context Protocol tools through a dedicated stdio server.
+FFmpeg Media Toolkit v1.2.0 exposes its typed media operations as Model Context Protocol tools through a dedicated stdio server.
 
 ## Install
 
@@ -39,22 +39,26 @@ When the package is installed globally:
 }
 ```
 
-Without a global install:
+Without a global install, invoke the intended package binary explicitly:
 
 ```json
 {
   "mcpServers": {
     "cecilia-ffmpeg": {
-      "command": "npx",
+      "command": "npm",
       "args": [
-        "-y",
+        "exec",
+        "--yes",
         "--package=@cecilialabs/ffmpeg",
+        "--",
         "cecilia-ffmpeg-mcp"
       ]
     }
   }
 }
 ```
+
+Do not use `npx @cecilialabs/ffmpeg` as a shorthand: the package intentionally exposes both the CLI and MCP binaries.
 
 The server uses stdio. Standard output is reserved for MCP protocol traffic; diagnostics from the server process go to standard error.
 
@@ -93,6 +97,18 @@ Transform tools use JSON-native snake-case options such as:
 
 Not every tool uses every option. Input schemas advertised by MCP are the authoritative contract for each tool.
 
+In v1.2, `media_convert` and `media_restore` also expose the hardware policy:
+
+```json
+{
+  "hardware": "auto",
+  "hardware_device": "/dev/dri/renderD128",
+  "hardware_strict": false
+}
+```
+
+Supported policy values are `software`, `auto`, `nvenc`, `qsv`, `vaapi`, and `videotoolbox`; actual codec/backend compatibility is validated by the toolkit.
+
 ## Safety behavior
 
 - Existing outputs are not overwritten unless `overwrite=true` is explicit.
@@ -113,10 +129,10 @@ Domain errors are returned as tool errors with the toolkit's existing error code
 
 ## Transport scope
 
-v1.1.0 ships a local stdio MCP server. A hosted Streamable HTTP deployment is intentionally outside this milestone because it requires explicit hosting, origin/host validation, authentication, and deployment policy rather than merely another media adapter.
+v1.2.0 continues to ship the local stdio MCP server introduced in v1.1. A hosted Streamable HTTP deployment is intentionally outside this milestone because it requires explicit hosting, origin/host validation, authentication, and deployment policy rather than merely another media adapter.
 
 ## Included MCP Configuration
-v1.1.0 ships a mcp.json config file.
+The repository ships a VS Code workspace MCP configuration for local development:
 
 ```
 .vscode/mcp.json
