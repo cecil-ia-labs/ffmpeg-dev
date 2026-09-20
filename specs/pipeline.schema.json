@@ -26,7 +26,8 @@
         "minItems": 1,
         "items": {
           "$ref": "#/$defs/step"
-        }
+        },
+        "maxItems": 256
       }
     },
     "steps": {
@@ -34,7 +35,8 @@
       "minItems": 1,
       "items": {
         "$ref": "#/$defs/step"
-      }
+      },
+      "maxItems": 256
     },
     "output": {
       "type": "object",
