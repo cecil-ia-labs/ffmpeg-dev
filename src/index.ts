@@ -27,3 +27,5 @@ export * from "./diagnostics/index.js";
 export * from "./streaming/index.js";
 
 export * from "./image/index.js";
+
+export * from "./pipeline/index.js";
