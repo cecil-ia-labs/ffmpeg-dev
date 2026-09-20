@@ -1116,9 +1116,12 @@ The CLI is directly callable after standard global npm installation, local linki
 
 # Milestone 15 — Stable CLI Release
 
-**Target:** `v1.0.0`
+**Target:** `v1.0.0`  
+**Status:** 🚧 In progress
 
 ### Release requirements
+
+The stable release contract is frozen in `specs/stable-release-contract.json`. Milestone 15 is a stabilization and portability pass; new media capabilities are out of scope unless required to fix a v1 release blocker.
 
 - [ ] CLI architecture stable.
 - [ ] Core APIs stable.
