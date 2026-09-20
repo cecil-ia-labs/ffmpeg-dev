@@ -31,7 +31,7 @@ Human stdout/stderr uses restrained ANSI color only when attached to a TTY. `--n
 ### Agent / JSON mode
 
 ```bash
-npx @cecilialabs/ffmpeg video speed input.mp4 --factor 2 --json
+cecilia-ffmpeg video speed input.mp4 --factor 2 --json
 ```
 
 `--json` emits one JSON result envelope on stdout. It does not emit decorated progress lines. When FFmpeg progress was available, the envelope includes:
