@@ -1,6 +1,6 @@
 import { Option, type Command } from "commander";
 
-export function configureMilestone8Options(command: Command, path: string): void {
+export function configureDiagnosticsOptions(command: Command, path: string): void {
   switch (path) {
     case "cecilia-ffmpeg diagnose":
       command

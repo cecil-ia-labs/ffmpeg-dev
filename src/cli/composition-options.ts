@@ -20,7 +20,7 @@ function addAudioOption(command: Command): void {
   command.option("--audio <mode>", "audio policy: auto, preserve, or drop", "auto");
 }
 
-export function configureMilestone7Options(command: Command, path: string): void {
+export function configureCompositionOptions(command: Command, path: string): void {
   switch (path) {
     case "cecilia-ffmpeg compose concat":
       command

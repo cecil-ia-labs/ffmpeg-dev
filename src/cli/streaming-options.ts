@@ -24,7 +24,7 @@ function addEncoding(command: Command): void {
     .option("--pixel-format <format>", "encoded video pixel format", "yuv420p");
 }
 
-export function configureMilestone9Options(command: Command, path: string): void {
+export function configureStreamingOptions(command: Command, path: string): void {
   switch (path) {
     case "cecilia-ffmpeg stream camera":
       addDestination(command);

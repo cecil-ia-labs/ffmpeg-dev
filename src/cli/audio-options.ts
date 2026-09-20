@@ -1,6 +1,6 @@
 import type { Command } from "commander";
 
-export function configureMilestone5Options(command: Command, path: string): void {
+export function configureAudioOptions(command: Command, path: string): void {
   switch (path) {
     case "cecilia-ffmpeg audio attach":
     case "cecilia-ffmpeg video attach-audio":

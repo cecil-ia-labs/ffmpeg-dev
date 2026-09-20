@@ -1,6 +1,6 @@
 import { Option, type Command } from "commander";
 
-export function configureMilestone13_5Options(command: Command, path: string): void {
+export function configureImageOptions(command: Command, path: string): void {
   switch (path) {
     case "cecilia-ffmpeg image convert":
       command

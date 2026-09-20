@@ -21,7 +21,7 @@ function addConversionTuningOptions(command: Command): void {
     .option("--channels <count>", "audio output channel count");
 }
 
-export function configureMilestone6Options(command: Command, path: string): void {
+export function configureConversionOptions(command: Command, path: string): void {
   switch (path) {
     case "cecilia-ffmpeg convert file":
       command

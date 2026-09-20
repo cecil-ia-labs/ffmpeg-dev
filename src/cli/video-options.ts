@@ -1,6 +1,6 @@
 import { Option, type Command } from "commander";
 
-export function configureMilestone4Options(command: Command, path: string): void {
+export function configureVideoOptions(command: Command, path: string): void {
   switch (path) {
     case "cecilia-ffmpeg video trim-start":
     case "cecilia-ffmpeg video trim-end":
