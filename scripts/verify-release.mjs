@@ -50,11 +50,14 @@ const versions = new Map([
   ["stable release contract", contract.release],
 ]);
 
+const releaseVersion = contract.release;
 for (const [source, version] of versions) {
-  assert(version === "1.0.0", source + " must declare stable release 1.0.0; received " + String(version));
+  assert(version === releaseVersion, source + " must declare release " + releaseVersion + "; received " + String(version));
 }
 
-assert(/^\d+\.\d+\.\d+$/.test(pkg.version), "Stable release version must be plain semantic versioning.");
+const semanticVersion = /^(\d+)\.(\d+)\.(\d+)$/.exec(pkg.version);
+assert(semanticVersion, "Stable release version must be plain semantic versioning.");
+assert(Number(semanticVersion[1]) === 1, "Stable release verification is limited to the v1 compatibility line.");
 assert(pkg.name === contract.package.name, "npm package identity drifted from stable contract.");
 assert(pkg.bin?.[contract.package.binary] === "./dist/cli.js", "Stable CLI binary mapping changed.");
 assert(pkg.engines?.node === contract.package.node, "Node runtime policy drifted from stable contract.");
@@ -63,6 +66,13 @@ assert(pkg.publishConfig?.access === contract.package.access, "Scoped npm packag
 assert(plugin.name === contract.plugin.name, "Plugin identity drifted from stable contract.");
 assert(pkg.exports?.["."]?.import === "./dist/index.js", "Stable package JS entrypoint changed.");
 assert(pkg.exports?.["."]?.types === "./dist/index.d.ts", "Stable package type entrypoint changed.");
+if (contract.package.mcpBinary !== undefined) {
+  assert(pkg.bin?.[contract.package.mcpBinary] === "./dist/mcp.js", "Stable MCP binary mapping changed.");
+}
+if (contract.package.mcpExport !== undefined) {
+  assert(pkg.exports?.[contract.package.mcpExport]?.import === "./dist/mcp/index.js", "Stable MCP JS export changed.");
+  assert(pkg.exports?.[contract.package.mcpExport]?.types === "./dist/mcp/index.d.ts", "Stable MCP type export changed.");
+}
 
 assert(commandTree.binary === contract.package.binary, "CLI binary name drifted from command-tree contract.");
 assert(
@@ -116,7 +126,7 @@ for (const required of [
 }
 
 const readme = await text("README.md");
-assert(readme.includes("1.0.0"), "README must identify the v1.0.0 release line.");
+assert(readme.includes(releaseVersion), "README must identify the current stable release line.");
 assert(readme.includes("cecilia-ffmpeg"), "README must document the stable executable.");
 
-console.log("Stable v1.0.0 release contract: PASS");
+console.log("Stable v" + releaseVersion + " release contract: PASS");
