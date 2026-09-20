@@ -66,15 +66,20 @@ for (const domainCall of [
   assert(executor.includes(domainCall), "Pipeline executor does not reuse typed domain call: " + domainCall);
 }
 assert(executor.includes("TemporaryWorkspace"), "Pipeline execution must isolate intermediate artifacts.");
+assert(executor.includes("Pipeline input and final output paths must be different."), "Pipeline must reject original-input output collisions.");
+assert(executor.includes("validatePipelineResultCodec"), "Pipeline executor must enforce the final codec assertion.");
 assert(!/node:child_process|from\s+["']child_process["']/.test(executor), "Pipeline executor must not create a process boundary.");
 
 const presets = await text("src/pipeline/presets.ts");
 assert(presets.includes("Pipeline preset cycle detected."), "Preset expansion must reject cycles.");
 assert(presets.includes("unknown preset"), "Preset expansion must reject missing references.");
+assert(presets.includes("MAX_PIPELINE_PRESET_DEPTH = 32"), "Preset expansion must enforce a nesting limit.");
+assert(presets.includes("MAX_EXPANDED_PIPELINE_STEPS = 256"), "Preset expansion must enforce an expanded-step limit.");
 
 const validation = await text("src/pipeline/validation.ts");
 assert(validation.includes("output codec"), "Pipeline output codec consistency must be validated.");
 assert(validation.includes("Final conversion target"), "Final conversion/output extension consistency must be validated.");
+assert(validation.includes("validatePipelineResultCodec"), "Pipeline must verify the declared codec against final media.");
 
 const parser = await text("src/pipeline/parser.ts");
 assert(parser.includes('require("js-yaml")'), "Pipeline loader must use the declared YAML parser.");
