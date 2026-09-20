@@ -102,7 +102,10 @@ describe("pipeline output validation", () => {
 
       await expect(
         executePipeline(await loadPipelineFile(pipelineFile), { dryRun: true, overwrite: true }),
-      ).rejects.toThrow(/input and final output paths must be different/i);
+      ).rejects.toMatchObject({
+        code: "E_CONFIG_CONFLICT",
+        message: "Input and output paths must be different.",
+      });
     } finally {
       await rm(workspace, { recursive: true, force: true });
     }
