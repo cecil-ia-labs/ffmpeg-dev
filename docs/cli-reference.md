@@ -16,6 +16,19 @@
 --keep-temp           preserve temporary/intermediate artifacts
 ```
 
+## Output preflight
+
+Commands that produce local files resolve and validate their destination before expensive media processing begins.
+
+- an existing destination fails with `E_IO_OUTPUT_EXISTS` unless `--overwrite` is explicit;
+- input/output path collisions are rejected before mutation;
+- explicit `--output` paths are checked by the common CLI action preflight;
+- domain operations repeat the check after resolving command-specific/default output paths, so package API and MCP callers receive the same protection;
+- `convert batch --existing error` validates all planned destinations before starting workers;
+- pipeline output is validated before any intermediate workspace or step execution.
+
+Streaming commands are excluded from file-existence preflight because their `--url` value is a transport destination rather than a local output file.
+
 ## Pipelines
 
 ```text
