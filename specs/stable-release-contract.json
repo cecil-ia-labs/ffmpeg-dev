@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "release": "1.1.0",
+  "release": "1.2.0",
   "package": {
     "name": "@cecilialabs/ffmpeg",
     "binary": "cecilia-ffmpeg",
@@ -74,5 +74,33 @@
       "media_restore",
       "media_diagnose"
     ]
+  },
+  "hardwareAcceleration": {
+    "default": "software",
+    "modes": [
+      "software",
+      "auto",
+      "nvenc",
+      "qsv",
+      "vaapi",
+      "videotoolbox"
+    ],
+    "codecs": {
+      "h264": {
+        "software": "libx264",
+        "nvenc": "h264_nvenc",
+        "qsv": "h264_qsv",
+        "vaapi": "h264_vaapi",
+        "videotoolbox": "h264_videotoolbox"
+      },
+      "vp9": {
+        "software": "libvpx-vp9",
+        "qsv": "vp9_qsv",
+        "vaapi": "vp9_vaapi"
+      }
+    },
+    "runtimeProbe": true,
+    "softwareFallback": true,
+    "strictMode": true
   }
 }
