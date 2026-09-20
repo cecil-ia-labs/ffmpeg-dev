@@ -12,7 +12,7 @@ The local MCP implementation remains part of the npm package and repository. A f
 
 ## Package identity
 
-- Package name: `cecilialabs-ffmpeg`
+- Plugin ID: `cecilialabs-ffmpeg`
 - Plugin version: `1.3.0`
 - Display name: **Cecil-IA Labs FFmpeg**
 - Developer: **Cecil-IA Labs**
