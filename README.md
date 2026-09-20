@@ -286,13 +286,9 @@ See [test-suite and fixture architecture](docs/development/test-suite-and-fixtur
 
 ## Plugin package
 
-`plugin.json` remains conformant with the closed Agent Plugins 1.0.0 manifest schema. Portable metadata uses the standard fields, while product-specific branding/documentation metadata lives under:
+`plugin.json` remains conformant with the closed Agent Plugins 1.0.0 manifest schema. Portable metadata uses the standard fields. Cecil-IA Labs runtime/documentation metadata remains under `extensions.com.cecilialabs.ffmpeg`, while OpenAI directory presentation metadata is defined under `extensions.com.openai.interface`.
 
-```text
-extensions.com.cecilialabs.ffmpeg
-```
-
-Skills remain portable components discovered from the standard fixed `skills/` directory rather than a non-standard manifest field.
+Skills remain portable components discovered from the standard fixed `skills/` directory rather than a non-standard manifest field. The public OpenAI v1.3.0 submission is intentionally Skills-only because the bundled MCP server is a local stdio server rather than a public HTTPS MCP endpoint.
 
 Branding assets:
 
