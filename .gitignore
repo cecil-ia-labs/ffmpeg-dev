@@ -13,3 +13,4 @@ media/
 legacy/
 .npm-pack/
 .codex/
+publish-npm.sh
