@@ -1,12 +1,12 @@
 # FFmpeg Media Toolkit — Development Roadmap
 
-> **Project:** `ffmpeg-media-toolkit`  
-> **CLI package:** `@cecilialabs/ffmpeg`  
-> **Primary language:** TypeScript  
-> **Execution:** `cecilia-ffmpeg ...`  
-> **Runtime:** Node.js  
-> **Media engine:** FFmpeg / FFprobe  
-> **Distribution:** ChatGPT Plugin + Codex Skills + npm CLI  
+> **Project:** `ffmpeg-media-toolkit`
+> **CLI package:** `@cecilialabs/ffmpeg`
+> **Primary language:** TypeScript
+> **Execution:** `cecilia-ffmpeg ...`
+> **Runtime:** Node.js
+> **Media engine:** FFmpeg / FFprobe
+> **Distribution:** ChatGPT Plugin + Codex Skills + npm CLI
 > **Initial scope:** migration and professionalization of the existing FFmpeg Bash utilities.
 
 ---
@@ -180,7 +180,7 @@ must expose a functioning CLI without invoking FFmpeg.
 
 # Milestone 2 — FFmpeg Core Runtime
 
-**Target:** `v0.1.0-alpha.2`  
+**Target:** `v0.1.0-alpha.2`
 **Status:** ✅ Implemented
 
 ### Objectives
@@ -255,7 +255,7 @@ No domain command may invoke `child_process`, `execa`, `ffmpeg`, or `ffprobe` di
 
 # Milestone 3 — Doctor, Capabilities & Media Probe
 
-**Target:** `v0.1.0-alpha.3`  
+**Target:** `v0.1.0-alpha.3`
 **Status:** ✅ Complete
 
 ### Objectives
@@ -311,7 +311,7 @@ An agent should be able to inspect a media file without parsing arbitrary FFprob
 
 # Milestone 4 — Video Editing Operations
 
-**Target:** `v0.2.0`  
+**Target:** `v0.2.0`
 **Status:** ✅ Complete
 
 ### Legacy scripts covered
@@ -378,7 +378,7 @@ Every operation must support paths containing spaces and must not depend on Bash
 
 # Milestone 5 — Audio Processing
 
-**Target:** `v0.3.0`  
+**Target:** `v0.3.0`
 **Status:** ✅ Complete
 
 ### Legacy scripts covered
@@ -472,7 +472,7 @@ The implementation must not conflate GSM containers/codecs with G.711 μ-law.
 
 # Milestone 6 — Media Conversion & Batch Engine
 
-**Target:** `v0.4.0`  
+**Target:** `v0.4.0`
 **Status:** ✅ Complete
 
 ### Legacy scripts covered
@@ -628,7 +628,7 @@ First input link main timebase does not match second input link
 
 # Milestone 8 — Diagnostics & Repair
 
-**Target:** `v0.6.0`  
+**Target:** `v0.6.0`
 **Status:** ✅ Complete
 
 ### Legacy scripts covered
@@ -693,7 +693,7 @@ Repairs should be chosen from observed media properties rather than applying arb
 
 # Milestone 9 — Streaming & Capture
 
-**Target:** `v0.7.0`  
+**Target:** `v0.7.0`
 **Status:** ✅ Complete
 
 ### Legacy script covered
@@ -761,7 +761,7 @@ Camera input formats include Linux V4L2, macOS AVFoundation, and Windows DirectS
 
 # Milestone 10 — Professional-Level Skills
 
-**Target:** `v0.8.0`  
+**Target:** `v0.8.0`
 **Status:** ✅ Complete
 
 ### Skills
@@ -826,7 +826,7 @@ the native FFmpeg invocation.
 
 # Milestone 11 — Plugin Packaging & Assets
 
-**Target:** `v0.9.0`  
+**Target:** `v0.9.0`
 **Status:** ✅ Complete
 
 ### Deliverables
@@ -863,7 +863,7 @@ Skills are discovered from the fixed `skills/` directory. Branding, documentatio
 
 # Milestone 12 — Test Suite & Media Fixtures
 
-**Target:** `v0.9.5`  
+**Target:** `v0.9.5`
 **Status:** ✅ Complete
 
 ### Test layers
@@ -919,7 +919,7 @@ Generated binaries live in a Git-ignored directory; `test/fixtures/manifest.json
 
 # Milestone 13 — UX, Progress & Agent-Friendly Output
 
-**Target:** `v0.9.7`  
+**Target:** `v0.9.7`
 **Status:** ✅ Complete
 
 ### Features
@@ -967,7 +967,7 @@ cecilia-ffmpeg video speed input.mp4 \
 
 # Milestone 13.5 — Media Capability Expansion & CLI Polish
 
-**Target:** `v0.9.8`  
+**Target:** `v0.9.8`
 **Status:** ✅ Complete
 
 ### Motivation
@@ -1005,7 +1005,7 @@ audio: wav, mp3, aac, m4a, flac, opus, ogg
 
 # Milestone 14 — Documentation & Migration Guide
 
-**Target:** `v0.9.9`  
+**Target:** `v0.9.9`
 **Status:** ✅ Complete
 
 ### Documentation
@@ -1073,7 +1073,7 @@ Machine contracts remain unchanged: `--json` has no ANSI/emoji decoration; non-T
 
 # Milestone 14.5 — CLI Installation & Release Workflow
 
-**Target:** `v0.9.9` release hardening  
+**Target:** `v0.9.9` release hardening
 **Status:** Implementation complete; validation/merge pending
 
 ### Objectives
@@ -1116,7 +1116,7 @@ The CLI is directly callable after standard global npm installation, local linki
 
 # Milestone 15 — Stable CLI Release
 
-**Target:** `v1.0.0`  
+**Target:** `v1.0.0`
 **Status:** ✅ Released 2026-09-20
 
 ### Release requirements
@@ -1163,7 +1163,7 @@ cecilia-ffmpeg compose concat ./clips \
 
 # Milestone 16 — MCP Server
 
-**Target:** `v1.1.0`  
+**Target:** `v1.1.0`
 **Status:** ✅ Released 2026-09-20
 
 ### Objective
@@ -1231,8 +1231,8 @@ trimMedia()
 
 # Milestone 17 — Advanced Hardware Acceleration
 
-**Target:** `v1.2.0`  
-**Status:** ✅ Implementation and validation complete; ready for release
+**Target:** `v1.2.0`
+**Status:** ✅ Released 2026-09-20
 
 ### Targets
 
@@ -1323,21 +1323,21 @@ This eventually enables deterministic agent-generated media workflows.
 
 # Version Roadmap
 
-| Version | Main capability |
-|---|---|
-| `0.1.x` | Core runtime, doctor and FFprobe |
-| `0.2.0` | Video editing |
-| `0.3.0` | Audio |
-| `0.4.0` | Conversion and batch |
-| `0.5.0` | Composition and transitions |
-| `0.6.0` | Diagnostics and repair |
-| `0.7.0` | Streaming |
-| `0.8.0` | Professional Skills |
-| `0.9.x` | Plugin, tests, UX and documentation |
-| **`1.0.0`** | Stable CLI + Plugin |
-| `1.1.0` | MCP |
-| `1.2.0` | Hardware acceleration |
-| `1.3.0` | Declarative pipelines |
+| Version     | Main capability                     |
+| ----------- | ----------------------------------- |
+| `0.1.x`     | Core runtime, doctor and FFprobe    |
+| `0.2.0`     | Video editing                       |
+| `0.3.0`     | Audio                               |
+| `0.4.0`     | Conversion and batch                |
+| `0.5.0`     | Composition and transitions         |
+| `0.6.0`     | Diagnostics and repair              |
+| `0.7.0`     | Streaming                           |
+| `0.8.0`     | Professional Skills                 |
+| `0.9.x`     | Plugin, tests, UX and documentation |
+| **`1.0.0`** | Stable CLI + Plugin                 |
+| `1.1.0`     | MCP                                 |
+| `1.2.0`     | Hardware acceleration               |
+| `1.3.0`     | Declarative pipelines               |
 
 ---
 
