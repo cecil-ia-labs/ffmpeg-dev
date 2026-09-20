@@ -35,6 +35,17 @@ const SOFTWARE_ENCODERS: Readonly<Record<HardwareVideoCodec, string>> = {
 };
 
 const probeCache = new Map<string, boolean>();
+const capabilityCache = new Map<string, Awaited<ReturnType<typeof inspectEnvironmentCapabilities>>>();
+
+async function capabilitiesFor(options: SelectHardwareEncodingOptions) {
+  const key = options.ffmpegPath ?? "ffmpeg";
+  const cached = capabilityCache.get(key);
+  if (cached !== undefined) return cached;
+
+  const capabilities = await capabilitiesFor(options);
+  capabilityCache.set(key, capabilities);
+  return capabilities;
+}
 
 export function hardwareEncoderName(
   backend: HardwareEncoderBackend,
