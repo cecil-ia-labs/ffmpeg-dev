@@ -6,17 +6,17 @@ import type { ConversionFormat } from "../conversion/types.js";
 
 export interface PipelineTrimStep {
   trim: {
-    start?: number;
-    end?: number;
-    duration?: number;
-    mode?: TrimMode;
+    start?: number | undefined;
+    end?: number | undefined;
+    duration?: number | undefined;
+    mode?: TrimMode | undefined;
   };
 }
 
 export interface PipelineSpeedStep {
   speed: {
     factor: number;
-    audio?: SpeedAudioMode;
+    audio?: SpeedAudioMode | undefined;
   };
 }
 
@@ -24,55 +24,55 @@ export interface PipelineResizeStep {
   resize: {
     width: number;
     height: number;
-    fit?: MediaFit;
-    background?: string;
-    profile?: RestoreProfile;
-    fps?: number;
-    crf?: number;
-    preset?: string;
-    to?: VideoOutputFormat;
-    hardware?: HardwareMode;
-    hardwareDevice?: string;
-    hardwareStrict?: boolean;
+    fit?: MediaFit | undefined;
+    background?: string | undefined;
+    profile?: RestoreProfile | undefined;
+    fps?: number | undefined;
+    crf?: number | undefined;
+    preset?: string | undefined;
+    to?: VideoOutputFormat | undefined;
+    hardware?: HardwareMode | undefined;
+    hardwareDevice?: string | undefined;
+    hardwareStrict?: boolean | undefined;
   };
 }
 
 export interface PipelineNormalizeStep {
   normalize: {
-    width?: number;
-    height?: number;
-    fps?: number;
-    pixelFormat?: string;
-    sampleRate?: number;
-    channels?: number;
+    width?: number | undefined;
+    height?: number | undefined;
+    fps?: number | undefined;
+    pixelFormat?: string | undefined;
+    sampleRate?: number | undefined;
+    channels?: number | undefined;
   };
 }
 
 export interface PipelineAudioStep {
   audio: {
     normalize: true;
-    sampleRate?: number;
-    channels?: number;
+    sampleRate?: number | undefined;
+    channels?: number | undefined;
   };
 }
 
 export interface PipelineConvertStep {
   convert: {
     to: ConversionFormat;
-    fps?: number;
-    width?: number;
-    height?: number;
-    fit?: MediaFit;
-    background?: string;
-    quality?: number;
-    maxColors?: number;
-    loop?: number;
-    audioBitrate?: string;
-    sampleRate?: number;
-    channels?: number;
-    hardware?: HardwareMode;
-    hardwareDevice?: string;
-    hardwareStrict?: boolean;
+    fps?: number | undefined;
+    width?: number | undefined;
+    height?: number | undefined;
+    fit?: MediaFit | undefined;
+    background?: string | undefined;
+    quality?: number | undefined;
+    maxColors?: number | undefined;
+    loop?: number | undefined;
+    audioBitrate?: string | undefined;
+    sampleRate?: number | undefined;
+    channels?: number | undefined;
+    hardware?: HardwareMode | undefined;
+    hardwareDevice?: string | undefined;
+    hardwareStrict?: boolean | undefined;
   };
 }
 
@@ -99,7 +99,7 @@ export type PipelineStep =
 
 export interface PipelineOutput {
   path: string;
-  codec?: "h264" | "vp9";
+  codec?: "h264" | "vp9" | undefined;
 }
 
 export interface PipelineDocument {
@@ -119,14 +119,14 @@ export interface LoadedPipeline {
 
 export interface PipelineRuntimeOptions {
   /** Optional final-output override. Relative paths resolve from the pipeline file directory. */
-  output?: string;
-  overwrite?: boolean;
-  dryRun?: boolean;
-  verbose?: boolean;
-  ffmpegPath?: string;
-  ffprobePath?: string;
-  signal?: AbortSignal;
-  keepTemp?: boolean;
+  output?: string | undefined;
+  overwrite?: boolean | undefined;
+  dryRun?: boolean | undefined;
+  verbose?: boolean | undefined;
+  ffmpegPath?: string | undefined;
+  ffprobePath?: string | undefined;
+  signal?: AbortSignal | undefined;
+  keepTemp?: boolean | undefined;
 }
 
 export type PipelineStepKind = "trim" | "speed" | "resize" | "normalize" | "audio" | "convert";
@@ -137,8 +137,8 @@ export interface PipelineStepReport {
   input: string;
   output: string;
   planned: boolean;
-  invocation?: string;
-  durationMs?: number;
+  invocation?: string | undefined;
+  durationMs?: number | undefined;
   warnings: ToolkitWarning[];
   details: Record<string, unknown>;
 }
@@ -152,6 +152,6 @@ export interface PipelineReport {
   stepCount: number;
   steps: PipelineStepReport[];
   warnings: ToolkitWarning[];
-  outputMedia?: MediaInfo;
-  workspace?: string;
+  outputMedia?: MediaInfo | undefined;
+  workspace?: string | undefined;
 }
