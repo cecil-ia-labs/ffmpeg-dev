@@ -46,6 +46,7 @@ const required = [
   "skills/ffmpeg-composition/SKILL.md",
   "skills/ffmpeg-streaming/SKILL.md",
   "skills/ffmpeg-diagnostics/SKILL.md",
+  "skills/ffmpeg-pipelines/SKILL.md",
 ];
 
 for (const file of required) {
