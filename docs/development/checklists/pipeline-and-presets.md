@@ -57,6 +57,9 @@
 - [x] MCP does not call CLI actions.
 - [x] Existing transactional output safety preserved per step.
 - [x] Hardware-aware resize/conversion reuse v1.2 selector.
+- [x] Eager output preflight before expensive local file-producing work.
+- [x] Common CLI explicit-output hook plus domain-level default-output protection.
+- [x] Batch planned-output preflight before workers start.
 
 ## Validation
 
@@ -64,6 +67,7 @@
 - [x] Pipeline FFmpeg integration test sources.
 - [x] MCP pipeline integration test source.
 - [x] `verify:pipeline`.
+- [x] `verify:output-preflight`.
 - [x] Pipeline layers wired into test-suite verification.
 - [ ] Run `npm run verify:pipeline`.
 - [ ] Run `npm run check`.
