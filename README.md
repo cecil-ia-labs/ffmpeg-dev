@@ -8,6 +8,22 @@
 
 FFmpeg Media Toolkit is a professional, agent-friendly TypeScript CLI and plugin foundation for deterministic FFmpeg/FFprobe media workflows.
 
+## Architecture transition (planned)
+
+The v1.3.0 implementation remains the current baseline, including its local
+stdio MCP adapter. The next architectural line is intentionally
+script/Skills-first: an execution-context check routes a request through a
+behavioral Skill, a domain Skill, and an associated script over the typed CLI
+and media runtime.
+
+The project will not add a public MCP endpoint, dynamic-domain proxy,
+HTTPS/mTLS gateway, containerized NAT arrangement, or a parallel network MCP
+surface. This preparation entry adds the onboarding/workflow Skills and
+documents the boundary; runtime MCP removal and CLI migration remain roadmap
+work and are not claimed as implemented here.
+
+See ROADMAP.md for the migration milestones.
+
 ## Identity
 
 - **Plugin:** `cecilialabs-ffmpeg`
@@ -318,6 +334,8 @@ See [plugin packaging architecture](docs/development/plugin-packaging.md) and [O
 
 ```text
 skills/
+├── ffmpeg-onboarding/
+├── ffmpeg-workflow/
 ├── ffmpeg-environment/
 ├── ffmpeg-video-editing/
 ├── ffmpeg-audio/
@@ -341,6 +359,9 @@ native FFmpeg
 ```
 
 Skills never invent MCP tools that are not part of the current server catalog.
+The planned migration changes this domain policy to associated scripts or the
+canonical CLI; until then, the current v1.3 adapter policy above remains
+accurate.
 
 Run the skill contract verifier with:
 

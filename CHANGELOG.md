@@ -1,6 +1,25 @@
 # Changelog
 
-## 1.3.0 — Unreleased — Milestone 18 — Pipeline & Preset System
+## Unreleased — Agent-first scripts & Skills preparation
+
+### Added
+
+- Agent-first scripts and Skills roadmap documenting the rejection of a
+  public MCP reverse-proxy/network deployment and the planned v2 migration.
+- Project-level AGENTS.md with repository boundaries, validation rules, and
+  the post-setup branch-and-pull-request workflow.
+- ffmpeg-onboarding Skill for execution-context and FFmpeg readiness checks.
+- ffmpeg-workflow Skill for request routing, preflight, and artifact
+  verification.
+
+### Compatibility
+
+- No media runtime, CLI, package API, or MCP behavior is removed by this
+  preparation change.
+- The v1.3.0 MCP documentation remains valid for the current local stdio
+  baseline until the roadmap migration milestone is implemented.
+
+## 1.3.0 — 2026-09-20 — Milestone 18 — Pipeline & Preset System
 
 ### Added
 

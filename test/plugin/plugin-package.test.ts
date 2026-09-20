@@ -44,6 +44,8 @@ const expectedSkills = [
   "ffmpeg-streaming",
   "ffmpeg-diagnostics",
   "ffmpeg-pipelines",
+  "ffmpeg-onboarding",
+  "ffmpeg-workflow",
 ];
 
 async function manifest(): Promise<PluginManifest> {
@@ -64,7 +66,7 @@ describe("Milestone 11 plugin package", () => {
     expect(plugin.license).toBe("MIT");
   });
 
-  it("catalogs exactly the eight discoverable skills", async () => {
+  it("catalogs exactly the ten discoverable skills", async () => {
     const plugin = await manifest();
     const extension = plugin.extensions?.["com.cecilialabs.ffmpeg"];
     expect(extension).toBeDefined();

@@ -16,6 +16,8 @@ const expectedSkills = [
   "ffmpeg-streaming",
   "ffmpeg-diagnostics",
   "ffmpeg-pipelines",
+  "ffmpeg-onboarding",
+  "ffmpeg-workflow",
 ];
 
 function assert(condition, message) {

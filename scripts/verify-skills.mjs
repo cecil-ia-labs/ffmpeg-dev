@@ -9,6 +9,8 @@ const skills = [
   "ffmpeg-streaming",
   "ffmpeg-diagnostics",
   "ffmpeg-pipelines",
+  "ffmpeg-onboarding",
+  "ffmpeg-workflow",
 ];
 
 const requiredSections = [

@@ -71,6 +71,14 @@
         {
           "name": "ffmpeg-pipelines",
           "path": "./skills/ffmpeg-pipelines/SKILL.md"
+        },
+        {
+          "name": "ffmpeg-onboarding",
+          "path": "./skills/ffmpeg-onboarding/SKILL.md"
+        },
+        {
+          "name": "ffmpeg-workflow",
+          "path": "./skills/ffmpeg-workflow/SKILL.md"
         }
       ],
       "npm": {

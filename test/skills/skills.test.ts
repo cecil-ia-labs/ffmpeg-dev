@@ -12,6 +12,8 @@ const skills = [
   "ffmpeg-streaming",
   "ffmpeg-diagnostics",
   "ffmpeg-pipelines",
+  "ffmpeg-onboarding",
+  "ffmpeg-workflow",
 ] as const;
 
 const requiredHeadings = [
@@ -45,6 +47,6 @@ describe("professional skills catalog", () => {
   }
 
   it("installs the intended skill directories", async () => {
-    expect(skills).toHaveLength(8);
+    expect(skills).toHaveLength(10);
   });
 });

@@ -1,9 +1,12 @@
 # FFmpeg Media Toolkit Skills
 
-The package installs eight professional-level, independently usable skills:
+The package installs ten Skills: eight domain Skills and two behavioral
+orchestration Skills.
 
 | Skill | Primary scope |
 |---|---|
+| ffmpeg-onboarding | Execution-context detection, readiness, and installation boundaries |
+| ffmpeg-workflow | Natural-language request routing, preflight, and artifact validation |
 | `ffmpeg-environment` | Runtime, capabilities, versions, FFprobe inspection |
 | `ffmpeg-video-editing` | Trim, speed, image-to-video, restore |
 | `ffmpeg-audio` | Audio tracks, silence, telephony |
@@ -17,7 +20,8 @@ Each skill contains a `SKILL.md` with portable YAML front matter and a `referenc
 
 ## Shared policy
 
-For operations implemented by this toolkit, use this order:
+For the current v1.3 domain operations implemented by this toolkit, use this
+order:
 
 ```text
 matching connected MCP tool
@@ -50,6 +54,19 @@ Use native FFmpeg only when:
 2. the user explicitly asks for the native FFmpeg invocation.
 
 All skills require explicit input/output intent, probe-driven decisions when media properties matter, deterministic behavior, and validation of produced artifacts.
+
+The two behavioral Skills are script/CLI-first: they establish the execution
+context, select a domain Skill, and require verified results. They do not
+require a public MCP endpoint, dynamic proxy, containerized NAT, or a new
+network MCP surface.
+
+## Architecture transition
+
+The v1.3 implementation still contains the local stdio MCP adapter documented
+below. The next roadmap line moves agent-facing execution to portable
+Skill-associated scripts over the typed CLI/domain runtime. That migration is
+not part of this setup change, so current MCP documentation remains a
+historical/current-baseline reference until the relevant milestone lands.
 
 ## MCP-enabled hosts
 

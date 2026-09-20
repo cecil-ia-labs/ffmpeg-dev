@@ -1,1387 +1,532 @@
-# FFmpeg Media Toolkit — Development Roadmap
+# FFmpeg Media Toolkit — Agent-First Scripts & Skills Roadmap
 
-> **Project:** `ffmpeg-media-toolkit`
-> **CLI package:** `@cecilialabs/ffmpeg`
-> **Primary language:** TypeScript
-> **Execution:** `cecilia-ffmpeg ...`
-> **Runtime:** Node.js
-> **Media engine:** FFmpeg / FFprobe
-> **Distribution:** ChatGPT Plugin + Codex Skills + npm CLI
-> **Initial scope:** migration and professionalization of the existing FFmpeg Bash utilities.
+> **Project:** ffmpeg-media-toolkit
+> **Package:** @cecilialabs/ffmpeg
+> **Current baseline:** v1.3.0 on master
+> **Next architectural line:** planned v2.0.0
+> **Status:** roadmap only; implementation starts in a later milestone
 
----
+This roadmap replaces the previous MCP-centered evolution plan. It records the
+post-v1.3 architectural decision and defines the work required to make the
+toolkit agent-first through portable scripts, Skills, and the existing typed
+CLI/domain runtime.
 
-## Project Goals
+## 1. Architectural decision
 
-The project will provide a reusable, deterministic, agent-friendly FFmpeg toolkit with:
+The project will not pursue a local MCP server exposed through a public
+HTTPS/mTLS reverse proxy.
 
-- a single TypeScript codebase;
-- a unified hierarchical CLI;
-- direct FFmpeg and FFprobe execution without shell interpolation;
-- professional-level ChatGPT/Codex Skills;
-- batch processing;
-- structured JSON output;
-- `--dry-run` support;
-- media inspection before complex transformations;
-- normalized error handling;
-- automated tests;
-- optional future MCP integration;
-- migration of existing Bash scripts into typed reusable operations.
+The following are explicitly out of scope:
 
----
+- opening a public domain or dynamic proxy for local media operations;
+- managing a public network surface for every user;
+- running an MCP gateway in Nginx/Caddy containers across NAT;
+- maintaining MCP certificates, public endpoint routing, or MCP-specific
+  network authorization;
+- preserving MCP as a parallel execution surface merely for compatibility.
 
-# Milestone 0 — Architecture & Specification
+The target architecture is:
 
-**Target:** `v0.0.x`
-
-### Objectives
-
-Define the architecture before migrating individual scripts.
-
-### Deliverables
-
-- [ ] Define package naming and plugin identity.
-- [ ] Establish repository structure.
-- [ ] Define supported Node.js version.
-- [ ] Define minimum supported FFmpeg version.
-- [ ] Define CLI command hierarchy.
-- [ ] Define TypeScript public interfaces.
-- [ ] Define error taxonomy.
-- [ ] Define JSON output contract.
-- [ ] Define logging conventions.
-- [ ] Define command exit codes.
-- [ ] Define overwrite behavior.
-- [ ] Define temporary-file lifecycle.
-- [ ] Define batch execution semantics.
-- [ ] Define supported operating systems.
-- [ ] Catalog all existing Bash scripts.
-- [ ] Map each Bash script to its future semantic command.
-- [ ] Identify incorrect or misleading legacy script names.
-- [ ] Identify legacy commands that should not be reproduced literally.
-
-### Initial command taxonomy
-
-```text
-cecilia-ffmpeg
-├── doctor
-├── probe
-│
-├── video
-│   ├── trim-start
-│   ├── trim-end
-│   ├── trim
-│   ├── speed
-│   ├── from-image
-│   └── restore
-│
-├── audio
-│   ├── attach
-│   ├── silence
-│   ├── add-silence
-│   ├── detect-silence
-│   ├── remove-silence
-│   └── telephony
-│
-├── convert
-│   ├── file
-│   └── batch
-│
-├── compose
-│   ├── concat
-│   ├── transition
-│   └── slideshow
-│
-├── repair
-│   ├── timestamps
-│   └── normalize
-│
-└── stream
-    ├── camera
-    └── file
-```
-
-### Acceptance Criteria
-
-The architecture must support adding a new FFmpeg operation without requiring changes to the CLI infrastructure or execution layer.
-
----
-
-# Milestone 1 — Repository & TypeScript Foundation
-
-**Target:** `v0.1.0-alpha.1`
-
-### Objectives
-
-Create the executable TypeScript foundation.
-
-### Deliverables
-
-```text
-ffmpeg-media-toolkit/
-├── plugin.json
-├── package.json
-├── tsconfig.json
-├── README.md
-├── LICENSE
-├── src/
-├── skills/
-├── assets/
-└── test/
-```
-
-- [x] Configure TypeScript strict mode.
-- [x] Configure ESM.
-- [x] Configure `tsx` for development.
-- [x] Configure production build.
-- [x] Configure npm `bin`.
-- [x] Add Commander CLI.
-- [x] Add `execa` or equivalent process runner.
-- [x] Add Zod validation.
-- [x] Add Vitest.
-- [x] Add formatting/linting.
-- [x] Implement global CLI flags.
-
-### Global CLI flags
-
-```text
---output
---overwrite
---dry-run
---json
---quiet
---verbose
---ffmpeg-path
---ffprobe-path
-```
-
-### Target UX
-
-Development:
-
-```bash
-npx tsx src/cli.ts doctor
-```
-
-Published:
-
-```bash
-cecilia-ffmpeg doctor
-```
-
-### Acceptance Criteria
-
-```bash
-npx tsx src/cli.ts --help
-```
-
-must expose a functioning CLI without invoking FFmpeg.
-
----
-
-# Milestone 2 — FFmpeg Core Runtime
-
-**Target:** `v0.1.0-alpha.2`
-**Status:** ✅ Implemented
-
-### Objectives
-
-Implement the shared execution layer used by every future command.
-
-### Core modules
-
-```text
-src/core/
-├── ffmpeg-runner.ts
-├── ffprobe-runner.ts
-├── binary-resolver.ts
-├── capabilities.ts
-├── cancellation.ts
-├── command-result.ts
-├── progress.ts
-├── result-envelope.ts
-├── temp-files.ts
-└── errors.ts
-```
-
-### Deliverables
-
-- [x] Binary discovery.
-- [x] Explicit binary override.
-- [x] FFmpeg execution.
-- [x] FFprobe execution.
-- [x] Safe argument-array execution.
-- [x] No `eval`.
-- [x] No shell interpolation.
-- [x] Exit-code handling.
-- [x] Signal handling.
-- [x] stdout/stderr capture.
-- [x] Structured execution result.
-- [x] Temporary-file management.
-- [x] `--dry-run`.
-- [x] `--json`.
-- [x] Cancellation support.
-- [x] Execution timing.
-- [x] Verbose command rendering.
-
-### Core contract
-
-```ts
-interface FFmpegInvocation {
-  binary: string;
-  args: string[];
-  cwd?: string;
-}
-
-interface CommandExecution {
-  binary: string;
-  args: string[];
-  cwd?: string;
-  exitCode: number | null;
-  signal?: NodeJS.Signals;
-  durationMs: number;
-  stdout?: string;
-  stderr?: string;
-  executed: boolean;
-  stdoutTruncated: boolean;
-  stderrTruncated: boolean;
-}
-```
-
-### Acceptance Criteria
-
-No domain command may invoke `child_process`, `execa`, `ffmpeg`, or `ffprobe` directly. All execution must pass through the core runtime.
-
----
-
-# Milestone 3 — Doctor, Capabilities & Media Probe
-
-**Target:** `v0.1.0-alpha.3`
-**Status:** ✅ Complete
-
-### Objectives
-
-Give humans and agents reliable environmental and media information before transformations.
-
-### Commands
-
-```bash
-cecilia-ffmpeg doctor
-cecilia-ffmpeg probe input.mp4
-cecilia-ffmpeg probe input.mp4 --json
-```
-
-### `doctor`
-
-Detect:
-
-- FFmpeg path;
-- FFmpeg version;
-- FFprobe path;
-- available codecs;
-- available encoders;
-- available decoders;
-- available filters;
-- hardware acceleration;
-- NVENC;
-- VAAPI;
-- QSV;
-- VideoToolbox;
-- platform and architecture.
-
-### `probe`
-
-Normalize FFprobe output into typed structures:
-
-```ts
-interface MediaInfo {
-  format: MediaFormat;
-  duration?: number;
-  bitrate?: number;
-  streams: MediaStream[];
-  video?: VideoStream[];
-  audio?: AudioStream[];
-}
-```
-
-### Acceptance Criteria
-
-An agent should be able to inspect a media file without parsing arbitrary FFprobe console text.
-
----
-
-# Milestone 4 — Video Editing Operations
-
-**Target:** `v0.2.0`
-**Status:** ✅ Complete
-
-### Legacy scripts covered
-
-```text
-crop-x-seconds-from-start.sh
-increase-video-speed.sh
-create-clip-from-image.sh
-upscale-video-to-hd.sh
-upscale-video-to-fhd.sh
-```
-
-### Commands
-
-```text
-cecilia-ffmpeg video trim-start
-cecilia-ffmpeg video trim
-cecilia-ffmpeg video speed
-cecilia-ffmpeg video from-image
-cecilia-ffmpeg video restore
-```
-
-### Trim modes
-
-```text
-copy
-accurate
-auto
-```
-
-Example:
-
-```bash
-cecilia-ffmpeg video trim-start \
-  input.mp4 \
-  --seconds 40 \
-  --mode auto \
-  --output output.mp4
-```
-
-### Restore/upscale
-
-Replace misleading legacy concepts such as:
-
-```text
-FHD → 1280×720
-HD  → 720×404
-```
-
-with explicit resolution semantics:
-
-```bash
-cecilia-ffmpeg video restore \
-  input.mp4 \
-  --resolution 1920x1080 \
-  --output restored.mp4
-```
-
-### Acceptance Criteria
-
-Every operation must support paths containing spaces and must not depend on Bash syntax.
-
----
-
-# Milestone 5 — Audio Processing
-
-**Target:** `v0.3.0`
-**Status:** ✅ Complete
-
-### Legacy scripts covered
-
-```text
-add-audio-2-clip.sh
-add-silence-2-clip.sh
-create-silence-audio.sh
-remove-silence-noises.sh
-convert-audio-to-gsm-ulaw.sh
-```
-
-### Commands
-
-```text
-audio attach
-audio silence
-audio add-silence
-audio detect-silence
-audio remove-silence
-audio telephony
-```
-
-### Silence API
-
-```ts
-interface SilenceInterval {
-  start: number;
-  end: number;
-  duration: number;
-}
-```
-
-Example:
-
-```bash
-cecilia-ffmpeg audio detect-silence \
-  speech.mp3 \
-  --json
-```
-
-```json
-{
-  "silences": [
-    {
-      "start": 3.42,
-      "end": 5.81,
-      "duration": 2.39
-    }
-  ]
-}
-```
-
-### Telephony profiles
-
-Explicitly distinguish:
-
-```text
-G.711 μ-law / PCMU
-G.711 A-law / PCMA
-GSM
-PCM
-```
-
-and properties:
-
-```text
-sample rate
-channel count
-codec
-container
-sample format
-```
-
-Example:
-
-```bash
-cecilia-ffmpeg audio telephony \
-  input.wav \
-  --codec mulaw \
-  --sample-rate 8000 \
-  --channels 1 \
-  --output output.wav
-```
-
-### Acceptance Criteria
-
-The implementation must not conflate GSM containers/codecs with G.711 μ-law.
-
----
-
-# Milestone 6 — Media Conversion & Batch Engine
-
-**Target:** `v0.4.0`
-**Status:** ✅ Complete
-
-### Legacy scripts covered
-
-```text
-convert-all-gif-in-folder-to-webm.sh
-convert-all-mp4-in-folder-to-animated-webp.sh
-convert-all-mp4-in-folder-to-gif.sh
-convert-all-mp4-in-folder-to-webm.sh
-convert-all-webm-in-folder-to-gif.sh
-convert-all-webp-in-folder-to-png.sh
-```
-
-### Commands
-
-Single file:
-
-```bash
-cecilia-ffmpeg convert file ./file.mp4 --to webm
-```
-
-Batch:
-
-```bash
-cecilia-ffmpeg convert batch ./clips \
-  --from mp4 \
-  --to webm
-```
-
-### Batch engine
-
-Support:
-
-```text
-[x] recursive traversal
-[x] extension filtering
-[x] include patterns
-[x] exclude patterns
-[x] parallelism
-[x] fail-fast
-[x] continue-on-error
-[x] output directory
-[x] preserve hierarchy
-[x] overwrite strategy
-[x] progress
-[x] summary
-[x] JSON report
-```
-
-### Conversion profiles
-
-Initial targets:
-
-```text
-MP4 → WebM
-MP4 → GIF
-MP4 → animated WebP
-WebM → GIF
-WebP → PNG
-GIF → WebM
-```
-
-### Acceptance Criteria
-
-✅ Batch processing logic is generic. All selected items delegate to the same `convertFile()` implementation; no per-format batch loops exist.
-
----
-
-# Milestone 7 — Composition & Filter Graph Engine
-
-**Status:** ✅ completed
-
-**Target:** `v0.5.0`
-
-### Legacy scripts covered
-
-```text
-concat-all-mp4-in-folder-with-fade.sh
-concat-clips.sh
-stack_vertical.sh
-```
-
-### Objectives
-
-Move complex FFmpeg filter graph knowledge into reusable TypeScript abstractions.
-
-### Core additions
-
-```text
-src/composition/
-├── filter-graph.ts
-├── normalization.ts
-├── concat.ts
-├── transition.ts
-└── slideshow.ts
-```
-
-### Commands
-
-```text
-compose concat
-compose transition
-compose slideshow
-```
-
-Example:
-
-```bash
-cecilia-ffmpeg compose concat ./clips \
-  --transition fade \
-  --duration 1 \
-  --output final.mp4
-```
-
-### Automatic normalization
-
-Before `xfade`:
-
-```text
-scale
-→ pad
-→ reset PTS
-→ fps
-→ pixel format
-→ timebase
-→ transition
-```
-
-### Typed normalization configuration
-
-```ts
-interface NormalizeVideoOptions {
-  width?: number;
-  height?: number;
-  fps?: number;
-  pixelFormat?: string;
-  normalizeTimebase?: boolean;
-  resetTimestamps?: boolean;
-}
-```
-
-### Acceptance Criteria
-
-The toolkit must correctly compose videos whose source FPS/timebases differ.
-
-This milestone directly addresses common FFmpeg failures such as:
-
-```text
-First input link main timebase does not match second input link
-```
-
----
-
-# Milestone 8 — Diagnostics & Repair
-
-**Target:** `v0.6.0`
-**Status:** ✅ Complete
-
-### Legacy scripts covered
-
-```text
-fix-freezes-and-blocks.sh
-```
-
-### Commands
-
-```text
-repair timestamps
-repair normalize
-diagnose
-```
-
-### Diagnostic domains
-
-- PTS/DTS;
-- timebase;
-- CFR/VFR;
-- FPS mismatch;
-- SAR/DAR;
-- pixel format;
-- codec/container compatibility;
-- missing streams;
-- malformed timestamps;
-- broken stream mapping;
-- filter graph failures;
-- corrupt packets;
-- frozen frames;
-- unexpected audio absence.
-
-### Example
-
-```bash
-cecilia-ffmpeg diagnose broken.mp4
-```
-
-Possible structured result:
-
-```json
-{
-  "issues": [
-    {
-      "code": "VARIABLE_FRAME_RATE",
-      "severity": "warning"
-    },
-    {
-      "code": "NON_MONOTONIC_TIMESTAMPS",
-      "severity": "error"
-    }
-  ]
-}
-```
-
-### Acceptance Criteria
-
-Repairs should be chosen from observed media properties rather than applying arbitrary reencoding blindly.
-
----
-
-# Milestone 9 — Streaming & Capture
-
-**Target:** `v0.7.0`
-**Status:** ✅ Complete
-
-### Legacy script covered
-
-```text
-stream-to-websocket.sh
-```
-
-### Correction
-
-The legacy script was not a direct WebSocket stream: it captured V4L2 video, encoded MPEG-1 video, muxed MPEG-TS, and wrote to an HTTP URL. Milestone 9 models those concerns independently.
-
-### Commands
-
-```text
-stream camera
-stream file
-```
-
-Example:
-
-```bash
-cecilia-ffmpeg stream camera \
-  --device /dev/video0 \
-  --input-format v4l2 \
-  --framerate 15 \
-  --video-size 320x240 \
-  --container mpegts \
-  --transport http \
-  --url http://localhost:8083/stream
-```
-
-### Implemented direct transports
-
-```text
-HTTP / HTTPS
-RTMP / RTMPS
-RTSP
-SRT
-UDP
-TCP
-```
-
-Direct WebSocket output is deliberately not claimed. Browser/WebSocket delivery requires an explicit relay service.
-
-### Architecture
-
-```text
-source/capture
+~~~
+user request
     ↓
-encoding
+execution-context and environment check
     ↓
-container/muxer
+behavioral Skill
     ↓
-transport + destination
-```
+domain Skill
+    ↓
+Skill-associated script
+    ↓
+cecilia-ffmpeg CLI / typed media domain
+    ↓
+preflight → execution → output verification → structured result
+~~~
 
-Camera input formats include Linux V4L2, macOS AVFoundation, and Windows DirectShow. File streaming uses FFprobe preflight and real-time input pacing by default.
+The typed media domains, FFmpeg/FFprobe runtime, CLI, package API, fixtures,
+and deterministic output contracts remain the implementation foundation.
+MCP is removed as an execution and documentation surface.
 
-### Acceptance Criteria
+## 2. Baseline and migration boundary
 
-✅ Streaming transport is independent from capture/encoding, and the legacy HTTP output is no longer mislabeled as WebSocket.
+The merged v1.3.0 baseline already contains:
 
----
+- typed video, audio, conversion, composition, diagnostics, streaming,
+  hardware, and pipeline domains;
+- the cecilia-ffmpeg hierarchical CLI;
+- output preflight and structured JSON envelopes;
+- declarative YAML pipelines and reusable presets;
+- eight professional Skills;
+- package/plugin distribution and release verification;
+- the historical Bash migration map and fixture-backed regression coverage.
 
-# Milestone 10 — Professional-Level Skills
+The migration must retire these public surfaces:
 
-**Target:** `v0.8.0`
-**Status:** ✅ Complete
+~~~
+cecilia-ffmpeg-mcp
+@cecilialabs/ffmpeg/mcp
+src/mcp.ts
+src/mcp/**
+media_* MCP tools
+verify:mcp
+MCP-specific tests, schemas, adapters, and documentation
+top-level cecilia-ffmpeg run <pipeline>
+~~~
 
-### Skills
+The top-level run command is removed directly. It is not deprecated and will
+not remain as an alias. Pipeline execution moves under the pipeline namespace.
 
-```text
+## 3. Target execution contexts
+
+Every Skill must distinguish the execution channel before promising work.
+
+| Context | Can inspect files | Can execute scripts | Can install dependencies | Expected behavior |
+| --- | ---: | ---: | ---: | --- |
+| ChatGPT regular | No | No | No | Explain the limitation and provide a copy/paste guided flow |
+| ChatGPT Work | Depends on attached environment | Yes when available | Only through explicit workflow | Inspect, execute, poll, and report real results |
+| Codex | Yes | Yes | Yes within the authorized workspace | Execute the associated script and validate artifacts |
+| IDE/terminal agent | Depends on host | Yes when available | Only with explicit authorization | Use the same scripts and contracts |
+| Unknown/unsupported | Unknown | Unknown | No assumption | Ask for environment information before claiming execution |
+
+The assistant must never say that media was processed when it only generated
+commands or instructions.
+
+## 4. Script architecture
+
+Scripts become the agent-facing operational boundary that MCP previously
+occupied.
+
+### 4.1 Script locations
+
+Portable scripts shipped with a Skill live beside that Skill:
+
+~~~
 skills/
+├── ffmpeg-onboarding/
+│   └── scripts/
+├── ffmpeg-workflow/
+│   └── scripts/
 ├── ffmpeg-environment/
-├── ffmpeg-video-editing/
-├── ffmpeg-audio/
-├── ffmpeg-conversion/
-├── ffmpeg-composition/
-├── ffmpeg-streaming/
-└── ffmpeg-diagnostics/
-```
+│   └── scripts/
+├── ffmpeg-pipelines/
+│   └── scripts/
+└── <domain-skill>/
+    └── scripts/
+~~~
+
+Repository-only validation and packaging helpers remain under scripts/. They
+are not runtime Skill actions and are not included in user instructions.
+
+### 4.2 Script classes
+
+Operational scripts perform deterministic work:
+
+- inspect the environment and media;
+- validate a request or pipeline;
+- construct a typed CLI invocation;
+- execute a supported media operation;
+- monitor a long-running operation;
+- verify the produced artifact;
+- return a stable JSON result or structured error.
 
-Every skill contains a portable `SKILL.md` and substantive `references/` material.
+Behavioral scripts support agent routing and onboarding:
 
-### Implemented workflow contract
+- identify the execution context;
+- choose the correct Skill and domain action;
+- decide whether the toolkit, installation flow, or native fallback applies;
+- produce platform-specific installation instructions;
+- turn a natural-language request into a validated pipeline;
+- explain required input, output, overwrite, and recovery decisions.
 
-Each Skill defines:
+Scripts must not:
 
-- precise activation scope;
-- when **not** to use it;
-- required inputs;
-- inspection/preflight rules;
-- preferred toolkit commands;
-- native FFmpeg fallback rules;
-- output expectations;
-- validation steps;
-- error recovery;
-- safety rules;
-- deterministic behavior requirements.
+- interpolate untrusted input into shell commands;
+- silently modify shell startup files;
+- claim success from process launch alone;
+- bypass output preflight;
+- invent unsupported FFmpeg capabilities;
+- require an MCP server or public network endpoint.
 
-### Core Skill policy
+### 4.3 Common script contract
 
-For supported operations:
+All agent-facing scripts converge on one machine-readable contract:
 
-```text
-Prefer @cecilialabs/ffmpeg over constructing arbitrary
-FFmpeg shell commands.
-```
+~~~json
+{
+  "ok": true,
+  "operation": "video.trim",
+  "status": "completed",
+  "context": "codex",
+  "input": {},
+  "output": {},
+  "artifacts": [],
+  "warnings": [],
+  "next": []
+}
+~~~
 
-For unsupported operations:
+Failures use the existing toolkit error taxonomy and include:
 
-```text
-Use native FFmpeg only when the toolkit does not expose
-the required capability or the user explicitly asks for
-the native FFmpeg invocation.
-```
+- stable error code;
+- human-readable message;
+- retryability;
+- failed phase;
+- safe recovery or next action;
+- relevant paths without leaking credentials.
 
-### Quality
+Long operations must have a resumable execution policy. Where the host
+supports background processes, the script may return a job handle and provide
+status/result polling. Where it does not, it must return a clear limitation
+and a local command the user can run.
 
-- `scripts/verify-skills.mjs` validates skill structure and required workflow sections.
-- `test/skills/skills.test.ts` enforces the repository-level skill contract.
-- `npm run validate` includes `verify:skills`.
+## 5. Environment, checking, and installation flow
 
-### Acceptance Criteria
+### Phase A — Inspect
 
-✅ Every Skill is independently useful without prior conversation context and routes supported work through the toolkit-first policy.
+The environment flow must identify, without changing state:
 
----
+- operating system and architecture;
+- Node.js and npm versions;
+- FFmpeg and FFprobe availability and versions;
+- relevant codecs, encoders, decoders, filters, and hardware backends;
+- whether cecilia-ffmpeg is available globally, locally, or through npm exec;
+- whether the current host can execute scripts;
+- whether the requested output path is writable.
 
-# Milestone 11 — Plugin Packaging & Assets
+### Phase B — Explain
 
-**Target:** `v0.9.0`
-**Status:** ✅ Complete
+The assistant presents the shortest valid route:
 
-### Deliverables
+- execute directly when the current environment is ready;
+- install the package when the environment can install;
+- provide a guided local setup when the current Chat cannot execute;
+- use native FFmpeg only for unsupported capabilities or an explicit request.
 
-```text
-plugin.json
-assets/
-├── icon.svg
-├── icon-dark.svg
-├── logo.svg
-└── screenshots/
-    ├── cli-overview.svg
-    └── skills-overview.svg
-```
+### Phase C — Install
 
-### Portable plugin metadata
+The installation flow must support:
 
-The Agent Plugins 1.0.0 manifest remains schema-conformant with standard top-level metadata for name, version, description, author, homepage, repository, license, keywords, and extensions.
+~~~
+global npm installation
+local project installation
+npm exec without global installation
+Codex/Work contributor setup
+~~~
 
-Skills are discovered from the fixed `skills/` directory. Branding, documentation, npm identity, and a descriptive skill catalog live under the Cecil-IA Labs extension namespace rather than non-standard top-level fields.
+Installation is explicit, reversible, and observable. It must not silently
+edit shell startup files, install system packages, or overwrite user files.
 
-### Distribution validation
+### Phase D — Verify
 
-- `verify:plugin` validates manifest shape, local-path containment, skill catalog parity, and SVG self-containment.
-- `verify:package` runs `npm pack --dry-run --json --ignore-scripts` after build and checks required tarball contents.
-- npm `files` explicitly includes `dist/`, `assets/`, `skills/`, `specs/`, `docs/`, plugin metadata, README, changelog, and license.
-- repository-only `legacy/`, `test/`, `scripts/`, and `node_modules/` are rejected if leaked into the package.
+After installation, the same flow runs the environment check again and
+reports what is actually ready. “Installed” is not equivalent to
+“runtime-capable”; FFmpeg capability and a real probe remain authoritative.
 
-### Acceptance Criteria
+## 6. Pipeline architecture and CLI grammar
 
-✅ The plugin installs from a self-contained distribution package without relying on files outside that package.
+The current top-level command:
 
----
-
-# Milestone 12 — Test Suite & Media Fixtures
-
-**Target:** `v0.9.5`
-**Status:** ✅ Complete
-
-### Test layers
-
-```text
-unit
-integration
-CLI
-FFmpeg integration
-fixture-based regression
-```
-
-### Reproducible fixture matrix
-
-Compact media is generated locally from deterministic FFmpeg recipes and validated with FFprobe. The matrix covers:
-
-```text
-MP4 H.264 + AAC
-MP4 H.265/HEVC + AAC
-WebM VP9 + Opus
-GIF
-animated WebP
-PNG
-JPEG
-MP3
-AAC
-WAV PCM
-G.711 μ-law
-24 fps / 30 fps CFR
-VFR
-missing audio
-missing video
-1/1000 and 1/90000 timebases
-160×90 and 320×180 resolutions
-yuv420p and yuv444p
-```
-
-Generated binaries live in a Git-ignored directory; `test/fixtures/manifest.json` is the checked-in property contract.
-
-### Regression behavior
-
-- `verify:fixtures` regenerates the matrix and validates actual stream properties with FFprobe.
-- VFR is checked from frame timestamp deltas.
-- Animated fixtures require multiple video frames.
-- `verify:test-suite` checks all five test layers and compares the legacy migration map against the actual `legacy/bash/` directory.
-- Every one of the 21 migrated Bash scripts has an explicit equivalent integration-test case.
-
-### Acceptance Criteria
-
-✅ Every migrated Bash script has at least one equivalent integration test, and fixture tests assert media properties rather than merely output existence.
-
----
-
-# Milestone 13 — UX, Progress & Agent-Friendly Output
-
-**Target:** `v0.9.7`
-**Status:** ✅ Complete
-
-### Features
-
-- FFmpeg `-progress pipe:1` parsing;
-- percentage complete;
-- estimated remaining time;
-- processed frames;
-- processing FPS;
-- speed multiplier;
-- structured errors;
-- human output;
-- JSON output;
-- TTY and non-TTY progress rendering;
-- `--no-progress` live-display control;
-- structured per-run progress summaries in the result envelope.
-
-Example:
-
-```text
-clip.mp4 | 67% | frame 2411 | 100.0 fps | 3.70x | ETA 00:00:12
-```
-
-Agent mode:
-
-```bash
-cecilia-ffmpeg video speed input.mp4 \
-  --factor 2 \
-  --json
-```
-
-### Output contract
-
-- human final results remain on stdout;
-- live progress/warnings/errors use stderr;
-- JSON mode emits one machine-readable envelope on stdout;
-- progress is structured into fields rather than terminal text;
-- multiple FFmpeg subprocesses are represented independently.
-
-### Acceptance Criteria
-
-✅ Machine output does not require scraping decorated CLI text.
-
----
-
-# Milestone 13.5 — Media Capability Expansion & CLI Polish
-
-**Target:** `v0.9.8`
-**Status:** ✅ Complete
-
-### Motivation
-
-Hands-on CLI testing after Milestone 13 exposed capability and taxonomy gaps that should be resolved before the public documentation/API freeze.
-
-### Added
-
-- JPEG/JPG conversion source and target support;
-- MP4 conversion target support;
-- audio conversion through the generic file/batch engine;
-- first-class `image convert` and `image extract`;
-- canonical `video upscale` with `video restore` retained as a compatibility alias;
-- canonical `video attach-audio` and `video add-silence` with legacy audio-domain aliases retained;
-- shared `contain|cover|stretch` fit semantics and configurable background;
-- MP4/WebM output selection for video/composition operations;
-- `zoomin` and explicit custom `zoomout` transitions;
-- slideshow `vertical-stack|sequence` styles;
-- slideshow transitions, include/exclude patterns, and MP4/WebM/GIF/WebP outputs;
-- more visible human TTY colors while keeping JSON/non-TTY ANSI-free.
-
-### Conversion formats
-
-```text
-video: mp4, webm
-image: gif, webp, png, jpeg/jpg
-audio: wav, mp3, aac, m4a, flac, opus, ogg
-```
-
-### Acceptance Criteria
-
-✅ The public command taxonomy and core format capabilities are stable enough for Milestone 14 to document without immediately redesigning the CLI.
-
----
-
-# Milestone 14 — Documentation & Migration Guide
-
-**Target:** `v0.9.9`
-**Status:** ✅ Complete
-
-### Documentation
-
-```text
-docs/
-├── getting-started.md
-├── installation.md
-├── cli-reference.md
-├── video.md
-├── image.md
-├── audio.md
-├── conversion.md
-├── composition.md
-├── streaming.md
-├── diagnostics.md
-├── batch-processing.md
-├── hardware-acceleration.md
-└── migration-from-bash.md
-```
-
-### Migration
-
-- all 21 legacy Bash scripts documented;
-- canonical v0.9.9 command shown for each migration;
-- compatibility aliases called out explicitly;
-- historical semantic corrections documented for μ-law/GSM, GIF→WebM, misleading WebSocket naming, and upscale naming.
-
-### Human UX
-
-Interactive TTY output adds semantic emoji/icon cues on top of the stronger color palette:
-
-```text
-🎬 video
-🖼️ image
-🎧 audio
-🔄 convert
-🧩 compose
-📡 stream
-🔎 diagnose
-🛠️ repair
-```
-
-Progress example:
-
-```text
-🎬 clip.mp4 | ▶️ 67% | 🎞️ 2411 frames | ⚡ 100.0 fps | 🚀 3.70x | ⌛ ETA 00:00:12
-```
-
-Machine contracts remain unchanged: `--json` has no ANSI/emoji decoration; non-TTY progress stays plain; `--no-color` suppresses friendly decoration.
-
-### Quality
-
-- `verify:docs` checks all required guides;
-- every public leaf command from `specs/command-tree.json` must appear in the CLI reference;
-- all 21 legacy scripts from the migration map must appear in the migration guide;
-- hardware acceleration docs are explicitly scoped as future behavior;
-- semantic UX has dedicated tests.
-
-### Acceptance Criteria
-
-✅ Users can understand every public command and every legacy migration path without inspecting source code.
-
----
-
-# Milestone 14.5 — CLI Installation & Release Workflow
-
-**Target:** `v0.9.9` release hardening
-**Status:** Implementation complete; validation/merge pending
-
-### Objectives
-
-Complete the executable-installation and release path before the v1 stabilization milestone:
-
-- standard global `cecilia-ffmpeg` installation through npm `bin`;
-- explicit local contributor setup with build + `npm link`;
-- opt-in Bash PATH repair only when required;
-- no shell-mutating `postinstall`;
-- `prepack` build guarantee;
-- repository-only pack/publish workflow;
-- clean-master and remote-parity release gates;
-- publish exact inspected tarball;
-- npm verification followed by optional Git tag;
-- branded CLI help headline;
-- structural distribution verifier.
-
-### Stable installation model
-
-```text
-public user
-  -> npm install -g @cecilialabs/ffmpeg
-  -> npm creates executable link
-  -> cecilia-ffmpeg
-
-repository contributor
-  -> npm run setup:cli
-  -> consent
-  -> build + npm link
-  -> optional consented ~/.bashrc PATH repair
-  -> cecilia-ffmpeg
-```
-
-### Acceptance Criteria
-
-The CLI is directly callable after standard global npm installation, local linking is explicit and reversible, publication uses the exact inspected tarball, and no installation lifecycle hook silently modifies user shell configuration.
-
----
-
-# Milestone 15 — Stable CLI Release
-
-**Target:** `v1.0.0`
-**Status:** ✅ Released 2026-09-20
-
-### Release requirements
-
-The stable release contract is frozen in `specs/stable-release-contract.json`. Milestone 15 is a stabilization and portability pass; new media capabilities are out of scope unless required to fix a v1 release blocker.
-
-- [x] CLI architecture stable.
-- [x] Core APIs stable.
-- [x] Original script set migrated.
-- [x] All Skills validated.
-- [x] Plugin installable.
-- [x] Linux fully tested.
-- [ ] macOS smoke-tested. *(deferred after v1.0.0 release; automated smoke workflow is present)*
-- [ ] Windows strategy documented/tested. *(strategy documented; runtime smoke deferred)*
-- [x] npm package ready.
-- [x] Clean installation tested.
-- [x] Full README completed.
-- [x] Changelog generated.
-- [x] Semantic versioning established.
-- [x] No dependency on `.sh` implementations.
-
-### Stable user experience
-
-```bash
-cecilia-ffmpeg doctor
-```
-
-```bash
-cecilia-ffmpeg probe video.mp4
-```
-
-```bash
-cecilia-ffmpeg video trim-start \
-  video.mp4 \
-  --seconds 40
-```
-
-```bash
-cecilia-ffmpeg compose concat ./clips \
-  --transition fade
-```
-
----
-
-# Milestone 16 — MCP Server
-
-**Target:** `v1.1.0`
-**Status:** ✅ Released 2026-09-20
-
-### Objective
-
-Expose the same core TypeScript functionality as agent tools without duplicating implementation.
-
-Architecture:
-
-```text
-                    TypeScript Core
-                          ▲
-              ┌───────────┼───────────┐
-              │           │           │
-             CLI         MCP        Tests
-              │           │
-             npx      ChatGPT
-                        Work
-                        Codex
-```
-
-### Implemented MCP tools
-
-```text
-media_probe
-media_trim
-media_convert
-media_concat
-media_attach_audio
-media_remove_silence
-media_generate_silence
-media_restore
-media_diagnose
-```
-
-### Implementation
-
-- dedicated `cecilia-ffmpeg-mcp` stdio executable;
-- reusable `@cecilialabs/ffmpeg/mcp` package export;
-- stable MCP TypeScript SDK v2;
-- protocol-aware `serveStdio()`;
-- Zod input schemas and structured content;
-- cancellation propagation through the existing `AbortSignal`;
-- MCP-specific verifier plus unit/integration coverage.
-
-### Rule
-
-MCP implementations must call the same internal functions used by the CLI.
-
-Never:
-
-```text
-CLI implementation A
-MCP implementation B
-```
-
-Always:
-
-```text
-trimMedia()
-   ├── CLI adapter
-   └── MCP adapter
-```
-
----
-
-# Milestone 17 — Advanced Hardware Acceleration
-
-**Target:** `v1.2.0`
-**Status:** ✅ Released 2026-09-20
-
-### Targets
-
-```text
-NVIDIA NVENC/NVDEC
-Intel Quick Sync
-VAAPI
-VideoToolbox
-```
-
-### Features
-
-Automatic capability selection:
-
-```text
-requested codec
-      ↓
-hardware available?
-      ↓
-compatible encoder?
-      ↓
-hardware encode
-      ↓ fallback
-software encoder
-```
-
-Example:
-
-```bash
-cecilia-ffmpeg convert file input.mp4 \
-  --to webm \
-  --hardware auto
-```
-
-Implemented policy:
-
-- `software` remains the compatibility default;
-- `auto` uses platform-aware backend ordering;
-- explicit `nvenc|qsv|vaapi|videotoolbox` selection is supported;
-- compiled encoder visibility is followed by a runtime usability probe;
-- unusable hardware falls back to software unless `--hardware-strict` is set;
-- NVDEC/CUVID is included in capability discovery without silently injecting hardware decode into filter graphs;
-- hardware policy is exposed through CLI, TypeScript API, and MCP `media_convert` / `media_restore`.
-
----
-
-# Milestone 18 — Pipeline & Preset System
-
-**Target:** `v1.3.0`  
-**Status:** ✅ Released 2026-09-20
-
-### Objective
-
-Allow several transformations to run as one declarative job.
-
-Example:
-
-```yaml
-input: source.mp4
-
-steps:
-  - trim:
-      start: 4
-
-  - speed:
-      factor: 1.25
-
-  - resize:
-      width: 1920
-      height: 1080
-
-  - audio:
-      normalize: true
-
-output:
-  path: final.mp4
-  codec: h264
-```
-
-Execution:
-
-```bash
+~~~
 cecilia-ffmpeg run pipeline.yaml
-```
+~~~
 
-Implemented in v1.3:
+is removed.
 
-- YAML schema validation with relative-path resolution from the pipeline file;
-- real sequential execution through existing typed domains;
-- isolated intermediate workspace and `--keep-temp`;
-- pipeline-level dry-run;
-- named/nested local presets with cycle detection;
-- output codec/extension/final-step consistency checks;
-- CLI `run <pipeline>`;
-- MCP `media_run_pipeline`;
-- dedicated pipeline-authoring Skill.
+The namespaced grammar becomes:
 
-This enables deterministic agent-generated media workflows without duplicating the media engine.
+~~~
+cecilia-ffmpeg pipeline pipeline.yaml run
+~~~
 
----
+The final action token is the pipeline stop sequence. The first supported
+actions are:
 
-# Version Roadmap
+~~~
+cecilia-ffmpeg pipeline <file> validate
+cecilia-ffmpeg pipeline <file> print
+cecilia-ffmpeg pipeline <file> run
+~~~
 
-| Version     | Main capability                     |
-| ----------- | ----------------------------------- |
-| `0.1.x`     | Core runtime, doctor and FFprobe    |
-| `0.2.0`     | Video editing                       |
-| `0.3.0`     | Audio                               |
-| `0.4.0`     | Conversion and batch                |
-| `0.5.0`     | Composition and transitions         |
-| `0.6.0`     | Diagnostics and repair              |
-| `0.7.0`     | Streaming                           |
-| `0.8.0`     | Professional Skills                 |
-| `0.9.x`     | Plugin, tests, UX and documentation |
-| **`1.0.0`** | Stable CLI + Plugin                 |
-| `1.1.0`     | MCP                                 |
-| `1.2.0`     | Hardware acceleration               |
-| `1.3.0`     | Declarative pipelines               |
+Inline pipelines converge on the same typed PipelineDefinition without
+generating a temporary YAML file as an unnecessary intermediate:
 
----
+~~~
+cecilia-ffmpeg pipeline
+  --step trim
+    --input example.mp4
+    --trim-start 2
+    --output example.trim.mp4
+  --step convert
+    --input example.trim.mp4
+    --to webm
+    --output example.webm
+  run
+~~~
 
-# Definition of Done
+Pipeline work must preserve these invariants:
 
-A migrated operation is considered complete only when all of the following exist:
+- validate the complete pipeline before starting a worker;
+- preflight every planned output before the first media operation;
+- protect the final commit with a second race-resistant preflight;
+- resolve relative paths from the pipeline definition;
+- prevent a pipeline from overwriting its own input;
+- support dry-run, overwrite policy, temporary-workspace retention, and
+  structured progress;
+- verify final artifact properties with FFprobe;
+- report per-step state and safe recovery.
 
-```text
-typed domain function
-        ↓
-FFmpeg argument generation
-        ↓
-CLI adapter
-        ↓
-input validation
-        ↓
-structured errors
-        ↓
---dry-run support
-        ↓
---json support where applicable
-        ↓
-unit tests
-        ↓
-integration test
-        ↓
-FFprobe output validation
-        ↓
-Skill documentation/reference
-        ↓
-CLI documentation
-```
+## 7. Skill catalog transition
 
-This roadmap keeps **v1.0 focused on turning the existing FFmpeg knowledge into a robust reusable toolkit**, while MCP, hardware acceleration and declarative pipelines become additive layers rather than architectural rewrites.
+### 7.1 Existing domain Skills
+
+The existing domain Skills remain, but their routing policy changes from
+“prefer MCP” to “prefer the associated script or canonical CLI”:
+
+~~~
+ffmpeg-environment
+ffmpeg-video-editing
+ffmpeg-audio
+ffmpeg-conversion
+ffmpeg-composition
+ffmpeg-streaming
+ffmpeg-diagnostics
+ffmpeg-pipelines
+~~~
+
+### 7.2 New behavioral Skills
+
+Create the following behavioral Skills:
+
+~~~
+ffmpeg-onboarding
+ffmpeg-workflow
+~~~
+
+ffmpeg-onboarding handles execution-context detection, dependency checks,
+installation guidance, platform differences, and post-install verification.
+
+ffmpeg-workflow handles natural-language request classification, domain Skill
+selection, input/output questions, preflight ordering, execution mode,
+long-run handling, artifact verification, and error recovery.
+
+### 7.3 Reference-document contract
+
+Every Skill reference must explain:
+
+- what the action does;
+- when to use it;
+- when not to use it;
+- examples of real user requests;
+- required information and safe assumptions;
+- canonical script/CLI grammar;
+- dry-run and output-preflight behavior;
+- expected result and artifact shape;
+- validation and recovery;
+- unsupported-capability handling.
+
+Examples must be drawn from the existing README, roadmap, domain guides,
+pipeline documentation, migration material, and validated specs. The goal is
+to teach both the user and the assistant how to choose an action, not merely
+to list implementation details.
+
+## 8. Documentation and repository cleanup
+
+### User-facing documentation
+
+Consolidate the public flow around:
+
+~~~
+docs/getting-started.md
+docs/installation.md
+docs/cli-reference.md
+docs/agent-workflows.md
+docs/pipelines.md
+docs/migration-from-bash.md
+~~~
+
+The README should provide orientation and link to these authoritative guides
+instead of duplicating every domain detail.
+
+### Agent-facing documentation
+
+Skill references become the authoritative action-selection corpus. They may
+link to deeper public docs, but must contain enough examples and routing rules
+to operate without a prior conversation.
+
+### Development records
+
+Extract durable public behavior from development checklists and validation
+transcripts, then archive or remove records that are only implementation
+history and do not help a user or an agent. Do not leave duplicate,
+contradictory MCP instructions in development documentation.
+
+## 9. MCP removal workstream
+
+This workstream starts only after the script contracts and replacement Skill
+flows exist.
+
+Remove or rewrite:
+
+- MCP source, entrypoint, adapters, schemas, runtime, and package export;
+- MCP npm binary, dependency, keyword, and package allowlist entries;
+- plugin manifest and plugin schema MCP extensions;
+- stable-release and command-surface MCP contracts;
+- MCP verifiers, tests, fixtures, and validation wiring;
+- MCP documentation, examples, Skills routing, and setup instructions;
+- generated/build checks that expect dist/mcp*;
+- public references to media_* tools.
+
+Historical release notes are reviewed so they do not continue to describe MCP
+as a supported current execution path.
+
+## 10. Validation strategy
+
+Replace MCP-specific gates with gates for the new architecture:
+
+~~~
+verify:cli-surface
+verify:skill-scripts
+verify:agent-workflows
+verify:environment-flow
+verify:pipeline
+verify:docs
+verify:skills
+verify:package
+~~~
+
+Required coverage:
+
+- no top-level run command remains;
+- pipeline <definition> <action> is registered and documented;
+- file and inline pipeline parsing converge on the same type;
+- every Skill has its declared scripts and references;
+- every reference contains user-request examples;
+- Chat/Work/Codex/IDE routing is deterministic;
+- installation does not mutate shell state silently;
+- scripts return the common result/error envelope;
+- long-run status and recovery are explicit;
+- package contents contain Skills, scripts, docs, and CLI runtime;
+- package contents contain no MCP runtime or MCP-only metadata;
+- no current documentation or test instructs an agent to call MCP.
+
+Final validation, after implementation, will be proportional to the release
+risk:
+
+~~~
+npm run check
+npm run lint
+npm run test
+npm run verify:cli-surface
+npm run verify:skill-scripts
+npm run verify:agent-workflows
+npm run verify:environment-flow
+npm run verify:pipeline
+npm run verify:docs
+npm run verify:skills
+npm run build
+npm run verify:package
+npm run validate:release
+~~~
+
+## 11. Milestones
+
+### Milestone 19 — Agent-first architecture contract
+
+**Status:** roadmap created; implementation not started
+
+- freeze the MCP removal decision;
+- define execution-context, script-request, result, and error contracts;
+- define operational versus behavioral Skill boundaries;
+- inventory current MCP and top-level run references;
+- define background/resumable behavior for long operations;
+- document security boundaries and explicit installation consent.
+
+### Milestone 20 — Script runtime and environment flows
+
+- create the shared Skill-script runner;
+- implement environment detection and capability reporting;
+- implement onboarding/install/check workflows;
+- support regular Chat instructions and executable Work/Codex/IDE paths;
+- test script invocation, cancellation, output envelopes, and safe paths.
+
+### Milestone 21 — Namespaced pipeline CLI
+
+- move pipeline execution under pipeline;
+- add file validate, print, and run actions;
+- add inline pipeline parsing;
+- remove top-level run;
+- preserve preflight, dry-run, progress, and FFprobe verification;
+- update pipeline Skill and examples.
+
+### Milestone 22 — Behavioral and operational Skills
+
+- add ffmpeg-onboarding;
+- add ffmpeg-workflow;
+- attach scripts to the environment, pipeline, and domain Skills;
+- rewrite Skill routing and references around user requests;
+- consolidate examples from current documentation and specs.
+
+### Milestone 23 — MCP removal
+
+- remove MCP runtime and package surfaces;
+- remove MCP tests, schemas, verifiers, docs, metadata, and validation gates;
+- update package/plugin contracts and distribution checks;
+- prove the CLI and scripts are the only supported agent execution path.
+
+### Milestone 24 — Documentation and development-record cleanup
+
+- publish the new onboarding and workflow guides;
+- align README, CLI reference, pipeline guide, and migration guide;
+- consolidate Skill references;
+- archive/remove obsolete development records;
+- verify there are no contradictory execution instructions.
+
+### Milestone 25 — v2.0 release validation
+
+- run the full validation matrix;
+- test clean install and package contents;
+- run real environment and media smoke tests;
+- verify the new CLI grammar and script flows;
+- update release metadata and changelog;
+- publish only after the migration and removal gates pass.
+
+## 12. Definition of done
+
+The architectural migration is complete when:
+
+~~~
+typed media domain
+        ↓
+canonical CLI
+        ↓
+Skill-associated operational script
+        ↓
+behavioral Skill routing
+        ↓
+context-aware execution or guided fallback
+        ↓
+preflight
+        ↓
+execution / background status
+        ↓
+artifact verification
+        ↓
+structured result and recovery
+~~~
+
+and all of the following are true:
+
+- MCP is absent from the supported runtime, package, plugin, Skill, and test
+  surfaces;
+- the public top-level run command is absent;
+- pipeline <definition> <action> is the documented pipeline grammar;
+- regular Chat never claims execution it cannot perform;
+- Work, Codex, and IDE flows use the same scripts and result contracts;
+- installation and environment checks are explicit and repeatable;
+- every supported user workflow has a Skill with concrete request examples;
+- long operations have a clear completion, failure, and recovery path;
+- output preflight and FFprobe verification remain mandatory;
+- clean installation, package inspection, typecheck, lint, tests, build, and
+  release gates pass.
+
+No implementation is part of this roadmap-only change.
