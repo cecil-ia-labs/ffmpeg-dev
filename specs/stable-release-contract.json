@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "release": "1.2.0",
+  "release": "1.3.0",
   "package": {
     "name": "@cecilialabs/ffmpeg",
     "binary": "cecilia-ffmpeg",
@@ -33,6 +33,7 @@
       "keep-temp"
     ],
     "topLevelCommands": [
+      "run",
       "doctor",
       "probe",
       "environment",
@@ -57,7 +58,8 @@
     "ffmpeg-conversion",
     "ffmpeg-composition",
     "ffmpeg-streaming",
-    "ffmpeg-diagnostics"
+    "ffmpeg-diagnostics",
+    "ffmpeg-pipelines"
   ],
   "mcp": {
     "protocol": "2026-07-28",
@@ -72,6 +74,7 @@
       "media_remove_silence",
       "media_generate_silence",
       "media_restore",
+      "media_run_pipeline",
       "media_diagnose"
     ]
   },
@@ -102,5 +105,28 @@
     "runtimeProbe": true,
     "softwareFallback": true,
     "strictMode": true
+  },
+  "pipeline": {
+    "schemaVersion": 1,
+    "cliCommand": "run <pipeline>",
+    "mcpTool": "media_run_pipeline",
+    "parser": "js-yaml@^4.3.2",
+    "steps": [
+      "trim",
+      "speed",
+      "resize",
+      "normalize",
+      "audio.normalize",
+      "convert",
+      "preset"
+    ],
+    "presets": {
+      "local": true,
+      "nested": true,
+      "cycleDetection": true
+    },
+    "relativePaths": "pipeline-file-directory",
+    "intermediateWorkspace": true,
+    "dryRun": true
   }
 }

@@ -1281,7 +1281,8 @@ Implemented policy:
 
 # Milestone 18 — Pipeline & Preset System
 
-**Target:** `v1.3.0`
+**Target:** `v1.3.0`  
+**Status:** 🚧 Implementation complete; validation pending
 
 ### Objective
 
@@ -1317,7 +1318,19 @@ Execution:
 cecilia-ffmpeg run pipeline.yaml
 ```
 
-This eventually enables deterministic agent-generated media workflows.
+Implemented in v1.3:
+
+- YAML schema validation with relative-path resolution from the pipeline file;
+- real sequential execution through existing typed domains;
+- isolated intermediate workspace and `--keep-temp`;
+- pipeline-level dry-run;
+- named/nested local presets with cycle detection;
+- output codec/extension/final-step consistency checks;
+- CLI `run <pipeline>`;
+- MCP `media_run_pipeline`;
+- dedicated pipeline-authoring Skill.
+
+This enables deterministic agent-generated media workflows without duplicating the media engine.
 
 ---
 

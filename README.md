@@ -1,8 +1,8 @@
 # FFmpeg Media Toolkit
 
-**Release status:** `1.2.0` — Advanced hardware acceleration
+**Release status:** `1.3.0` — Declarative pipelines & presets implementation complete; validation pending
 
-**Version:** `1.2.0`
+**Version:** `1.3.0`
 
 **Cecil-IA Labs · FFmpeg Media Toolkit**
 
@@ -21,10 +21,11 @@ FFmpeg Media Toolkit is a professional, agent-friendly TypeScript CLI and plugin
 
 ## Release status
 
-v1.1.0 is published on npm with the stable CLI plus the stdio MCP server. Milestone 17 advances the package to v1.2.0 with typed hardware encoder selection, runtime verification, deterministic software fallback, expanded NVENC/NVDEC/QSV/VAAPI/VideoToolbox capability metadata, and hardware-aware CLI/MCP conversion paths.
+v1.2.0 is published with runtime-verified hardware acceleration. Milestone 18 advances the package to v1.3.0 with declarative YAML pipelines, reusable presets, a public `run <pipeline>` CLI command, `media_run_pipeline` MCP execution, and a dedicated pipeline-authoring Skill.
 
 Implemented now:
 
+- `run <pipeline>`;
 - `doctor`;
 - `environment version`;
 - `environment capabilities`;
@@ -327,7 +328,8 @@ skills/
 ├── ffmpeg-conversion/
 ├── ffmpeg-composition/
 ├── ffmpeg-streaming/
-└── ffmpeg-diagnostics/
+├── ffmpeg-diagnostics/
+└── ffmpeg-pipelines/
 ```
 
 Each skill contains a portable `SKILL.md` plus a `references/` directory. The core execution policy is:
