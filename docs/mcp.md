@@ -60,17 +60,17 @@ The server uses stdio. Standard output is reserved for MCP protocol traffic; dia
 
 ## Initial tool catalog
 
-| MCP tool | Domain implementation | Purpose |
-| --- | --- | --- |
-| `media_probe` | `probeMedia()` | FFprobe-backed normalized media inspection |
-| `media_trim` | `trimVideoRange()` | deterministic video range trimming |
-| `media_convert` | `convertFile()` | single-file media conversion |
-| `media_concat` | `concatMedia()` | normalized multi-video concatenation |
-| `media_attach_audio` | `attachAudio()` | attach or replace a video's audio |
-| `media_remove_silence` | `removeSilence()` | silence removal for audio-only media |
-| `media_generate_silence` | `generateSilence()` | silent audio generation |
-| `media_restore` | `upscaleVideo()` | canonical restoration/upscale pipeline |
-| `media_diagnose` | `diagnoseMedia()` | structural/decode/freeze diagnostics |
+| MCP tool                 | Domain implementation | Purpose                                    |
+| ------------------------ | --------------------- | ------------------------------------------ |
+| `media_probe`            | `probeMedia()`        | FFprobe-backed normalized media inspection |
+| `media_trim`             | `trimVideoRange()`    | deterministic video range trimming         |
+| `media_convert`          | `convertFile()`       | single-file media conversion               |
+| `media_concat`           | `concatMedia()`       | normalized multi-video concatenation       |
+| `media_attach_audio`     | `attachAudio()`       | attach or replace a video's audio          |
+| `media_remove_silence`   | `removeSilence()`     | silence removal for audio-only media       |
+| `media_generate_silence` | `generateSilence()`   | silent audio generation                    |
+| `media_restore`          | `upscaleVideo()`      | canonical restoration/upscale pipeline     |
+| `media_diagnose`         | `diagnoseMedia()`     | structural/decode/freeze diagnostics       |
 
 The MCP layer does **not** invoke the CLI. It calls the same typed domain functions that the CLI adapters use.
 
@@ -114,3 +114,10 @@ Domain errors are returned as tool errors with the toolkit's existing error code
 ## Transport scope
 
 v1.1.0 ships a local stdio MCP server. A hosted Streamable HTTP deployment is intentionally outside this milestone because it requires explicit hosting, origin/host validation, authentication, and deployment policy rather than merely another media adapter.
+
+## Included MCP Configuration
+v1.1.0 ships a mcp.json config file.
+
+```
+.vscode/mcp.json
+```
