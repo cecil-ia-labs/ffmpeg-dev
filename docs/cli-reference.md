@@ -43,8 +43,8 @@ video trim-start <input> --seconds <n> [--mode auto|copy|accurate]
 video trim-end <input> --seconds <n> [--mode auto|copy|accurate]
 video trim <input> [--start <n>] [--end <n>|--duration <n>] [--mode ...]
 video speed <input> --factor <n> [--audio sync|drop]
-video from-image <input> [--duration 5] [--resolution WxH] [--fps 30]
-video upscale <input> --resolution WxH [--profile balanced|aggressive]
+video from-image <input> [--duration 5] [--resolution WxH] [--fps 30] [--hardware <mode>]
+video upscale <input> --resolution WxH [--profile balanced|aggressive] [--hardware <mode>]
 video attach-audio <video> <audio> [--mode replace|append]
 video add-silence <video> [--replace-existing]
 ```
@@ -102,6 +102,16 @@ audio: wav, mp3, aac, m4a, flac, opus, ogg
 ```
 
 Tuning options include FPS, dimensions, fit/background, WebP quality, GIF palette/loop, audio bitrate, sample rate, and channels.
+
+For MP4/H.264 and WebM/VP9 video targets:
+
+```text
+--hardware software|auto|nvenc|qsv|vaapi|videotoolbox
+--hardware-device <path>
+--hardware-strict
+```
+
+The same hardware options are exposed by `video from-image` and `video upscale` / `video restore`.
 
 ## Composition
 
