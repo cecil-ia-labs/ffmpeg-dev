@@ -2,15 +2,23 @@ import type { CallToolResult } from "@modelcontextprotocol/server";
 
 import { isToolkitRuntimeError, toToolkitError } from "../core/errors.js";
 
+/**
+ * Structural runtime subset accepted from Zod-inferred MCP tool inputs.
+ *
+ * With exactOptionalPropertyTypes enabled, Zod optional fields are inferred
+ * as properties whose value may explicitly be undefined. Reflect that here so
+ * every validated tool input remains assignable without weakening the schemas
+ * or casting at the adapter boundary.
+ */
 export interface CommonMcpRuntimeInput {
-  output?: string;
-  overwrite?: boolean;
-  dry_run?: boolean;
-  verbose?: boolean;
-  ffmpeg_path?: string;
-  ffprobe_path?: string;
-  cwd?: string;
-  keep_temp?: boolean;
+  output?: string | undefined;
+  overwrite?: boolean | undefined;
+  dry_run?: boolean | undefined;
+  verbose?: boolean | undefined;
+  ffmpeg_path?: string | undefined;
+  ffprobe_path?: string | undefined;
+  cwd?: string | undefined;
+  keep_temp?: boolean | undefined;
 }
 
 export function runtimeOptions(input: CommonMcpRuntimeInput, signal: AbortSignal) {
