@@ -4,7 +4,7 @@ import { renderCommandForDisplay } from "../core/command-result.js";
 import { ToolkitRuntimeError } from "../core/errors.js";
 import { runFFmpeg } from "../core/ffmpeg-runner.js";
 import { buildFitFilters } from "../media/fit.js";
-import { prepareOutputTransaction, resolveReadableFile } from "../media/io.js";
+import { preflightOutputPath, prepareOutputTransaction, resolveReadableFile } from "../media/io.js";
 import { probeMedia } from "../media/probe.js";
 import type { ExtractImageRequest, ImageFormat, ImageOperationReport } from "./types.js";
 
@@ -28,6 +28,14 @@ function deriveOutput(source: string, format: ImageFormat, explicit: string | un
 
 export async function extractImage(input: string, request: ExtractImageRequest = {}): Promise<ImageOperationReport> {
   const source = await resolveReadableFile(input, request.cwd);
+  const at = request.at ?? 0;
+  if (!Number.isFinite(at) || at < 0) {
+    throw new ToolkitRuntimeError("E_USAGE_INVALID_ARGUMENT", "--at must be zero or greater.");
+  }
+  const format = request.to ?? "png";
+  const output = deriveOutput(source, format, request.output, request.cwd);
+  await preflightOutputPath({ source, output, overwrite: request.overwrite ?? false });
+
   const probe = await probeMedia(source, {
     ...(request.ffprobePath !== undefined ? { ffprobePath: request.ffprobePath } : {}),
     ...(request.verbose !== undefined ? { verbose: request.verbose } : {}),
@@ -37,12 +45,6 @@ export async function extractImage(input: string, request: ExtractImageRequest =
   if (!media || media.video.length === 0) {
     throw new ToolkitRuntimeError("E_MEDIA_NO_MATCHING_STREAM", "image extract requires a video stream.");
   }
-
-  const at = request.at ?? 0;
-  if (!Number.isFinite(at) || at < 0) {
-    throw new ToolkitRuntimeError("E_USAGE_INVALID_ARGUMENT", "--at must be zero or greater.");
-  }
-  const format = request.to ?? "png";
   const width = positiveInteger(request.width, "width");
   const height = positiveInteger(request.height, "height");
   const filters: string[] = [];
@@ -59,7 +61,6 @@ export async function extractImage(input: string, request: ExtractImageRequest =
     filters.push(`scale=-2:${height}:flags=lanczos`);
   }
 
-  const output = deriveOutput(source, format, request.output, request.cwd);
   const transaction = await prepareOutputTransaction({
     source,
     output,
