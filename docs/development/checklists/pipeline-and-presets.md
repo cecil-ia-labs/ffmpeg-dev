@@ -1,7 +1,7 @@
 # Pipeline & Preset System — Completion Checklist
 
 **Target:** `v1.3.0`  
-**Status:** 🚧 Implementation complete; local validation pending
+**Status:** ✅ Released 2026-09-20
 
 ## Schema and parser
 
@@ -69,10 +69,10 @@
 - [x] `verify:pipeline`.
 - [x] `verify:output-preflight`.
 - [x] Pipeline layers wired into test-suite verification.
-- [ ] Run `npm run verify:pipeline`.
-- [ ] Run `npm run check`.
-- [ ] Run `npm run test`.
-- [ ] Run `npm run validate`.
-- [ ] Run `npm run validate:release`.
+- [x] Run `npm run verify:pipeline`.
+- [x] Run `npm run check`.
+- [x] Run `npm run test`.
+- [x] Run `npm run validate`.
+- [x] Run `npm run validate:release`.
 - [ ] Run a real CLI pipeline smoke test.
 - [ ] Run `media_run_pipeline` through an MCP host or adapter smoke test.
