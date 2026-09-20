@@ -177,9 +177,16 @@ export function colorizeProgressLine(text: string, enabled: boolean): string {
   if (!enabled) return text;
 
   return text
-    .split(brandCyan(`\t|`))
-    .map((part) => brandYellow(part))
-    .join(brandCyan(`\t│`));
+    .split("\t| ")
+    .map((part, index) => {
+      if (index === 0) return brandWhite(part);
+      if (part.includes(CLI_ICONS.completed) || part.includes(CLI_ICONS.progress)) return brandGreen(part);
+      if (part.includes(CLI_ICONS.frame)) return brandMagenta(part);
+      if (part.includes(CLI_ICONS.fps) || part.includes(CLI_ICONS.speed)) return brandCyan(part);
+      if (part.includes(CLI_ICONS.eta)) return brandYellow(part);
+      return brandWhite(part);
+    })
+    .join(` ${brandCyan("│")} `);
 }
 
 export function colorizeWarning(code: string, message: string, enabled: boolean): string {

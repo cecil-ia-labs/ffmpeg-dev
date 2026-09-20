@@ -6,13 +6,13 @@ import type { CommandSpec } from "./command-spec.js";
 import { COMMAND_TREE } from "./command-spec.js";
 import { decorateCommandDescription } from "./icons.js";
 import { configureSemanticHelp } from "./help-style.js";
-import { configureMilestone4Options } from "./milestone-4-options.js";
-import { configureMilestone5Options } from "./milestone-5-options.js";
-import { configureMilestone6Options } from "./milestone-6-options.js";
-import { configureMilestone7Options } from "./milestone-7-options.js";
-import { configureMilestone8Options } from "./milestone-8-options.js";
-import { configureMilestone9Options } from "./milestone-9-options.js";
-import { configureMilestone13_5Options } from "./milestone-13-5-options.js";
+import { configureVideoOptions } from "./video-options.js";
+import { configureAudioOptions } from "./audio-options.js";
+import { configureConversionOptions } from "./conversion-options.js";
+import { configureCompositionOptions } from "./composition-options.js";
+import { configureDiagnosticsOptions } from "./diagnostics-options.js";
+import { configureStreamingOptions } from "./streaming-options.js";
+import { configureImageOptions } from "./image-options.js";
 import { runPlaceholder } from "./placeholder.js";
 
 function commandPath(command: Command): string {
@@ -45,13 +45,13 @@ function registerSpec(parent: Command, spec: CommandSpec): void {
     return;
   }
 
-  configureMilestone4Options(command, path);
-  configureMilestone5Options(command, path);
-  configureMilestone6Options(command, path);
-  configureMilestone7Options(command, path);
-  configureMilestone8Options(command, path);
-  configureMilestone9Options(command, path);
-  configureMilestone13_5Options(command, path);
+  configureVideoOptions(command, path);
+  configureAudioOptions(command, path);
+  configureConversionOptions(command, path);
+  configureCompositionOptions(command, path);
+  configureDiagnosticsOptions(command, path);
+  configureStreamingOptions(command, path);
+  configureImageOptions(command, path);
   const action = resolveCommandAction(path);
   if (action) {
     command.action((...args: unknown[]) => action(command, args.slice(0, -1)));

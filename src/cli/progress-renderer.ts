@@ -2,7 +2,7 @@ import path from "node:path";
 
 import type { FFmpegProgressEvent } from "../core/progress.js";
 import type { ProgressRunSummary, ProgressSummary } from "../types/contracts.js";
-import { brandCyan, colorizeProgressLine } from "./colors.js";
+import { colorizeProgressLine } from "./colors.js";
 import { CLI_ICONS, progressSourceIcon } from "./icons.js";
 
 export type ProgressWriter = (text: string) => void;
@@ -47,10 +47,18 @@ export function formatHumanProgress(event: FFmpegProgressEvent, friendly = false
     parts.push(friendly ? `${CLI_ICONS.frame}\t\b\b\b${event.frame}frames` : `frame ${event.frame}`);
   }
   if (event.fps !== undefined) {
-    parts.push(friendly ? `${CLI_ICONS.fps} ${event.fps}fps` : `${event.fps}fps`);
+    parts.push(
+      friendly
+        ? `${CLI_ICONS.fps} ${event.fps}fps`
+        : `${event.fps.toFixed(1)} fps`,
+    );
   }
   if (event.speedMultiplier !== undefined) {
-    parts.push(friendly ? `${CLI_ICONS.speed} ${event.speedMultiplier.toFixed(1)}x` : `${event.speedMultiplier.toFixed(1)}x`);
+    parts.push(
+      friendly
+        ? `${CLI_ICONS.speed} ${event.speedMultiplier.toFixed(1)}x`
+        : `${event.speedMultiplier.toFixed(2)}x`,
+    );
   }
   if (event.etaSeconds !== undefined) {
     parts.push(
@@ -59,7 +67,7 @@ export function formatHumanProgress(event: FFmpegProgressEvent, friendly = false
         : `ETA ${formatProgressDuration(event.etaSeconds)}`,
     );
   }
-  return parts.join(brandCyan(`\t| `));
+  return parts.join(friendly ? "\t| " : " | ");
 }
 
 export class CliProgressReporter {
@@ -127,7 +135,7 @@ export class CliProgressReporter {
     const lastBucket = this.lastBucket.get(event.runId);
     if (event.state === "end" || (bucket !== undefined && bucket !== lastBucket)) {
       if (bucket !== undefined) this.lastBucket.set(event.runId, bucket);
-      this.write(`${formatHumanProgress(event, false)}\n\n`);
+      this.write(`${formatHumanProgress(event, false)}\n`);
     }
   };
 
