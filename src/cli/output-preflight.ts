@@ -4,7 +4,6 @@ import { preflightOutputPath } from "../media/io.js";
 import type { GlobalCliOptions } from "./global-options.js";
 
 const SINGLE_FILE_OUTPUT_COMMANDS = new Set([
-  "cecilia-ffmpeg run",
   "cecilia-ffmpeg video trim-start",
   "cecilia-ffmpeg video trim-end",
   "cecilia-ffmpeg video trim",
