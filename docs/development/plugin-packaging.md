@@ -92,3 +92,29 @@ The full gate is:
 ```bash
 npm run validate
 ```
+
+
+## MCP distribution
+
+v1.1.0 extends the Cecil-IA Labs extension metadata with the local MCP server:
+
+```text
+extensions.com.cecilialabs.ffmpeg.mcp
+├── binary: cecilia-ffmpeg-mcp
+├── transport: stdio
+├── protocol: 2026-07-28
+└── tools: 9 registered media tools
+```
+
+The MCP implementation is distributed from the same npm package:
+
+```text
+dist/mcp.js             executable stdio entrypoint
+dist/mcp/index.js       reusable MCP package export
+dist/mcp/index.d.ts     MCP TypeScript declarations
+docs/mcp.md             public configuration/tool guide
+```
+
+The custom extension metadata is descriptive product metadata under the existing Agent Plugins extension namespace; it does not add non-standard top-level fields to the closed Agent Plugins 1.0.0 manifest.
+
+`verify:plugin` validates the MCP binary, transport, protocol/tool catalog, and containment of the MCP documentation path. `verify:package` confirms the compiled MCP executable and declarations are present in the npm tarball.
