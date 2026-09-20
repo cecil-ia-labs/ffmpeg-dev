@@ -3,6 +3,7 @@ import path from "node:path";
 
 import { ToolkitRuntimeError } from "../core/errors.js";
 import { buildFitFilters } from "../media/fit.js";
+import { preflightOutputPath } from "../media/io.js";
 import { matchesAnyPattern } from "../conversion/patterns.js";
 import { resolveEncodingProfile } from "../video/encoding.js";
 import { FilterGraphBuilder } from "./filter-graph.js";
@@ -165,6 +166,11 @@ function buildSequenceGraph(
 }
 
 export async function createSlideshow(directory: string, request: SlideshowRequest = {}): Promise<CompositionReport> {
+  const style = request.style ?? "vertical-stack";
+  const to = request.to ?? "mp4";
+  const output = outputPath(directory, { ...request, style }, to);
+  await preflightOutputPath({ output, overwrite: request.overwrite ?? false });
+
   const recursive = request.recursive ?? false;
   const includes = request.includes ?? [];
   const excludes = request.excludes ?? [];
@@ -180,8 +186,6 @@ export async function createSlideshow(directory: string, request: SlideshowReque
   const fps = positiveInteger(request.fps, 30, "fps");
   const duration = positiveNumber(request.duration, 10, "duration");
   const background = safeColor(request.background ?? "black");
-  const style = request.style ?? "vertical-stack";
-  const to = request.to ?? "mp4";
   const graph = new FilterGraphBuilder();
   const args: string[] = [];
   let videoOut = "vout";
@@ -242,7 +246,6 @@ export async function createSlideshow(directory: string, request: SlideshowReque
     sequenceDetails = { direction, includeIntro, includeOutro };
   }
 
-  const output = outputPath(directory, { ...request, style }, to);
   args.push(
     "-filter_complex", graph.build(),
     "-map", `[${videoOut}]`,
