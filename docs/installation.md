@@ -47,8 +47,16 @@ npm creates the executable link automatically. The package deliberately has **no
 
 ## Run without installing globally
 
+Because the package exposes both `cecilia-ffmpeg` and `cecilia-ffmpeg-mcp`, package-runner usage must name the intended executable explicitly:
+
 ```bash
-npx @cecilialabs/ffmpeg doctor
+npm exec --yes --package=@cecilialabs/ffmpeg -- cecilia-ffmpeg doctor
+```
+
+For the MCP server:
+
+```bash
+npm exec --yes --package=@cecilialabs/ffmpeg -- cecilia-ffmpeg-mcp
 ```
 
 Or install as a project dependency:
@@ -57,6 +65,8 @@ Or install as a project dependency:
 npm install @cecilialabs/ffmpeg
 npx cecilia-ffmpeg doctor
 ```
+
+All subsequent CLI examples in the public documentation assume the recommended global installation and therefore use `cecilia-ffmpeg ...` directly.
 
 ## Local development checkout
 
@@ -110,7 +120,7 @@ cecilia-ffmpeg doctor
 cecilia-ffmpeg environment capabilities --json
 ```
 
-A successful `doctor` confirms binary resolution and inspects available capabilities. Hardware backends reported by FFmpeg indicate compile/runtime visibility, not that every encoder/device is usable.
+A successful `doctor` confirms binary resolution and inspects available capabilities. In v1.2, hardware encoding selection performs an additional runtime usability probe before choosing an accelerator; capability discovery alone still does not prove that a device is usable.
 
 ## Packaging and release lifecycle
 
