@@ -16,8 +16,16 @@ const pkg = JSON.parse(await text("package.json"));
 const contract = JSON.parse(await text("specs/stable-release-contract.json"));
 const plugin = JSON.parse(await text("plugin.json"));
 
-assert(pkg.version === "1.2.0", "Milestone 17 package version must be 1.2.0.");
-assert(contract.release === "1.2.0", "Stable release contract must be v1.2.0.");
+const versionMatch = /^(\d+)\.(\d+)\.(\d+)$/.exec(pkg.version);
+assert(versionMatch, "Hardware verification requires a plain semantic package version.");
+const [, majorText, minorText] = versionMatch;
+const major = Number(majorText);
+const minor = Number(minorText);
+assert(
+  major > 1 || (major === 1 && minor >= 2),
+  "Hardware acceleration requires package version 1.2.0 or newer.",
+);
+assert(contract.release === pkg.version, "Hardware verification requires package/release-contract version alignment.");
 assert(pkg.scripts?.["verify:hardware"] === "node scripts/verify-hardware.mjs", "Missing verify:hardware script.");
 assert(pkg.scripts?.validate?.includes("verify:hardware"), "validate must include verify:hardware.");
 

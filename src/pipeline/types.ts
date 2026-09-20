@@ -1,6 +1,6 @@
 import type { HardwareMode } from "../hardware/types.js";
 import type { MediaFit } from "../media/fit.js";
-import type { TrimMode } from "../types/contracts.js";
+import type { MediaInfo, ToolkitWarning, TrimMode } from "../types/contracts.js";
 import type { RestoreProfile, SpeedAudioMode, VideoOutputFormat } from "../video/types.js";
 import type { ConversionFormat } from "../conversion/types.js";
 
@@ -116,7 +116,6 @@ export interface LoadedPipeline {
   document: PipelineDocument;
 }
 
-import type { MediaInfo, ToolkitWarning } from "../types/contracts.js";
 
 export interface PipelineRuntimeOptions {
   /** Optional final-output override. Relative paths resolve from the pipeline file directory. */

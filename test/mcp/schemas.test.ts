@@ -8,8 +8,8 @@ import {
   mediaTrimInputSchema,
 } from "../../src/mcp/schemas.js";
 
-describe("Milestone 16 MCP server surface", () => {
-  it("registers the frozen initial media tool catalog", () => {
+describe("MCP server surface", () => {
+  it("registers the current media tool catalog", () => {
     expect(MCP_TOOL_NAMES).toEqual([
       "media_probe",
       "media_trim",

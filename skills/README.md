@@ -42,7 +42,7 @@ cecilia-ffmpeg ...
 cecilia-ffmpeg-mcp
 ```
 
-Do not use the ambiguous shorthand the package-only `npx` shorthand: since v1.1 the npm package exposes both the CLI and MCP binaries, so a package runner must name the intended executable explicitly.
+Do not use the ambiguous package-only `npx` shorthand: since v1.1 the npm package exposes both the CLI and MCP binaries, so a package runner must name the intended executable explicitly.
 
 Use native FFmpeg only when:
 

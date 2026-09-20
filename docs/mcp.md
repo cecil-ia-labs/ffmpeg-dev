@@ -1,6 +1,6 @@
 # MCP Server
 
-FFmpeg Media Toolkit v1.2.0 exposes its typed media operations as Model Context Protocol tools through a dedicated stdio server.
+FFmpeg Media Toolkit v1.3.0 exposes its typed media operations as Model Context Protocol tools through a dedicated stdio server.
 
 ## Install
 
@@ -150,7 +150,7 @@ Domain errors are returned as tool errors with the toolkit's existing error code
 
 ## Transport scope
 
-v1.2.0 continues to ship the local stdio MCP server introduced in v1.1. A hosted Streamable HTTP deployment is intentionally outside this milestone because it requires explicit hosting, origin/host validation, authentication, and deployment policy rather than merely another media adapter.
+v1.3.0 continues to ship the local stdio MCP server introduced in v1.1 and adds declarative pipeline execution through `media_run_pipeline`. A hosted Streamable HTTP deployment is intentionally outside this milestone because it requires explicit hosting, origin/host validation, authentication, and deployment policy rather than merely another media adapter.
 
 ## Included MCP Configuration
 The repository ships a VS Code workspace MCP configuration for local development:

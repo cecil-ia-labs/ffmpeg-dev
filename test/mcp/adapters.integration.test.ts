@@ -36,8 +36,8 @@ beforeAll(async () => {
   available = await ensureFixtureMatrix();
 }, 120_000);
 
-describe("Milestone 16 MCP domain adapters", () => {
-  it("routes all initial MCP tools through the existing typed domain implementation", async () => {
+describe("MCP domain adapters", () => {
+  it("routes MCP tools through the existing typed domain implementation", async () => {
     if (!available) return;
 
     const signal = new AbortController().signal;

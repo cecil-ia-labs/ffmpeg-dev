@@ -98,9 +98,6 @@ presets:
         width: 1920
         height: 1080
         fit: contain
-
-    - convert:
-        to: mp4
         hardware: auto
 
 steps:
