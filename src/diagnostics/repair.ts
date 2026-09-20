@@ -138,7 +138,7 @@ export async function repairTimestamps(input: string, options: RepairTimestampsO
   if (options.output !== undefined) {
     await preflightOutputPath({
       source,
-      output: path.resolve(options.cwd ?? process.cwd(), options.output),
+      output: path.resolve(options.output),
       overwrite: options.overwrite ?? false,
     });
   }
@@ -179,7 +179,7 @@ export async function normalizeMedia(input: string, options: NormalizeMediaOptio
   if (options.output !== undefined) {
     await preflightOutputPath({
       source,
-      output: path.resolve(options.cwd ?? process.cwd(), options.output),
+      output: path.resolve(options.output),
       overwrite: options.overwrite ?? false,
     });
   }
