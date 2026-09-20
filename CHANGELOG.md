@@ -1,8 +1,25 @@
 # Changelog
 
-## 1.0.0 — Unreleased — Milestone 15 — Stable CLI Release
+## 1.1.0 — Unreleased — Milestone 16 — MCP Server
 
-### Started
+### Added
+
+- Dedicated `cecilia-ffmpeg-mcp` stdio server binary.
+- Public `@cecilialabs/ffmpeg/mcp` package export.
+- Nine MCP media tools backed directly by existing typed domain functions.
+- Stable `@modelcontextprotocol/server` v2 integration using protocol-aware `serveStdio()`.
+- Zod-derived JSON-native tool schemas, structured MCP results, and toolkit error mapping.
+- MCP request cancellation propagation into the existing media/runtime `AbortSignal`.
+- MCP unit/integration coverage and `verify:mcp` architecture gate.
+- Public MCP host configuration and development architecture documentation.
+
+### Architecture
+
+The MCP layer is an adapter sibling to the CLI. It does not call CLI actions and does not execute FFmpeg/FFprobe directly; all process execution remains behind the existing core runtime boundary.
+
+## 1.0.0 — 2026-09-20 — Milestone 15 — Stable CLI Release
+
+### Added
 
 - Stable v1.0.0 package/plugin/runtime version line.
 - Machine-readable stable release contract in `specs/stable-release-contract.json`.
