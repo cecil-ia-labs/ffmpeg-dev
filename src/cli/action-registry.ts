@@ -13,7 +13,7 @@ import { runPipelineAction } from "./actions/pipeline.js";
 export type CommandAction = (command: Command, positional: readonly unknown[]) => Promise<void> | void;
 
 const ACTIONS: Readonly<Record<string, CommandAction>> = {
-  "cecilia-ffmpeg run": runPipelineAction,
+  "cecilia-ffmpeg pipeline": runPipelineAction,
   "cecilia-ffmpeg doctor": runDoctorAction,
   "cecilia-ffmpeg probe": runProbeAction,
   "cecilia-ffmpeg environment capabilities": runEnvironmentCapabilitiesAction,

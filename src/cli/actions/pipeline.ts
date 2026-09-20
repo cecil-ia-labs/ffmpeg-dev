@@ -1,20 +1,60 @@
 import type { Command } from "commander";
 
 import { ToolkitRuntimeError } from "../../core/errors.js";
-import { executePipeline, loadPipelineFile, type PipelineReport } from "../../pipeline/index.js";
+import {
+  executePipeline,
+  inspectPipeline,
+  loadPipelineFile,
+  parsePipelineInvocation,
+  type PipelineInspectionReport,
+  type PipelineReport,
+} from "../../pipeline/index.js";
+import type { LoadedPipeline } from "../../pipeline/types.js";
 import { executeAction } from "./shared.js";
 
-function pipelineAt(positional: readonly unknown[]): string {
-  const value = positional[0];
-  if (typeof value !== "string" || value.trim().length === 0) {
-    throw new ToolkitRuntimeError("E_USAGE_MISSING_ARGUMENT", "run requires a pipeline YAML file.");
+function rawPipelineTokens(positional: readonly unknown[]): string[] {
+  const argv = process.argv.slice(2);
+  const pipelineIndex = argv.indexOf("pipeline");
+  if (pipelineIndex >= 0) return argv.slice(pipelineIndex + 1);
+
+  const first = positional[0];
+  if (Array.isArray(first)) return first.map(String);
+  return positional.map(String);
+}
+
+async function loadInvocation(
+  positional: readonly unknown[],
+  outputOverride?: string,
+): Promise<{ action: "validate" | "print" | "run"; loaded: LoadedPipeline }> {
+  const invocation = parsePipelineInvocation(rawPipelineTokens(positional), {
+    cwd: process.cwd(),
+    ...(outputOverride !== undefined ? { outputOverride } : {}),
+  });
+  if (invocation.source === "file") {
+    if (invocation.file === undefined) {
+      throw new ToolkitRuntimeError("E_USAGE_MISSING_ARGUMENT", "Pipeline file is missing.");
+    }
+    return {
+      action: invocation.action,
+      loaded: await loadPipelineFile(invocation.file),
+    };
   }
-  return value;
+  if (invocation.document === undefined) {
+    throw new ToolkitRuntimeError("E_INTERNAL_INVARIANT", "Inline pipeline document is missing.");
+  }
+  return {
+    action: invocation.action,
+    loaded: {
+      file: "<inline>",
+      baseDirectory: process.cwd(),
+      document: invocation.document,
+    },
+  };
 }
 
 function renderPipelineReport(report: PipelineReport): string {
   const lines = [
-    `run pipeline${report.planned ? " (dry run)" : ""}`,
+    `pipeline run${report.planned ? " (dry run)" : ""}`,
     `Pipeline: ${report.file}`,
     `Input: ${report.source}`,
     `Output: ${report.output}`,
@@ -28,10 +68,36 @@ function renderPipelineReport(report: PipelineReport): string {
   return lines.join("\n");
 }
 
+function renderPipelineInspection(report: PipelineInspectionReport): string {
+  const action = report.operation === "pipeline.print" ? "print" : "validate";
+  const lines = [
+    `pipeline ${action}`,
+    `Pipeline: ${report.file}`,
+    `Input: ${report.input}`,
+    `Output: ${report.output}`,
+    `Steps: ${report.stepCount}`,
+  ];
+
+  for (const step of report.steps) {
+    lines.push(`  ${step.index}. ${step.kind} ${JSON.stringify(step.declaration)}`);
+  }
+  if (action === "print") lines.push(`Document:\n${JSON.stringify(report.document, null, 2)}`);
+  return lines.join("\n");
+}
+
 export async function runPipelineAction(command: Command, positional: readonly unknown[]): Promise<void> {
-  await executeAction(command, async (global, signal) => {
-    const loaded = await loadPipelineFile(pipelineAt(positional));
-    const report = await executePipeline(loaded, {
+  await executeAction<PipelineReport | PipelineInspectionReport>(command, async (global, signal) => {
+    const invocation = await loadInvocation(positional, global.output);
+    if (invocation.action === "validate") {
+      const report = inspectPipeline(invocation.loaded, "pipeline.validate", global.output);
+      return { data: report };
+    }
+    if (invocation.action === "print") {
+      const report = inspectPipeline(invocation.loaded, "pipeline.print", global.output);
+      return { data: report };
+    }
+
+    const report = await executePipeline(invocation.loaded, {
       ...(global.output !== undefined ? { output: global.output } : {}),
       overwrite: global.overwrite,
       dryRun: global.dryRun,
@@ -42,5 +108,9 @@ export async function runPipelineAction(command: Command, positional: readonly u
       keepTemp: global.keepTemp,
     });
     return { data: report, warnings: report.warnings };
-  }, renderPipelineReport);
+  }, (data) =>
+    "operation" in data && data.operation === "pipeline"
+      ? renderPipelineReport(data)
+      : renderPipelineInspection(data),
+  );
 }

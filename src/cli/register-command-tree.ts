@@ -46,6 +46,8 @@ function registerSpec(parent: Command, spec: CommandSpec): void {
     return;
   }
 
+  if (path === "cecilia-ffmpeg pipeline") command.allowUnknownOption();
+
   configureVideoOptions(command, path);
   configureAudioOptions(command, path);
   configureConversionOptions(command, path);

@@ -2,13 +2,32 @@
 
 Milestone 18 adds a declarative YAML job format that composes existing typed media operations without introducing a second FFmpeg execution engine.
 
-## Run a pipeline
+## Validate, inspect, and run a pipeline
 
 ```bash
-cecilia-ffmpeg run pipeline.yaml
+cecilia-ffmpeg pipeline pipeline.yaml validate
+cecilia-ffmpeg pipeline pipeline.yaml print
+cecilia-ffmpeg pipeline pipeline.yaml run
 ```
 
-The document is validated before execution. Relative `input`, `output.path`, and preset references are resolved from the pipeline file directory.
+`validate` checks the document and its output contract, while `print` emits the
+normalized expanded plan without executing media operations. `run` validates
+again before execution. Relative `input`, `output.path`, and preset references
+are resolved from the pipeline file directory.
+
+An inline pipeline uses the same typed schema and can be chained without a
+temporary YAML file:
+
+```bash
+cecilia-ffmpeg pipeline \
+  --step trim --input example.mp4 --trim-start 2 --output example.trim.mp4 \
+  --step convert --input example.trim.mp4 --to webm --output example.webm \
+  run
+```
+
+Each `--step` starts one supported step block. Inputs and outputs must chain in
+order; the CLI converts the blocks into the same `PipelineDocument` used by a
+file pipeline before validation or execution.
 
 ## Pipeline v1
 
@@ -184,7 +203,7 @@ Intermediate files are removed automatically after success or failure.
 Use:
 
 ```bash
-cecilia-ffmpeg run pipeline.yaml --keep-temp
+cecilia-ffmpeg pipeline pipeline.yaml run --keep-temp
 ```
 
 to preserve the workspace for debugging. The structured report includes the workspace path when it is preserved.
@@ -192,7 +211,7 @@ to preserve the workspace for debugging. The structured report includes the work
 ## Dry-run
 
 ```bash
-cecilia-ffmpeg run pipeline.yaml --dry-run
+cecilia-ffmpeg pipeline pipeline.yaml run --dry-run
 ```
 
 Pipeline dry-run validates:
@@ -211,7 +230,7 @@ It does not execute FFmpeg and therefore does not require fictitious intermediat
 The document output can be overridden from the CLI:
 
 ```bash
-cecilia-ffmpeg run pipeline.yaml --output ./alternate.mp4
+cecilia-ffmpeg pipeline pipeline.yaml run --output ./alternate.mp4
 ```
 
 The override is still checked against the declared output codec/final target.
@@ -219,7 +238,7 @@ The override is still checked against the declared output codec/final target.
 ## JSON output
 
 ```bash
-cecilia-ffmpeg run pipeline.yaml --json
+cecilia-ffmpeg pipeline pipeline.yaml run --json
 ```
 
 The pipeline report includes:

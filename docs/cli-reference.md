@@ -32,12 +32,17 @@ Streaming commands are excluded from file-existence preflight because their `--u
 ## Pipelines
 
 ```text
-run <pipeline>
+pipeline <file> <validate|print|run>
+pipeline [inline options] <run>
 ```
 
-Execute a v1 declarative YAML pipeline. Supported steps are `trim`, `speed`, `resize`, `normalize`, `audio.normalize`, `convert`, and named `preset` references.
+Validate, print, or execute a v1 declarative YAML pipeline. Inline pipelines
+use repeated `--step` blocks and converge to the same typed document. Supported
+steps are `trim`, `speed`, `resize`, `normalize`, `audio.normalize`, `convert`,
+and named `preset` references.
 
-Global `--dry-run`, `--json`, `--overwrite`, `--keep-temp`, binary overrides, and `--output` apply to pipeline execution.
+Global `--dry-run`, `--json`, `--overwrite`, `--keep-temp`, binary overrides,
+and `--output` apply to pipeline execution.
 
 See [Declarative pipelines & presets](pipelines.md).
 

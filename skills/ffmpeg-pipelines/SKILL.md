@@ -59,42 +59,64 @@ Do not assume that an FFmpeg encoder being compiled means it is usable. Hardware
 Use the highest-level toolkit surface available:
 
 1. In an MCP-enabled host, prefer `media_run_pipeline`.
-2. Otherwise use the global `cecilia-ffmpeg run <pipeline.yaml>` command.
+2. Otherwise use the namespaced `cecilia-ffmpeg pipeline <file> <action>` command.
 3. If the global binary is unavailable, use:
-   `npm exec --yes --package=@cecilialabs/ffmpeg -- cecilia-ffmpeg run <pipeline.yaml>`.
+   `npm exec --yes --package=@cecilialabs/ffmpeg -- cecilia-ffmpeg pipeline <file> <action>`.
 4. Use individual toolkit tools/commands only when the user explicitly wants step-by-step execution rather than a pipeline.
 5. Use native FFmpeg only when pipeline v1 cannot represent the required operation or the user explicitly requests native syntax.
 
 ## Preferred toolkit commands
 
-Validate/plan:
+Validate a file:
 
 ```bash
-cecilia-ffmpeg run pipeline.yaml --dry-run
+cecilia-ffmpeg pipeline pipeline.yaml validate
+```
+
+Print the normalized plan:
+
+```bash
+cecilia-ffmpeg pipeline pipeline.yaml print
+```
+
+Validate and plan immediately before execution:
+
+```bash
+cecilia-ffmpeg pipeline pipeline.yaml run --dry-run
 ```
 
 Execute:
 
 ```bash
-cecilia-ffmpeg run pipeline.yaml
+cecilia-ffmpeg pipeline pipeline.yaml run
 ```
 
 Agent-readable result:
 
 ```bash
-cecilia-ffmpeg run pipeline.yaml --json
+cecilia-ffmpeg pipeline pipeline.yaml run --json
 ```
 
 Preserve intermediate artifacts for debugging:
 
 ```bash
-cecilia-ffmpeg run pipeline.yaml --keep-temp
+cecilia-ffmpeg pipeline pipeline.yaml run --keep-temp
+```
+
+Inline pipelines use the same typed schema and step ordering without a YAML
+file:
+
+```bash
+cecilia-ffmpeg pipeline \
+  --step trim --input example.mp4 --trim-start 2 --output example.trim.mp4 \
+  --step convert --input example.trim.mp4 --to webm --output example.webm \
+  run
 ```
 
 Without a global install:
 
 ```bash
-npm exec --yes --package=@cecilialabs/ffmpeg -- cecilia-ffmpeg run pipeline.yaml
+npm exec --yes --package=@cecilialabs/ffmpeg -- cecilia-ffmpeg pipeline pipeline.yaml run
 ```
 
 MCP:
@@ -130,12 +152,13 @@ Relative media paths are relative to the pipeline file directory. Intermediate a
 
 After authoring a pipeline:
 
-1. parse/validate it;
-2. run `--dry-run` when practical;
-3. confirm preset expansion order;
-4. verify final extension and declared codec agree;
-5. after execution, inspect the final structured report or FFprobe metadata;
-6. verify hardware-aware steps resolved the intended backend when hardware was requested.
+1. use `pipeline <file> validate` for schema and output-contract validation;
+2. use `pipeline <file> print` to inspect the expanded normalized plan;
+3. run `pipeline <file> run --dry-run` when practical;
+4. confirm preset expansion order;
+5. verify final extension and declared codec agree;
+6. after execution, inspect the final structured report or FFprobe metadata;
+7. verify hardware-aware steps resolved the intended backend when hardware was requested.
 
 ## Error recovery
 

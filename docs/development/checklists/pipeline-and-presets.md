@@ -41,7 +41,8 @@
 ## Public surfaces
 
 - [x] Package API.
-- [x] `cecilia-ffmpeg run <pipeline>`.
+- [x] `cecilia-ffmpeg pipeline <file> <validate|print|run>`.
+- [x] Inline `cecilia-ffmpeg pipeline --step ... run` parsing.
 - [x] Human output.
 - [x] JSON output through stable CLI envelope.
 - [x] MCP `media_run_pipeline`.

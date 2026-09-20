@@ -37,11 +37,11 @@ See ROADMAP.md for the migration milestones.
 
 ## Release status
 
-v1.3.0 is published with declarative YAML pipelines, reusable presets, a public `run <pipeline>` CLI command, `media_run_pipeline` MCP execution, runtime-verified hardware acceleration, and a dedicated pipeline-authoring Skill.
+v1.3.0 is published with declarative YAML pipelines, reusable presets, the namespaced `pipeline <file> <action>` CLI, `media_run_pipeline` MCP execution, runtime-verified hardware acceleration, and a dedicated pipeline-authoring Skill.
 
 Implemented now:
 
-- `run <pipeline>`;
+- `pipeline <file> <validate|print|run>`;
 - `doctor`;
 - `environment version`;
 - `environment capabilities`;
@@ -169,7 +169,7 @@ See [MCP server](docs/mcp.md) and [MCP architecture](docs/development/mcp-server
 Milestone 18 introduces declarative YAML workflows that compose existing typed operations:
 
 ```bash
-cecilia-ffmpeg run pipeline.yaml
+cecilia-ffmpeg pipeline pipeline.yaml run
 ```
 
 A pipeline can chain trim, speed, resize, normalization, conversion, and reusable named presets. Multi-step execution uses isolated intermediate files, while `--dry-run` validates and expands the job without mutating media.
@@ -829,7 +829,7 @@ Composition normalizes geometry, constant frame rate, pixel format, timebase, an
 
 ```text
 cecilia-ffmpeg
-├── run <pipeline>
+├── pipeline <file> <validate|print|run>
 ├── doctor
 ├── probe <input>
 ├── environment

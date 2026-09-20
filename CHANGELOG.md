@@ -19,6 +19,8 @@
   writability.
 - Explicit global, local, and npm-exec onboarding installation plans with
   opt-in authorization and post-install checks.
+- Namespaced `cecilia-ffmpeg pipeline` validation, plan-printing, execution,
+  and inline pipeline parsing for the next pipeline CLI contract.
 
 ### Compatibility
 

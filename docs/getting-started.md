@@ -99,13 +99,13 @@ output:
 Plan it:
 
 ```bash
-cecilia-ffmpeg run pipeline.yaml --dry-run
+cecilia-ffmpeg pipeline pipeline.yaml run --dry-run
 ```
 
 Execute it:
 
 ```bash
-cecilia-ffmpeg run pipeline.yaml
+cecilia-ffmpeg pipeline pipeline.yaml run
 ```
 
 ## Human vs agent output

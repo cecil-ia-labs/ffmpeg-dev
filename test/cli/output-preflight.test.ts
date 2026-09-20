@@ -51,9 +51,9 @@ describe("CLI output preflight", () => {
     await writeFile(output, "existing");
 
     const root = new Command().name("cecilia-ffmpeg");
-    const run = root.command("run <pipeline>");
+    const pipeline = root.command("pipeline [tokens...]");
     const options = globalCliOptionsSchema.parse({ output });
 
-    await expect(preflightExplicitCliOutput(run, options)).resolves.toBeUndefined();
+    await expect(preflightExplicitCliOutput(pipeline, options)).resolves.toBeUndefined();
   });
 });

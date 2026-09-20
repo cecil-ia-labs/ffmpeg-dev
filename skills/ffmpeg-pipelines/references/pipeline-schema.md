@@ -123,7 +123,7 @@ output:
 CLI:
 
 ```bash
-cecilia-ffmpeg run pipeline.yaml
+cecilia-ffmpeg pipeline pipeline.yaml run
 ```
 
 MCP:
