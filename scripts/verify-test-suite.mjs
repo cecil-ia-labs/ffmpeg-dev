@@ -49,6 +49,8 @@ const layers = {
   mcpIntegration: "test/mcp/adapters.integration.test.ts",
   hardwareUnit: "test/hardware/selection.test.ts",
   hardwareIntegration: "test/conversion/hardware.integration.test.ts",
+  pipelineUnit: "test/pipeline/presets.test.ts",
+  pipelineIntegration: "test/pipeline/normalize.integration.test.ts",
 };
 for (const [layer, relative] of Object.entries(layers)) {
   assert((await stat(path.join(root, relative))).isFile(), `Missing ${layer} test layer: ${relative}`);

@@ -14,6 +14,11 @@
     "keep-temp"
   ],
   "commands": {
+    "run": {
+      "args": [
+        "pipeline"
+      ]
+    },
     "doctor": {},
     "probe": {
       "args": [

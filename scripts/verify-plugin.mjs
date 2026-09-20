@@ -15,6 +15,7 @@ const expectedSkills = [
   "ffmpeg-composition",
   "ffmpeg-streaming",
   "ffmpeg-diagnostics",
+  "ffmpeg-pipelines",
 ];
 
 function assert(condition, message) {
@@ -71,7 +72,8 @@ assert(extension.npm?.binary === "cecilia-ffmpeg", "Unexpected CLI binary identi
 assert(extension.mcp?.binary === "cecilia-ffmpeg-mcp", "Unexpected MCP binary identity");
 assert(extension.mcp?.transport === "stdio", "Milestone 16 MCP transport must be stdio");
 assert(extension.mcp?.protocol === "2026-07-28", "Unexpected MCP protocol revision");
-assert(Array.isArray(extension.mcp?.tools) && extension.mcp.tools.length === 9, "Unexpected MCP tool catalog");
+assert(Array.isArray(extension.mcp?.tools) && extension.mcp.tools.length === 10, "Unexpected MCP tool catalog");
+assert(extension.mcp.tools.includes("media_run_pipeline"), "MCP catalog must expose media_run_pipeline");
 assert(extension.hardware?.fallback === "software", "Hardware metadata must preserve software fallback");
 assert(extension.hardware?.runtimeProbe === true, "Hardware metadata must declare runtime probing");
 assert(extension.hardware?.modes?.includes("auto"), "Hardware metadata must expose auto mode");
