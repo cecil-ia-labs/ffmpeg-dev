@@ -2,6 +2,7 @@ import path from "node:path";
 
 import { ToolkitRuntimeError } from "../core/errors.js";
 import { isExtensionForFormat } from "../conversion/profiles.js";
+import type { MediaInfo } from "../types/contracts.js";
 import type { ConcretePipelineStep, PipelineDocument } from "./types.js";
 
 const H264_EXTENSIONS = new Set([".mp4", ".m4v", ".mov", ".mkv"]);
@@ -68,4 +69,22 @@ export function validatePipelineOutput(
       });
     }
   }
+}
+
+
+export function validatePipelineResultCodec(
+  document: PipelineDocument,
+  media: MediaInfo | undefined,
+): void {
+  const codec = document.output.codec;
+  if (codec === undefined || media === undefined) return;
+
+  const actual = media.video[0]?.codecName;
+  if (actual === codec) return;
+
+  throw new ToolkitRuntimeError(
+    "E_MEDIA_INCOMPATIBLE",
+    "Pipeline final output does not satisfy the declared output codec.",
+    { details: { expectedCodec: codec, actualCodec: actual ?? null, output: document.output.path } },
+  );
 }
