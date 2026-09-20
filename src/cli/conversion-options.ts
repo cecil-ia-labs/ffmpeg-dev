@@ -18,7 +18,14 @@ function addConversionTuningOptions(command: Command): void {
     .option("--loop <count>", "animation loop count; 0 means infinite")
     .option("--audio-bitrate <rate>", "audio bitrate, for example 128k or 192k")
     .option("--sample-rate <hz>", "audio output sample rate")
-    .option("--channels <count>", "audio output channel count");
+    .option("--channels <count>", "audio output channel count")
+    .addOption(
+      new Option("--hardware <mode>", "video encoder policy: software, auto, nvenc, qsv, vaapi, or videotoolbox")
+        .choices(["software", "auto", "nvenc", "qsv", "vaapi", "videotoolbox"])
+        .default("software"),
+    )
+    .option("--hardware-device <path>", "explicit hardware device path; currently used by VAAPI")
+    .option("--hardware-strict", "fail instead of falling back to software when hardware is unavailable", false);
 }
 
 export function configureConversionOptions(command: Command, path: string): void {

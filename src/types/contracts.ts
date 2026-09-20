@@ -162,11 +162,12 @@ export interface FilterCapability {
 }
 
 export interface HardwareBackendCapability {
-  name: "nvenc" | "vaapi" | "qsv" | "videotoolbox" | "cuda" | "vulkan" | "opencl";
-  /** True when FFmpeg reports the related accelerator and/or compiled encoders. */
+  name: "nvenc" | "nvdec" | "vaapi" | "qsv" | "videotoolbox" | "cuda" | "vulkan" | "opencl";
+  /** True when FFmpeg reports the related accelerator and/or compiled codecs. */
   compiled: boolean;
   reportedMethods: string[];
   encoders: string[];
+  decoders: string[];
 }
 
 export interface HardwareAccelerationInfo {

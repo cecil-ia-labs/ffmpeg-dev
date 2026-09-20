@@ -72,6 +72,11 @@ assert(extension.mcp?.binary === "cecilia-ffmpeg-mcp", "Unexpected MCP binary id
 assert(extension.mcp?.transport === "stdio", "Milestone 16 MCP transport must be stdio");
 assert(extension.mcp?.protocol === "2026-07-28", "Unexpected MCP protocol revision");
 assert(Array.isArray(extension.mcp?.tools) && extension.mcp.tools.length === 9, "Unexpected MCP tool catalog");
+assert(extension.hardware?.fallback === "software", "Hardware metadata must preserve software fallback");
+assert(extension.hardware?.runtimeProbe === true, "Hardware metadata must declare runtime probing");
+assert(extension.hardware?.modes?.includes("auto"), "Hardware metadata must expose auto mode");
+assert(extension.hardware?.codecs?.h264?.includes("nvenc"), "Hardware metadata must expose H.264 NVENC");
+assert(extension.hardware?.codecs?.vp9?.includes("qsv"), "Hardware metadata must expose VP9 Quick Sync");
 
 for (const relative of localPaths(extension)) await assertContained(relative);
 

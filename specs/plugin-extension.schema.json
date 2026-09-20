@@ -4,32 +4,78 @@
   "title": "Cecil-IA Labs FFmpeg Media Toolkit Plugin Extension",
   "type": "object",
   "additionalProperties": false,
-  "required": ["branding", "documentation", "skillCatalog", "npm"],
+  "required": [
+    "branding",
+    "documentation",
+    "skillCatalog",
+    "npm",
+    "mcp",
+    "hardware"
+  ],
   "properties": {
     "branding": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["displayName", "icon", "iconDark", "logo", "screenshots"],
+      "required": [
+        "displayName",
+        "icon",
+        "iconDark",
+        "logo",
+        "screenshots"
+      ],
       "properties": {
-        "displayName": { "type": "string", "minLength": 1 },
-        "icon": { "type": "string", "pattern": "^\\./" },
-        "iconDark": { "type": "string", "pattern": "^\\./" },
-        "logo": { "type": "string", "pattern": "^\\./" },
+        "displayName": {
+          "type": "string",
+          "minLength": 1
+        },
+        "icon": {
+          "type": "string",
+          "pattern": "^\\./"
+        },
+        "iconDark": {
+          "type": "string",
+          "pattern": "^\\./"
+        },
+        "logo": {
+          "type": "string",
+          "pattern": "^\\./"
+        },
         "screenshots": {
           "type": "array",
           "minItems": 1,
-          "items": { "type": "string", "pattern": "^\\./" }
+          "items": {
+            "type": "string",
+            "pattern": "^\\./"
+          }
         }
       }
     },
     "documentation": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["readme", "skills", "packaging"],
+      "required": [
+        "readme",
+        "skills",
+        "packaging",
+        "mcp"
+      ],
       "properties": {
-        "readme": { "type": "string", "pattern": "^\\./" },
-        "skills": { "type": "string", "pattern": "^\\./" },
-        "packaging": { "type": "string", "pattern": "^\\./" }
+        "readme": {
+          "type": "string",
+          "pattern": "^\\./"
+        },
+        "skills": {
+          "type": "string",
+          "pattern": "^\\./"
+        },
+        "packaging": {
+          "type": "string",
+          "pattern": "^\\./"
+        },
+        "mcp": {
+          "type": "string",
+          "pattern": "^\\./"
+        }
       }
     },
     "skillCatalog": {
@@ -38,20 +84,132 @@
       "items": {
         "type": "object",
         "additionalProperties": false,
-        "required": ["name", "path"],
+        "required": [
+          "name",
+          "path"
+        ],
         "properties": {
-          "name": { "type": "string", "minLength": 1 },
-          "path": { "type": "string", "pattern": "^\\./skills/.+/SKILL\\.md$" }
+          "name": {
+            "type": "string",
+            "minLength": 1
+          },
+          "path": {
+            "type": "string",
+            "pattern": "^\\./skills/.+/SKILL\\.md$"
+          }
         }
       }
     },
     "npm": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["package", "binary"],
+      "required": [
+        "package",
+        "binary"
+      ],
       "properties": {
-        "package": { "const": "@cecilialabs/ffmpeg" },
-        "binary": { "const": "cecilia-ffmpeg" }
+        "package": {
+          "const": "@cecilialabs/ffmpeg"
+        },
+        "binary": {
+          "const": "cecilia-ffmpeg"
+        }
+      }
+    },
+    "mcp": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "binary",
+        "transport",
+        "protocol",
+        "tools"
+      ],
+      "properties": {
+        "binary": {
+          "const": "cecilia-ffmpeg-mcp"
+        },
+        "transport": {
+          "const": "stdio"
+        },
+        "protocol": {
+          "type": "string",
+          "minLength": 1
+        },
+        "tools": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "pattern": "^media_"
+          }
+        }
+      }
+    },
+    "hardware": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "modes",
+        "codecs",
+        "fallback",
+        "runtimeProbe"
+      ],
+      "properties": {
+        "modes": {
+          "type": "array",
+          "minItems": 2,
+          "uniqueItems": true,
+          "items": {
+            "enum": [
+              "software",
+              "auto",
+              "nvenc",
+              "qsv",
+              "vaapi",
+              "videotoolbox"
+            ]
+          }
+        },
+        "codecs": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "h264",
+            "vp9"
+          ],
+          "properties": {
+            "h264": {
+              "type": "array",
+              "uniqueItems": true,
+              "items": {
+                "enum": [
+                  "nvenc",
+                  "qsv",
+                  "vaapi",
+                  "videotoolbox"
+                ]
+              }
+            },
+            "vp9": {
+              "type": "array",
+              "uniqueItems": true,
+              "items": {
+                "enum": [
+                  "qsv",
+                  "vaapi"
+                ]
+              }
+            }
+          }
+        },
+        "fallback": {
+          "const": "software"
+        },
+        "runtimeProbe": {
+          "const": true
+        }
       }
     }
   }

@@ -4,6 +4,7 @@ import type {
   MediaInfo,
   ToolkitWarning,
 } from "../types/contracts.js";
+import type { HardwareRuntimeOptions } from "../hardware/types.js";
 import type { MediaFit } from "../media/fit.js";
 
 export type ConversionFormat =
@@ -13,7 +14,7 @@ export type ConversionFormat =
 export type BatchExistingStrategy = "error" | "skip" | "replace";
 export type BatchFailureMode = "continue-on-error" | "fail-fast";
 
-export interface ConversionRuntimeOptions {
+export interface ConversionRuntimeOptions extends HardwareRuntimeOptions {
   output?: string;
   overwrite?: boolean;
   dryRun?: boolean;

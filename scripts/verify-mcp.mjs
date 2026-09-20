@@ -26,7 +26,16 @@ async function text(relative) {
 const pkg = JSON.parse(await text("package.json"));
 const plugin = JSON.parse(await text("plugin.json"));
 
-assert(pkg.version === "1.1.0", "Milestone 16 package version must be 1.1.0.");
+const versionMatch = /^(\d+)\.(\d+)\.(\d+)$/.exec(pkg.version);
+assert(versionMatch, "MCP verification requires a plain semantic package version.");
+const [, majorText, minorText] = versionMatch;
+const major = Number(majorText);
+const minor = Number(minorText);
+assert(
+  major > 1 || (major === 1 && minor >= 1),
+  "MCP server requires package version 1.1.0 or newer.",
+);
+assert(plugin.version === pkg.version, "MCP verification requires package/plugin version alignment.");
 assert(pkg.dependencies?.["@modelcontextprotocol/server"] === "^2.0.0", "MCP server must use the stable v2 TypeScript server SDK.");
 assert(pkg.bin?.["cecilia-ffmpeg-mcp"] === "./dist/mcp.js", "Missing published MCP stdio binary.");
 assert(pkg.exports?.["./mcp"]?.import === "./dist/mcp/index.js", "Missing public ./mcp JS export.");

@@ -94,7 +94,7 @@ node dist/cli.js --help
 Published package:
 
 ```bash
-npx @cecilialabs/ffmpeg --help
+cecilia-ffmpeg --help
 ```
 
 The npm `bin` entry maps `cecilia-ffmpeg` to `dist/cli.js`.

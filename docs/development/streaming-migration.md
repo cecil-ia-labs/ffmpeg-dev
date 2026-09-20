@@ -18,7 +18,7 @@ Despite the filename, this is not a direct WebSocket stream. It captures V4L2 vi
 ## Equivalent toolkit command
 
 ```bash
-npx @cecilialabs/ffmpeg stream camera \
+cecilia-ffmpeg stream camera \
   --device /dev/video0 \
   --input-format v4l2 \
   --framerate 15 \

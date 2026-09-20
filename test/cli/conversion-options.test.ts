@@ -19,6 +19,9 @@ describe("Milestone 6 CLI options", () => {
     expect(help).toContain("--from");
     expect(help).toContain("--fps");
     expect(help).toContain("--quality");
+    expect(help).toContain("--hardware");
+    expect(help).toContain("--hardware-device");
+    expect(help).toContain("--hardware-strict");
   });
 
   it("exposes generic batch selection and failure controls", () => {
@@ -33,6 +36,9 @@ describe("Milestone 6 CLI options", () => {
       "--output-dir",
       "--no-preserve-hierarchy",
       "--existing",
+      "--hardware",
+      "--hardware-device",
+      "--hardware-strict",
     ]) {
       expect(help).toContain(option);
     }

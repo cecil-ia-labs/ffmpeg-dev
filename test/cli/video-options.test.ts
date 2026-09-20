@@ -26,6 +26,11 @@ describe("Milestone 4 CLI options", () => {
     expect(upscaleHelp).toContain("--profile");
     expect(upscaleHelp).toContain("--fit");
     expect(upscaleHelp).toContain("--to");
+    expect(upscaleHelp).toContain("--hardware");
+    expect(upscaleHelp).toContain("--hardware-device");
+    expect(upscaleHelp).toContain("--hardware-strict");
+    const fromImageHelp = findCommand(["video", "from-image"]).helpInformation();
+    expect(fromImageHelp).toContain("--hardware");
     const legacyRestoreHelp = findCommand(["video", "restore"]).helpInformation();
     expect(legacyRestoreHelp).toContain("--resolution");
   });

@@ -3,7 +3,7 @@
 > **Project:** `ffmpeg-media-toolkit`  
 > **CLI package:** `@cecilialabs/ffmpeg`  
 > **Primary language:** TypeScript  
-> **Execution:** `npx @cecilialabs/ffmpeg ...`  
+> **Execution:** `cecilia-ffmpeg ...`  
 > **Runtime:** Node.js  
 > **Media engine:** FFmpeg / FFprobe  
 > **Distribution:** ChatGPT Plugin + Codex Skills + npm CLI  
@@ -165,7 +165,7 @@ npx tsx src/cli.ts doctor
 Published:
 
 ```bash
-npx @cecilialabs/ffmpeg doctor
+cecilia-ffmpeg doctor
 ```
 
 ### Acceptance Criteria
@@ -265,9 +265,9 @@ Give humans and agents reliable environmental and media information before trans
 ### Commands
 
 ```bash
-npx @cecilialabs/ffmpeg doctor
-npx @cecilialabs/ffmpeg probe input.mp4
-npx @cecilialabs/ffmpeg probe input.mp4 --json
+cecilia-ffmpeg doctor
+cecilia-ffmpeg probe input.mp4
+cecilia-ffmpeg probe input.mp4 --json
 ```
 
 ### `doctor`
@@ -345,7 +345,7 @@ auto
 Example:
 
 ```bash
-npx @cecilialabs/ffmpeg video trim-start \
+cecilia-ffmpeg video trim-start \
   input.mp4 \
   --seconds 40 \
   --mode auto \
@@ -364,7 +364,7 @@ HD  → 720×404
 with explicit resolution semantics:
 
 ```bash
-npx @cecilialabs/ffmpeg video restore \
+cecilia-ffmpeg video restore \
   input.mp4 \
   --resolution 1920x1080 \
   --output restored.mp4
@@ -415,7 +415,7 @@ interface SilenceInterval {
 Example:
 
 ```bash
-npx @cecilialabs/ffmpeg audio detect-silence \
+cecilia-ffmpeg audio detect-silence \
   speech.mp3 \
   --json
 ```
@@ -456,7 +456,7 @@ sample format
 Example:
 
 ```bash
-npx @cecilialabs/ffmpeg audio telephony \
+cecilia-ffmpeg audio telephony \
   input.wav \
   --codec mulaw \
   --sample-rate 8000 \
@@ -491,13 +491,13 @@ convert-all-webp-in-folder-to-png.sh
 Single file:
 
 ```bash
-npx @cecilialabs/ffmpeg convert file ./file.mp4 --to webm
+cecilia-ffmpeg convert file ./file.mp4 --to webm
 ```
 
 Batch:
 
 ```bash
-npx @cecilialabs/ffmpeg convert batch ./clips \
+cecilia-ffmpeg convert batch ./clips \
   --from mp4 \
   --to webm
 ```
@@ -581,7 +581,7 @@ compose slideshow
 Example:
 
 ```bash
-npx @cecilialabs/ffmpeg compose concat ./clips \
+cecilia-ffmpeg compose concat ./clips \
   --transition fade \
   --duration 1 \
   --output final.mp4
@@ -665,7 +665,7 @@ diagnose
 ### Example
 
 ```bash
-npx @cecilialabs/ffmpeg diagnose broken.mp4
+cecilia-ffmpeg diagnose broken.mp4
 ```
 
 Possible structured result:
@@ -716,7 +716,7 @@ stream file
 Example:
 
 ```bash
-npx @cecilialabs/ffmpeg stream camera \
+cecilia-ffmpeg stream camera \
   --device /dev/video0 \
   --input-format v4l2 \
   --framerate 15 \
@@ -946,7 +946,7 @@ clip.mp4 | 67% | frame 2411 | 100.0 fps | 3.70x | ETA 00:00:12
 Agent mode:
 
 ```bash
-npx @cecilialabs/ffmpeg video speed input.mp4 \
+cecilia-ffmpeg video speed input.mp4 \
   --factor 2 \
   --json
 ```
@@ -1141,21 +1141,21 @@ The stable release contract is frozen in `specs/stable-release-contract.json`. M
 ### Stable user experience
 
 ```bash
-npx @cecilialabs/ffmpeg doctor
+cecilia-ffmpeg doctor
 ```
 
 ```bash
-npx @cecilialabs/ffmpeg probe video.mp4
+cecilia-ffmpeg probe video.mp4
 ```
 
 ```bash
-npx @cecilialabs/ffmpeg video trim-start \
+cecilia-ffmpeg video trim-start \
   video.mp4 \
   --seconds 40
 ```
 
 ```bash
-npx @cecilialabs/ffmpeg compose concat ./clips \
+cecilia-ffmpeg compose concat ./clips \
   --transition fade
 ```
 
@@ -1164,7 +1164,7 @@ npx @cecilialabs/ffmpeg compose concat ./clips \
 # Milestone 16 — MCP Server
 
 **Target:** `v1.1.0`  
-**Status:** 🚧 Implementation complete; validation pending
+**Status:** ✅ Released 2026-09-20
 
 ### Objective
 
@@ -1231,7 +1231,8 @@ trimMedia()
 
 # Milestone 17 — Advanced Hardware Acceleration
 
-**Target:** `v1.2.0`
+**Target:** `v1.2.0`  
+**Status:** ✅ Implementation and validation complete; ready for release
 
 ### Targets
 
@@ -1261,10 +1262,20 @@ software encoder
 Example:
 
 ```bash
-npx @cecilialabs/ffmpeg convert input.mp4 \
+cecilia-ffmpeg convert file input.mp4 \
   --to webm \
   --hardware auto
 ```
+
+Implemented policy:
+
+- `software` remains the compatibility default;
+- `auto` uses platform-aware backend ordering;
+- explicit `nvenc|qsv|vaapi|videotoolbox` selection is supported;
+- compiled encoder visibility is followed by a runtime usability probe;
+- unusable hardware falls back to software unless `--hardware-strict` is set;
+- NVDEC/CUVID is included in capability discovery without silently injecting hardware decode into filter graphs;
+- hardware policy is exposed through CLI, TypeScript API, and MCP `media_convert` / `media_restore`.
 
 ---
 
@@ -1303,7 +1314,7 @@ output:
 Execution:
 
 ```bash
-npx @cecilialabs/ffmpeg run pipeline.yaml
+cecilia-ffmpeg run pipeline.yaml
 ```
 
 This eventually enables deterministic agent-generated media workflows.

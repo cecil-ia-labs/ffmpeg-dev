@@ -1,7 +1,9 @@
 import { ToolkitRuntimeError } from "../core/errors.js";
+import { hardwareFilterSuffix, hardwareGlobalArgs } from "../hardware/index.js";
 import { buildFitFilters } from "../media/fit.js";
 import { encodingArgs, resolveEncodingProfile } from "./encoding.js";
 import { executeVideoTransform, inspectInput, positiveFinite, requireVideo } from "./helpers.js";
+import { resolveVideoHardware, hardwareReportDetails } from "./hardware.js";
 import { deriveOutputPath, resolveReadableFile } from "./io.js";
 import type { RestoreProfile, RestoreVideoRequest, VideoOperation, VideoOperationReport } from "./types.js";
 
@@ -62,7 +64,10 @@ async function transformVideo(
     defaultExtension: `.${to}`,
   });
   const encoding = resolveEncodingProfile(output, { crf, preset });
-  const filter = buildRestoreFilter(width, height, profileName, request);
+  const hardware = await resolveVideoHardware(to, request);
+  const baseFilter = buildRestoreFilter(width, height, profileName, request);
+  const hardwareSuffix = hardware === undefined ? [] : hardwareFilterSuffix(hardware);
+  const filter = [...(baseFilter ? [baseFilter] : []), ...hardwareSuffix].join(",");
   const hasAudio = media.audio.length > 0;
 
   return await executeVideoTransform({
@@ -70,12 +75,13 @@ async function transformVideo(
     source,
     output,
     argsBeforeOutput: [
+      ...(hardware === undefined ? [] : hardwareGlobalArgs(hardware)),
       "-i", source,
       "-map", "0:v:0",
       ...(hasAudio ? ["-map", "0:a?"] : []),
       "-vf", filter,
       ...(fps !== undefined ? ["-r", String(fps)] : []),
-      ...encodingArgs(encoding, hasAudio),
+      ...encodingArgs(encoding, hasAudio, hardware),
       "-map_metadata", "0",
     ],
     runtime: request,
@@ -90,7 +96,9 @@ async function transformVideo(
       fit: request.fit ?? "contain",
       background: request.background ?? "black",
       to,
+      ...hardwareReportDetails(hardware),
     },
+    ...(hardware?.warning !== undefined ? { warnings: [hardware.warning] } : {}),
   });
 }
 

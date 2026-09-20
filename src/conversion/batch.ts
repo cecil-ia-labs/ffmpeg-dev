@@ -241,6 +241,9 @@ export async function convertBatch(directoryInput: string, request: ConvertBatch
           ...(request.audioBitrate !== undefined ? { audioBitrate: request.audioBitrate } : {}),
           ...(request.sampleRate !== undefined ? { sampleRate: request.sampleRate } : {}),
           ...(request.channels !== undefined ? { channels: request.channels } : {}),
+          ...(request.hardware !== undefined ? { hardware: request.hardware } : {}),
+          ...(request.hardwareDevice !== undefined ? { hardwareDevice: request.hardwareDevice } : {}),
+          ...(request.hardwareStrict !== undefined ? { hardwareStrict: request.hardwareStrict } : {}),
         });
         results[index] = {
           input: item.input,

@@ -1,6 +1,37 @@
 # Changelog
 
-## 1.1.0 — Unreleased — Milestone 16 — MCP Server
+## 1.2.0 — Unreleased — Milestone 17 — Advanced Hardware Acceleration
+
+### Added
+
+- Typed hardware encoder policy: `software|auto|nvenc|qsv|vaapi|videotoolbox`.
+- H.264 mappings for NVENC, Quick Sync, VAAPI, and VideoToolbox.
+- VP9 mappings for Quick Sync and VAAPI.
+- Runtime encoder usability probes in addition to FFmpeg compile-time capability discovery.
+- Platform-aware automatic backend preference ordering.
+- Deterministic software fallback with `W_HARDWARE_SOFTWARE_FALLBACK`.
+- Strict hardware-required mode through `--hardware-strict`.
+- VAAPI render-device discovery and explicit `--hardware-device`.
+- NVDEC/CUVID decoder-family capability metadata.
+- Hardware-aware conversion, batch conversion, image-to-video, and upscale/restore paths.
+- Hardware policy on MCP `media_convert` and `media_restore`.
+- `verify:hardware`, hardware unit tests, and FFmpeg-backed integration coverage.
+
+### Changed
+
+- Package/plugin/runtime release line advanced to `1.2.0`.
+- Public docs now recommend global `npm install -g @cecilialabs/ffmpeg` once and use `cecilia-ffmpeg ...` thereafter.
+- Non-global usage now explicitly selects the CLI with `npm exec --yes --package=@cecilialabs/ffmpeg -- cecilia-ffmpeg ...`.
+- All seven Skills now prefer a matching connected MCP tool, then the global CLI, then explicit npm-exec fallback, and finally native FFmpeg only for unsupported/explicit-native requests.
+- Plugin extension metadata/schema now covers both the MCP server and hardware policy.
+
+### Compatibility
+
+- Software encoding remains the default, so v1.0/v1.1 command behavior is preserved unless hardware is requested.
+- Hardware capability discovery does not by itself count as runtime usability; actual encodes probe the selected backend first.
+- NVDEC/CUVID is reported for discovery/diagnostics but is not silently injected into filter graphs in v1.2.
+
+## 1.1.0 — 2026-09-20 — Milestone 16 — MCP Server
 
 ### Added
 

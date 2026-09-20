@@ -43,6 +43,26 @@ Use `--from` only when explicit source-format selection is useful. The toolkit s
 
 Audio-only targets drop video with a structured warning rather than silently pretending video was preserved.
 
+## Hardware acceleration
+
+MP4/H.264 and WebM/VP9 conversion targets support the v1.2 hardware policy:
+
+```text
+--hardware software|auto|nvenc|qsv|vaapi|videotoolbox
+--hardware-device <path>
+--hardware-strict
+```
+
+`software` remains the default. `auto` inspects FFmpeg encoder capabilities, performs a runtime usability probe, and falls back to the software encoder when no compatible hardware path succeeds. Use `--hardware-strict` to reject fallback.
+
+Example:
+
+```bash
+cecilia-ffmpeg convert file source.webm --to mp4 --hardware auto
+```
+
+Batch conversion propagates the same policy to each selected file.
+
 ## Examples
 
 WebM to MP4:

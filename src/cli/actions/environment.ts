@@ -84,6 +84,7 @@ function renderCapabilities(report: EnvironmentCapabilities): string {
   for (const backend of report.hardwareAcceleration.backends) {
     lines.push(`  ${backend.name}: ${backend.compiled ? "reported/compiled" : "not reported"}`);
     if (backend.encoders.length > 0) lines.push(`    encoders: ${backend.encoders.join(", ")}`);
+    if (backend.decoders.length > 0) lines.push(`    decoders: ${backend.decoders.join(", ")}`);
   }
   lines.push(`Note: ${report.hardwareAcceleration.note}`);
   return lines.join("\n");
@@ -103,7 +104,13 @@ function renderDoctor(report: DoctorReport): string {
     `Hardware methods: ${report.capabilitySummary.hardwareMethods.join(", ") || "none reported"}`,
   ];
   for (const backend of report.capabilitySummary.backends) {
-    if (backend.compiled) lines.push(`  ${backend.name}: ${backend.encoders.length > 0 ? backend.encoders.join(", ") : backend.reportedMethods.join(", ") || "reported"}`);
+    if (!backend.compiled) continue;
+    const details = [
+      ...(backend.encoders.length > 0 ? [`encoders=${backend.encoders.join(",")}`] : []),
+      ...(backend.decoders.length > 0 ? [`decoders=${backend.decoders.join(",")}`] : []),
+      ...(backend.reportedMethods.length > 0 ? [`methods=${backend.reportedMethods.join(",")}`] : []),
+    ];
+    lines.push(`  ${backend.name}: ${details.join(" | ") || "reported"}`);
   }
   return lines.join("\n");
 }

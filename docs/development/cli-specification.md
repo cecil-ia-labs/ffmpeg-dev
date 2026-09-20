@@ -9,7 +9,7 @@ cecilia-ffmpeg
 Primary distribution UX:
 
 ```bash
-npx @cecilialabs/ffmpeg <command> [...args]
+cecilia-ffmpeg <command> [...args]
 ```
 
 ## 2. Command grammar
@@ -91,16 +91,16 @@ cecilia-ffmpeg
 ## 5. Examples
 
 ```bash
-npx @cecilialabs/ffmpeg doctor
-npx @cecilialabs/ffmpeg probe clip.mp4 --json
+cecilia-ffmpeg doctor
+cecilia-ffmpeg probe clip.mp4 --json
 
-npx @cecilialabs/ffmpeg video trim-start clip.mp4   --seconds 40   --mode auto   --output trimmed.mp4
+cecilia-ffmpeg video trim-start clip.mp4   --seconds 40   --mode auto   --output trimmed.mp4
 
-npx @cecilialabs/ffmpeg audio telephony input.wav   --codec mulaw   --sample-rate 8000   --channels 1   --output output.wav
+cecilia-ffmpeg audio telephony input.wav   --codec mulaw   --sample-rate 8000   --channels 1   --output output.wav
 
-npx @cecilialabs/ffmpeg convert batch ./clips   --from mp4   --to webm   --output-dir ./converted
+cecilia-ffmpeg convert batch ./clips   --from mp4   --to webm   --output-dir ./converted
 
-npx @cecilialabs/ffmpeg compose concat ./clips/*.mp4   --transition fade   --transition-duration 1   --output final.mp4
+cecilia-ffmpeg compose concat ./clips/*.mp4   --transition fade   --transition-duration 1   --output final.mp4
 ```
 
 ## 6. Reserved global behavior

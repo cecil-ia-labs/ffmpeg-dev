@@ -67,7 +67,17 @@ for (const migration of migrationMap.migrations) {
 assert(migrationMap.migrations.length === 21, "Documentation coverage expects all 21 historical migrations.");
 
 const hardware = await text("docs/hardware-acceleration.md");
-assert(hardware.includes("not yet an automatic encoding policy"), "Hardware docs must not claim future automatic hardware selection as current.");
+for (const token of ["--hardware auto", "NVENC", "NVDEC", "Quick Sync", "VAAPI", "VideoToolbox", "W_HARDWARE_SOFTWARE_FALLBACK"]) {
+  assert(hardware.includes(token), "Hardware docs are missing current v1.2 behavior: " + token);
+}
+
+const installation = await text("docs/installation.md");
+const gettingStarted = await text("docs/getting-started.md");
+for (const [relative, content] of [["docs/installation.md", installation], ["docs/getting-started.md", gettingStarted]]) {
+  assert(content.includes("npm install -g @cecilialabs/ffmpeg"), relative + " must recommend global installation.");
+  assert(content.includes("npm exec --yes --package=@cecilialabs/ffmpeg -- cecilia-ffmpeg"), relative + " must document explicit no-global package-runner usage.");
+  assert(!content.includes("npx @cecilialabs/ffmpeg"), relative + " must not use the ambiguous multi-bin npx shorthand.");
+}
 
 const readme = await text("README.md");
 for (const relative of ["getting-started.md", "cli-reference.md", "mcp.md", "migration-from-bash.md"]) {

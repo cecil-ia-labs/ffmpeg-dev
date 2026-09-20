@@ -51,15 +51,25 @@ The body contains explicit workflow sections rather than assuming hidden prompt 
 
 ## Toolkit-first policy
 
-When a requested operation is implemented by the package, the skill routes to:
+The Skills now select among equivalent toolkit surfaces instead of assuming a single command runner:
 
-```bash
-npx @cecilialabs/ffmpeg ...
+```text
+matching connected MCP tool
+        ↓ unavailable / not exposed
+cecilia-ffmpeg global binary
+        ↓ unavailable
+npm exec --yes --package=@cecilialabs/ffmpeg -- cecilia-ffmpeg ...
+        ↓ unsupported capability / explicit native request
+native FFmpeg
 ```
+
+The package exposes both `cecilia-ffmpeg` and `cecilia-ffmpeg-mcp`, so the ambiguous `npx @cecilialabs/ffmpeg ...` shorthand is intentionally avoided.
+
+Each Skill documents the MCP tools that actually belong to its domain. Streaming has no MCP tool in v1.2, while inspection, video, audio, conversion, composition, and diagnostics use their corresponding `media_*` tools when connected.
 
 Native FFmpeg remains available when the toolkit has no matching capability or when the user explicitly requests native FFmpeg syntax.
 
-This avoids duplicating the CLI's tested argument-building, output safety, probe normalization, and error taxonomy in free-form shell commands.
+This avoids duplicating the toolkit's tested argument-building, output safety, probe normalization, hardware policy, and error taxonomy in free-form shell commands.
 
 ## Context economy
 

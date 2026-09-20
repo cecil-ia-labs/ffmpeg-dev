@@ -14,6 +14,7 @@ import {
   type ConversionTuningOptions,
 } from "../../conversion/index.js";
 import { ToolkitRuntimeError } from "../../core/errors.js";
+import type { HardwareMode } from "../../hardware/types.js";
 import type { MediaFit } from "../../media/fit.js";
 import type { GlobalCliOptions } from "../global-options.js";
 import { executeAction } from "./shared.js";
@@ -86,6 +87,20 @@ function tuningOptions(parsed: TuningInput): ConversionTuningOptions {
   };
 }
 
+const hardwareMode = z.enum(["software", "auto", "nvenc", "qsv", "vaapi", "videotoolbox"]);
+
+function selectedHardwareOptions(parsed: {
+  hardware?: HardwareMode | undefined;
+  hardwareDevice?: string | undefined;
+  hardwareStrict?: boolean | undefined;
+}) {
+  return {
+    ...(parsed.hardware !== undefined ? { hardware: parsed.hardware } : {}),
+    ...(parsed.hardwareDevice !== undefined ? { hardwareDevice: parsed.hardwareDevice } : {}),
+    ...(parsed.hardwareStrict !== undefined ? { hardwareStrict: parsed.hardwareStrict } : {}),
+  };
+}
+
 const tuningSchema = {
   fps: positiveInteger.optional(),
   width: positiveInteger.optional(),
@@ -98,6 +113,9 @@ const tuningSchema = {
   audioBitrate: z.string().min(1).optional(),
   sampleRate: positiveInteger.optional(),
   channels: positiveInteger.optional(),
+  hardware: hardwareMode.default("software"),
+  hardwareDevice: z.string().min(1).optional(),
+  hardwareStrict: z.boolean().default(false),
 } as const;
 
 function renderConversionReport(report: ConversionReport): string {
@@ -108,6 +126,13 @@ function renderConversionReport(report: ConversionReport): string {
     `Output: ${report.output}`,
     `Command: ${report.invocation}`,
   ];
+  const hardware = report.details["hardware"];
+  if (hardware && typeof hardware === "object") {
+    const value = hardware as { requested?: unknown; resolved?: unknown; encoder?: unknown; fallback?: unknown };
+    lines.push(
+      `Hardware: ${String(value.requested ?? "software")} -> ${String(value.resolved ?? "software")} (${String(value.encoder ?? "unknown")})${value.fallback === true ? " [fallback]" : ""}`,
+    );
+  }
   const video = report.outputMedia?.video[0];
   const audio = report.outputMedia?.audio[0];
   if (video) {
@@ -159,6 +184,7 @@ export async function runConvertFileAction(command: Command, positional: readonl
       to: parsed.to,
       ...(parsed.from !== undefined ? { from: parsed.from } : {}),
       ...tuningOptions(parsed),
+      ...selectedHardwareOptions(parsed),
     });
     return { data: report, warnings: report.warnings, execution: report.execution };
   }, renderConversionReport);
@@ -204,6 +230,7 @@ export async function runConvertBatchAction(command: Command, positional: readon
       signal,
       keepTemp: global.keepTemp,
       ...tuningOptions(parsed),
+      ...selectedHardwareOptions(parsed),
       ...(global.progress && !global.json && !global.quiet
         ? {
             onProgress: (event: { completed: number; total: number; input: string; status: "succeeded" | "failed" | "skipped" }) => {

@@ -17,6 +17,19 @@ import { executeAction } from "./shared.js";
 const positiveNumber = z.coerce.number().finite().positive();
 const nonNegativeNumber = z.coerce.number().finite().nonnegative();
 const trimMode = z.enum(["auto", "copy", "accurate"]);
+const hardwareMode = z.enum(["software", "auto", "nvenc", "qsv", "vaapi", "videotoolbox"]);
+
+function hardwareOptions(parsed: {
+  hardware?: z.infer<typeof hardwareMode> | undefined;
+  hardwareDevice?: string | undefined;
+  hardwareStrict?: boolean | undefined;
+}) {
+  return {
+    ...(parsed.hardware !== undefined ? { hardware: parsed.hardware } : {}),
+    ...(parsed.hardwareDevice !== undefined ? { hardwareDevice: parsed.hardwareDevice } : {}),
+    ...(parsed.hardwareStrict !== undefined ? { hardwareStrict: parsed.hardwareStrict } : {}),
+  };
+}
 const resolutionSchema = z.string().regex(/^\d+x\d+$/i).transform((value: string) => {
   const [widthText, heightText] = value.toLowerCase().split("x");
   const width = Number(widthText);
@@ -42,6 +55,13 @@ function renderVideoReport(report: VideoOperationReport): string {
     `Output: ${report.output}`,
     `Command: ${report.invocation}`,
   ];
+  const hardware = report.details["hardware"];
+  if (hardware && typeof hardware === "object") {
+    const value = hardware as { requested?: unknown; resolved?: unknown; encoder?: unknown; fallback?: unknown };
+    lines.push(
+      `Hardware: ${String(value.requested ?? "software")} -> ${String(value.resolved ?? "software")} (${String(value.encoder ?? "unknown")})${value.fallback === true ? " [fallback]" : ""}`,
+    );
+  }
   const outputVideo = report.outputMedia?.video[0];
   if (outputVideo?.width !== undefined && outputVideo.height !== undefined) {
     lines.push(`Result: ${outputVideo.width}x${outputVideo.height}${report.outputMedia?.format.durationSeconds !== undefined ? `, ${report.outputMedia.format.durationSeconds.toFixed(3)}s` : ""}`);
@@ -146,6 +166,9 @@ export async function runVideoFromImageAction(command: Command, positional: read
       fit: z.enum(["contain", "cover", "stretch"]).default("contain"),
       background: z.string().min(1).default("black"),
       to: z.enum(["mp4", "webm"]).default("mp4"),
+      hardware: hardwareMode.default("software"),
+      hardwareDevice: z.string().min(1).optional(),
+      hardwareStrict: z.boolean().default(false),
     }).parse(localOptions(command));
     const report = await createVideoFromImage(inputAt(positional, "video from-image"), {
       duration: parsed.duration,
@@ -156,6 +179,7 @@ export async function runVideoFromImageAction(command: Command, positional: read
       fit: parsed.fit,
       background: parsed.background,
       to: parsed.to,
+      ...hardwareOptions(parsed),
       ...(global.output !== undefined ? { output: global.output } : {}),
       overwrite: global.overwrite,
       dryRun: global.dryRun,
@@ -184,6 +208,9 @@ async function runVideoScaleAction(
       fit: z.enum(["contain", "cover", "stretch"]).default("contain"),
       background: z.string().min(1).default("black"),
       to: z.enum(["mp4", "webm"]).default("mp4"),
+      hardware: hardwareMode.default("software"),
+      hardwareDevice: z.string().min(1).optional(),
+      hardwareStrict: z.boolean().default(false),
     }).parse(localOptions(command));
     const operation = canonical ? upscaleVideo : restoreVideo;
     const report = await operation(inputAt(positional, canonical ? "video upscale" : "video restore"), {
@@ -196,6 +223,7 @@ async function runVideoScaleAction(
       fit: parsed.fit,
       background: parsed.background,
       to: parsed.to,
+      ...hardwareOptions(parsed),
       ...(global.output !== undefined ? { output: global.output } : {}),
       overwrite: global.overwrite,
       dryRun: global.dryRun,

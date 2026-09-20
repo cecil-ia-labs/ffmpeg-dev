@@ -35,6 +35,16 @@ Identify:
 
 Probe media when stream presence matters. Never assume a video lacks audio. For telephony, distinguish codec from container before building the command.
 
+## Toolkit surface selection
+
+Use the highest-level toolkit surface available to the host:
+
+1. In an MCP-enabled host, prefer `media_attach_audio`, `media_generate_silence`, or `media_remove_silence` when they match the requested operation.
+2. For silence detection, add-silence, telephony transcoding, or other supported audio operations not exposed through MCP, use `cecilia-ffmpeg`.
+3. If the global binary is unavailable, use:
+   `npm exec --yes --package=@cecilialabs/ffmpeg -- cecilia-ffmpeg <command>`.
+4. Use native FFmpeg only when the toolkit lacks the required operation or the user explicitly requests native syntax.
+
 ## Preferred toolkit commands
 
 ```bash
@@ -46,7 +56,7 @@ cecilia-ffmpeg audio remove-silence <input>
 cecilia-ffmpeg audio telephony <input>
 ```
 
-For supported operations, prefer `npx @cecilialabs/ffmpeg ...` over constructing arbitrary FFmpeg shell commands.
+For supported operations, prefer the toolkit surface selected above over constructing arbitrary FFmpeg shell commands.
 
 ## Native FFmpeg fallback
 

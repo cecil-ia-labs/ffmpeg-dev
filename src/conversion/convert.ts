@@ -3,6 +3,7 @@ import path from "node:path";
 import { renderCommandForDisplay } from "../core/command-result.js";
 import { ToolkitRuntimeError } from "../core/errors.js";
 import { runFFmpeg } from "../core/ffmpeg-runner.js";
+import { selectHardwareEncoding, type HardwareEncodingSelection } from "../hardware/index.js";
 import { prepareOutputTransaction, resolveReadableFile } from "../media/io.js";
 import { probeMedia } from "../media/probe.js";
 import { assertSupportedConversion, buildConversionPlan, inferConversionFormat, targetExtension } from "./profiles.js";
@@ -41,6 +42,29 @@ export async function convertFile(input: string, request: ConvertFileRequest): P
   }
 
   const output = deriveConversionOutputPath(source, request.to, request.output, request.cwd);
+  const media = inputProbe.media;
+  let hardware: HardwareEncodingSelection | undefined;
+  if (request.to === "mp4" || request.to === "webm") {
+    hardware = await selectHardwareEncoding({
+      codec: request.to === "mp4" ? "h264" : "vp9",
+      hardware: request.hardware ?? "software",
+      ...(request.hardwareDevice !== undefined ? { hardwareDevice: request.hardwareDevice } : {}),
+      hardwareStrict: request.hardwareStrict ?? false,
+      ...(request.ffmpegPath !== undefined ? { ffmpegPath: request.ffmpegPath } : {}),
+      ...(request.cwd !== undefined ? { cwd: request.cwd } : {}),
+      dryRun: request.dryRun ?? false,
+      verbose: request.verbose ?? false,
+      ...(request.signal !== undefined ? { signal: request.signal } : {}),
+    });
+  } else if (request.hardware !== undefined && request.hardware !== "software") {
+    throw new ToolkitRuntimeError(
+      "E_OPERATION_UNSUPPORTED",
+      "--hardware is supported only for MP4/H.264 and WebM/VP9 conversion targets.",
+      { details: { target: request.to, hardware: request.hardware } },
+    );
+  }
+
+  const plan = buildConversionPlan(source, sourceFormat, request.to, media, request, hardware);
   const transaction = await prepareOutputTransaction({
     source,
     output,
@@ -49,8 +73,6 @@ export async function convertFile(input: string, request: ConvertFileRequest): P
     ...(request.keepTemp !== undefined ? { keepTemp: request.keepTemp } : {}),
   });
 
-  const media = inputProbe.media;
-  const plan = buildConversionPlan(source, sourceFormat, request.to, media, request);
   let execution;
   try {
     execution = await runFFmpeg([

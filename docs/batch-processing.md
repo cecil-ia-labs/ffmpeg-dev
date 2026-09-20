@@ -43,6 +43,19 @@ Fail-fast stops scheduling new work after the first failure. Continue-on-error a
 
 By default, hierarchy is preserved.
 
+## Hardware policy
+
+Video batches targeting MP4 or WebM can use the same encoder policy as single-file conversion:
+
+```bash
+cecilia-ffmpeg convert batch ./clips \
+  --from mp4 \
+  --to webm \
+  --hardware auto
+```
+
+Each item uses the shared hardware selector and software fallback policy. Use `--hardware-strict` when a hardware path is mandatory.
+
 ## Progress & reporting
 
 Human mode emits per-item batch progress and FFmpeg progress. JSON mode emits one final structured batch report including discovered, attempted, succeeded, failed, skipped, duration, and per-item results.

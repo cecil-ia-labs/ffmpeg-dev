@@ -35,7 +35,7 @@ This still satisfies the core invariant: all inputs reach `xfade` with matching 
 `compose concat` accepts two or more inputs. Without a transition it uses FFmpeg's `concat` filter after normalization. With `--transition`, it builds an N-input `xfade` chain with cumulative offsets.
 
 ```bash
-npx @cecilialabs/ffmpeg compose concat a.mp4 b.mp4 c.mp4 \
+cecilia-ffmpeg compose concat a.mp4 b.mp4 c.mp4 \
   --transition fade \
   --transition-duration 1 \
   --fps 30 \
@@ -55,7 +55,7 @@ Transitioned audio uses sequential `acrossfade`; non-transition concatenation us
 `compose transition` composes exactly two videos via `xfade` and, when audio is preserved, `acrossfade`.
 
 ```bash
-npx @cecilialabs/ffmpeg compose transition left.mp4 right.mp4 \
+cecilia-ffmpeg compose transition left.mp4 right.mp4 \
   --transition dissolve \
   --duration 0.75 \
   --output result.mp4
@@ -68,7 +68,7 @@ Supported initial transitions are `fade`, `fadeblack`, `fadewhite`, `wipeleft`, 
 The legacy Taner Sener script is migrated as a typed vertical-stack slideshow implementation. Image discovery is deterministic and supports JPEG, PNG, WebP, and BMP.
 
 ```bash
-npx @cecilialabs/ffmpeg compose slideshow ./images \
+cecilia-ffmpeg compose slideshow ./images \
   --width 1280 \
   --height 720 \
   --duration 10 \

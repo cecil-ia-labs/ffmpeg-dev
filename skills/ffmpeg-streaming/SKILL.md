@@ -35,6 +35,16 @@ Identify:
 
 For file sources, probe before streaming. For camera sources, use `--dry-run` to validate the planned invocation without opening the device.
 
+## Toolkit surface selection
+
+Streaming is not exposed through the v1.2 MCP tool catalog.
+
+1. Use the global `cecilia-ffmpeg` binary for supported streaming and capture operations.
+2. If the global binary is unavailable, use:
+   `npm exec --yes --package=@cecilialabs/ffmpeg -- cecilia-ffmpeg <command>`.
+3. Do not invent an MCP streaming tool.
+4. Use native FFmpeg only for unsupported streaming features or an explicit native-command request.
+
 ## Preferred toolkit commands
 
 ```bash
@@ -44,7 +54,7 @@ cecilia-ffmpeg stream file <input> --url <url>
 
 Supported direct transport families: HTTP(S), RTMP(S), RTSP, SRT, UDP, TCP.
 
-For supported operations, prefer `npx @cecilialabs/ffmpeg ...` over constructing arbitrary FFmpeg shell commands.
+For supported operations, prefer the toolkit surface selected above over constructing arbitrary FFmpeg shell commands.
 
 ## Native FFmpeg fallback
 

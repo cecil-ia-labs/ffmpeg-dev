@@ -24,11 +24,13 @@ npm install -g @cecilialabs/ffmpeg
 cecilia-ffmpeg doctor
 ```
 
-Run without installing globally:
+Run without installing globally by naming the CLI binary explicitly:
 
 ```bash
-npx @cecilialabs/ffmpeg doctor
+npm exec --yes --package=@cecilialabs/ffmpeg -- cecilia-ffmpeg doctor
 ```
+
+The package has two executables since v1.1, so the shorthand the package-only `npx` shorthand is intentionally not used. All examples below assume the recommended global installation.
 
 Development checkout:
 

@@ -41,6 +41,16 @@ Collect:
 3. Use `--deep` only when freeze analysis is relevant.
 4. Choose a repair based on observed issues.
 
+## Toolkit surface selection
+
+Use the highest-level toolkit surface available to the host:
+
+1. In an MCP-enabled host, prefer `media_diagnose` for diagnosis and `media_probe` for media inspection.
+2. For `repair timestamps` and `repair normalize`, use the global `cecilia-ffmpeg` binary because repair mutations are not MCP tools in v1.2.
+3. If the global binary is unavailable, use:
+   `npm exec --yes --package=@cecilialabs/ffmpeg -- cecilia-ffmpeg <command>`.
+4. Use native FFmpeg only for unsupported repair cases or an explicit native-command request.
+
 ## Preferred toolkit commands
 
 ```bash
@@ -49,7 +59,7 @@ cecilia-ffmpeg repair timestamps <input>
 cecilia-ffmpeg repair normalize <input>
 ```
 
-For supported operations, prefer `npx @cecilialabs/ffmpeg ...` over constructing arbitrary FFmpeg shell commands.
+For supported operations, prefer the toolkit surface selected above over constructing arbitrary FFmpeg shell commands.
 
 ## Native FFmpeg fallback
 

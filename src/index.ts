@@ -11,6 +11,7 @@ export { VERSION } from "./version.js";
 export * from "./core/index.js";
 
 export * from "./environment/index.js";
+export * from "./hardware/index.js";
 export * from "./media/index.js";
 
 export * from "./video/index.js";

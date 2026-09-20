@@ -15,7 +15,7 @@
     "zod": "^4.2.0",
     "@modelcontextprotocol/server": "^2.0.0"
   },
-  "description": "Agent-friendly Toolkit and MCP server for deterministic FFmpeg Media Workflows.",
+  "description": "Agent-friendly FFmpeg toolkit with CLI, MCP tools, and typed hardware acceleration.",
   "devDependencies": {
     "@eslint/js": "^9.34.0",
     "@types/node": "^22.15.0",
@@ -91,7 +91,7 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "unlink:cli": "npm unlink --global @cecilialabs/ffmpeg",
-    "validate": "npm run verify:foundation && npm run verify:runtime && npm run verify:inspection && npm run verify:video && npm run verify:audio && npm run verify:conversion && npm run verify:composition && npm run verify:diagnostics && npm run verify:streaming && npm run verify:skills && npm run verify:plugin && npm run verify:test-suite && npm run verify:fixtures && npm run verify:ux && npm run verify:media-expansion && npm run verify:docs && npm run verify:distribution && npm run verify:mcp && npm run check && npm run lint && npm run test && npm run build && npm run verify:package",
+    "validate": "npm run verify:foundation && npm run verify:runtime && npm run verify:inspection && npm run verify:video && npm run verify:audio && npm run verify:conversion && npm run verify:composition && npm run verify:diagnostics && npm run verify:streaming && npm run verify:skills && npm run verify:plugin && npm run verify:test-suite && npm run verify:fixtures && npm run verify:ux && npm run verify:media-expansion && npm run verify:docs && npm run verify:distribution && npm run verify:mcp && npm run verify:hardware && npm run check && npm run lint && npm run test && npm run build && npm run verify:package",
     "verify:audio": "node scripts/verify-audio.mjs",
     "verify:composition": "node scripts/verify-composition.mjs",
     "verify:conversion": "node scripts/verify-conversion.mjs",
@@ -115,11 +115,12 @@
     "verify:install": "npm run build && node scripts/verify-install.mjs",
     "smoke:platform": "node scripts/smoke-platform.mjs",
     "mcp": "tsx src/mcp.ts",
-    "verify:mcp": "node scripts/verify-mcp.mjs"
+    "verify:mcp": "node scripts/verify-mcp.mjs",
+    "verify:hardware": "node scripts/verify-hardware.mjs"
   },
   "type": "module",
   "types": "./dist/index.d.ts",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "publishConfig": {
     "access": "public"
   }

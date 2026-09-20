@@ -17,14 +17,14 @@
   "distribution": [
     "Agent Plugin",
     "npm CLI",
+    "MCP Server",
     "Codex/ChatGPT Skills"
   ],
-  "futureAdapters": [
-    "MCP"
-  ],
+  "futureAdapters": [],
   "license": "MIT",
-  "currentImplementationVersion": "0.9.9",
+  "currentImplementationVersion": "1.2.0",
   "pluginManifest": "./plugin.json",
   "pluginAssets": "./assets",
-  "skills": "./skills"
+  "skills": "./skills",
+  "mcpBinary": "cecilia-ffmpeg-mcp"
 }

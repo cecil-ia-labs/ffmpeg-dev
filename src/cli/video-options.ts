@@ -26,7 +26,10 @@ export function configureVideoOptions(command: Command, path: string): void {
         .option("--pixel-format <format>", "output pixel format", "yuv420p")
         .addOption(new Option("--fit <mode>", "image fit: contain, cover, or stretch").choices(["contain", "cover", "stretch"]).default("contain"))
         .option("--background <color>", "padding color for contain fit", "black")
-        .addOption(new Option("--to <format>", "video output format").choices(["mp4", "webm"]).default("mp4"));
+        .addOption(new Option("--to <format>", "video output format").choices(["mp4", "webm"]).default("mp4"))
+        .addOption(new Option("--hardware <mode>", "video encoder policy: software, auto, nvenc, qsv, vaapi, or videotoolbox").choices(["software", "auto", "nvenc", "qsv", "vaapi", "videotoolbox"]).default("software"))
+        .option("--hardware-device <path>", "explicit hardware device path; currently used by VAAPI")
+        .option("--hardware-strict", "fail instead of falling back to software when hardware is unavailable", false);
       break;
     case "cecilia-ffmpeg video restore":
     case "cecilia-ffmpeg video upscale":
@@ -38,7 +41,10 @@ export function configureVideoOptions(command: Command, path: string): void {
         .option("--preset <preset>", "encoder preset")
         .addOption(new Option("--fit <mode>", "frame fit: contain, cover, or stretch").choices(["contain", "cover", "stretch"]).default("contain"))
         .option("--background <color>", "padding color for contain fit", "black")
-        .addOption(new Option("--to <format>", "video output format").choices(["mp4", "webm"]).default("mp4"));
+        .addOption(new Option("--to <format>", "video output format").choices(["mp4", "webm"]).default("mp4"))
+        .addOption(new Option("--hardware <mode>", "video encoder policy: software, auto, nvenc, qsv, vaapi, or videotoolbox").choices(["software", "auto", "nvenc", "qsv", "vaapi", "videotoolbox"]).default("software"))
+        .option("--hardware-device <path>", "explicit hardware device path; currently used by VAAPI")
+        .option("--hardware-strict", "fail instead of falling back to software when hardware is unavailable", false);
       break;
     default:
       break;

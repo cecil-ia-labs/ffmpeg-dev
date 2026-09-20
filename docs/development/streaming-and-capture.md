@@ -19,7 +19,7 @@ This corrects the legacy assumption that a script sending MPEG-TS to an HTTP URL
 ### Camera capture
 
 ```bash
-npx @cecilialabs/ffmpeg stream camera \
+cecilia-ffmpeg stream camera \
   --device /dev/video0 \
   --input-format v4l2 \
   --framerate 15 \
@@ -37,7 +37,7 @@ When `--input-format` is omitted, the toolkit chooses `v4l2` on Linux, `avfounda
 ### File streaming
 
 ```bash
-npx @cecilialabs/ffmpeg stream file ./clip.mp4 \
+cecilia-ffmpeg stream file ./clip.mp4 \
   --transport srt \
   --url 'srt://receiver.example:9000?mode=caller'
 ```
