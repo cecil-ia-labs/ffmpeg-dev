@@ -29,16 +29,7 @@ export async function createVideoFromImage(input: string, request: VideoFromImag
     }),
     "setsar=1",
     `format=${pixelFormat}`,
-    ...hardwareFilterSuffix(hardware ?? {
-      requested: "software",
-      resolved: "software",
-      codec: to === "mp4" ? "h264" : "vp9",
-      encoder: profile.videoCodec,
-      softwareEncoder: profile.videoCodec,
-      runtimeVerified: true,
-      fallback: false,
-      attempts: [],
-    }),
+    ...(hardware === undefined ? [] : hardwareFilterSuffix(hardware)),
   ].join(",");
 
   return await executeVideoTransform({
