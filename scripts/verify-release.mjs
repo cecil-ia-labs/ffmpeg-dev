@@ -103,7 +103,17 @@ for (const denied of ["legacy/", "test/", "scripts/", "node_modules/"]) {
 
 assert(pkg.scripts?.["validate:release"]?.includes("npm run validate"), "Release validation must include the full validation suite.");
 assert(pkg.scripts?.["validate:release"]?.includes("verify:release"), "Release validation must include stable release verification.");
+assert(pkg.scripts?.["validate:release"]?.includes("verify:install"), "Release validation must include clean-install verification.");
+assert(pkg.scripts?.["verify:install"]?.includes("scripts/verify-install.mjs"), "Clean-install verifier script is not wired.");
+assert(pkg.scripts?.["smoke:platform"] === "node scripts/smoke-platform.mjs", "Platform smoke script is not wired.");
 assert(pkg.scripts?.prepublishOnly === "npm run validate:release", "npm publication must use the release validation gate.");
+
+for (const required of [
+  "docs/platform-support.md",
+  ".github/workflows/v1-release-validation.yml",
+]) {
+  await text(required);
+}
 
 const readme = await text("README.md");
 assert(readme.includes("1.0.0"), "README must identify the v1.0.0 release line.");
