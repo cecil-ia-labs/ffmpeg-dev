@@ -78,7 +78,7 @@ function outputDuration(report: { outputMedia?: { format: { durationSeconds?: nu
   return value;
 }
 
-describe("Milestone 5 audio processing integration", () => {
+describe("Audio processing integration", () => {
   it("generates silence, replaces video audio, and adds a silence track", async () => {
     if (!(await hasFFmpeg())) return;
     const directory = await mkdtemp(path.join(os.tmpdir(), "cecilia ffmpeg m5-"));

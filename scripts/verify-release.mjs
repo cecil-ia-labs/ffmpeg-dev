@@ -28,13 +28,12 @@ async function walk(relative) {
   return files;
 }
 
-const [pkg, lock, plugin, contract, commandTree, migrations] = await Promise.all([
+const [pkg, lock, plugin, contract, commandTree] = await Promise.all([
   json("package.json"),
   json("package-lock.json"),
   json("plugin.json"),
   json("specs/stable-release-contract.json"),
   json("specs/command-tree.json"),
-  json("test/fixtures/legacy-migration-map.json"),
 ]);
 
 const versionSource = await text("src/version.ts");
@@ -80,11 +79,6 @@ assert(
   "Top-level CLI command contract changed."
 );
 
-assert(
-  migrations.migrations?.length === contract.compatibility.historicalBashMigrations,
-  "Historical Bash migration count changed."
-);
-
 for (const skill of contract.skills) {
   const skillText = await text(path.join("skills", skill, "SKILL.md"));
   assert(skillText.includes("@cecilialabs/ffmpeg"), skill + " no longer routes supported work through the toolkit.");
@@ -94,13 +88,13 @@ const sourceFiles = (await walk("src")).filter((file) => file.endsWith(".ts"));
 for (const sourceFile of sourceFiles) {
   const source = await text(sourceFile);
   assert(
-    !/legacy\/bash|\.sh(?:["'`\s]|$)/.test(source),
-    "Stable runtime must not depend on historical shell scripts: " + sourceFile,
+    !/\.sh(?:["'`\s]|$)/.test(source),
+    "Stable runtime must not depend on shell scripts: " + sourceFile,
   );
 }
 
 const packageRoots = pkg.files ?? [];
-for (const denied of ["legacy/", "test/", "scripts/", "node_modules/"]) {
+for (const denied of ["test/", "scripts/", "node_modules/"]) {
   assert(
     !packageRoots.some((entry) => String(entry).startsWith(denied)),
     "Repository-only path is present in npm files allowlist: " + denied,

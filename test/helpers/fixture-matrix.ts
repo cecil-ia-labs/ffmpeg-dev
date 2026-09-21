@@ -37,7 +37,7 @@ export async function ensureFixtureMatrix(): Promise<boolean> {
   });
   if (result.error) throw result.error;
   if (result.status !== 0) {
-    throw new Error(`Unable to generate Milestone 12 fixtures: ${result.stderr || result.stdout}`);
+    throw new Error(`Unable to generate the fixture matrix: ${result.stderr || result.stdout}`);
   }
   return true;
 }

@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 
 import { buildProgram } from "../../src/cli/program.js";
 
-describe("Milestone 9 CLI", () => {
+describe("Streaming CLI", () => {
   it("registers real stream camera and file commands", () => {
     const program = buildProgram();
     const stream = program.commands.find((command) => command.name() === "stream");

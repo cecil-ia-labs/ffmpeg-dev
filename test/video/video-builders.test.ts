@@ -7,7 +7,7 @@ import { buildRestoreFilter } from "../../src/video/restore.js";
 import { deriveOutputPath } from "../../src/video/io.js";
 
 
-describe("Milestone 4 video builders", () => {
+describe("Video builders", () => {
   it("decomposes audio tempo changes into FFmpeg-safe stages", () => {
     expect(buildAtempoChain(1)).toBe("atempo=1");
     expect(buildAtempoChain(4)).toBe("atempo=2,atempo=2");

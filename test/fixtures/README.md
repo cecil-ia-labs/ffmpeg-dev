@@ -1,4 +1,4 @@
-# Milestone 12 Media Fixtures
+# Media Fixtures
 
 The binary fixture set is generated locally and intentionally not committed. This keeps the repository small while making every fixture reproducible from explicit FFmpeg recipes.
 

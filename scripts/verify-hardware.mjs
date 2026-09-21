@@ -97,4 +97,4 @@ for (const token of ["--hardware auto", "NVENC", "NVDEC", "Quick Sync", "VAAPI",
   assert(docs.includes(token), "Hardware documentation is missing: " + token);
 }
 
-console.log("Milestone 17 hardware acceleration: PASS (NVENC/NVDEC, QSV, VAAPI, VideoToolbox)");
+console.log("Hardware acceleration: PASS (NVENC/NVDEC, QSV, VAAPI, VideoToolbox)");

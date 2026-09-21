@@ -12,7 +12,7 @@ const media: MediaInfo = {
   audio: [],
 };
 
-describe("Milestone 7 filter graph", () => {
+describe("Filter graph", () => {
   it("builds normalized filter chains for FFmpeg input pad labels", () => {
     const normalization = resolveVideoNormalization([media], { fps: 25 });
     expect(normalization).toEqual({ width: 640, height: 360, fps: 25, pixelFormat: "yuv420p", fit: "contain", background: "black" });

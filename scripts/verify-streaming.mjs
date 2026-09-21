@@ -18,14 +18,4 @@ for (const command of ["cecilia-ffmpeg stream camera", "cecilia-ffmpeg stream fi
   if (!registry.includes(command)) throw new Error(`Missing Streaming action: ${command}`);
 }
 
-const migration = JSON.parse(
-  await readFile(new URL("../test/fixtures/legacy-migration-map.json", import.meta.url), "utf8"),
-);
-const legacyStreaming = migration.migrations.find(
-  (entry) => entry.legacy === "legacy/bash/stream-to-websocket.sh",
-);
-if (legacyStreaming?.equivalent !== "stream camera HTTP relay plan") {
-  throw new Error("Historical streaming migration must preserve the HTTP MPEG-TS relay semantics.");
-}
-
-console.log("Streaming streaming structure: PASS");
+console.log("Streaming structure: PASS");

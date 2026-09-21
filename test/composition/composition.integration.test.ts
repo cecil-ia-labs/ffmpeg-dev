@@ -25,7 +25,7 @@ afterEach(async () => {
   await Promise.all(directories.splice(0).map(async (directory) => await rm(directory, { recursive: true, force: true })));
 });
 
-describe("Milestone 7 composition integration", () => {
+describe("Composition integration", () => {
   it("composes normalized inputs with xfade and acrossfade", async () => {
     const directory = await mkdtemp(path.join(os.tmpdir(), "cecilia-compose-"));
     directories.push(directory);

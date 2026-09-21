@@ -90,4 +90,4 @@ for (const fixture of manifest.fixtures) {
   }
 }
 
-console.log(`Milestone 12 fixture matrix: PASS (${manifest.fixtures.length} fixtures verified with FFprobe)`);
+console.log(`Fixture matrix: PASS (${manifest.fixtures.length} fixtures verified with FFprobe)`);

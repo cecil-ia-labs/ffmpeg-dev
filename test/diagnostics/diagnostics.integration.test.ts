@@ -25,7 +25,7 @@ async function fixture(): Promise<{ root: string; input: string }> {
   return { root, input };
 }
 
-describe("Milestone 8 diagnostics and repair", () => {
+describe("Diagnostics and repair", () => {
   it("diagnoses a healthy audiovisual fixture", async () => {
     const { input } = await fixture();
     const report = await diagnoseMedia(input);

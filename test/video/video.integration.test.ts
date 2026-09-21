@@ -35,7 +35,7 @@ function duration(report: { outputMedia?: { format: { durationSeconds?: number }
   return value;
 }
 
-describe("Milestone 4 video editing integration", () => {
+describe("Video editing integration", () => {
   it("trims start/end/ranges with accurate mode and validates the outputs", async () => {
     if (!(await hasFFmpeg())) return;
     const directory = await mkdtemp(path.join(os.tmpdir(), "cecilia ffmpeg m4-"));

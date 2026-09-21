@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 
 import { parseDecodeDiagnostics, parseFreezeDiagnostics } from "../../src/diagnostics/analyze.js";
 
-describe("Milestone 8 diagnostics parsers", () => {
+describe("Diagnostics parsers", () => {
   it("classifies common decode and timestamp failures", () => {
     const issues = parseDecodeDiagnostics(`
       [mp4 @ 0x1] Non-monotonous DTS in output stream 0:0

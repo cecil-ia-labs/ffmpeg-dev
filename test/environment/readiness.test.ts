@@ -3,7 +3,7 @@ import { describe, expect, it } from "vitest";
 import { inspectEnvironmentReadiness } from "../../src/environment/readiness.js";
 import { installToolkit } from "../../src/environment/install.js";
 
-describe("Milestone 20 environment flow", () => {
+describe("Environment flow", () => {
   it("returns guided instructions without executing commands in regular Chat", async () => {
     const report = await inspectEnvironmentReadiness({ context: "chatgpt-regular" });
 

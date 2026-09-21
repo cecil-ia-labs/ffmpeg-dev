@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 
 import { buildProgram } from "../../src/cli/program.js";
 
-describe("Milestone 7 CLI options", () => {
+describe("Composition CLI options", () => {
   it("registers concat, transition and slideshow options", () => {
     const program = buildProgram();
     const compose = program.commands.find((command) => command.name() === "compose");

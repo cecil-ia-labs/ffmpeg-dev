@@ -95,7 +95,7 @@
       "traits": [
         "webp",
         "still-image",
-        "legacy-conversion-source"
+        "conversion-source"
       ],
       "expected": {
         "video": {

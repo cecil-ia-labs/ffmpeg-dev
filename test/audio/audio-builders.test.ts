@@ -5,7 +5,7 @@ import { parseSilenceDetectOutput } from "../../src/audio/silence-detect.js";
 import { resolveTelephonyProfile } from "../../src/audio/telephony.js";
 
 
-describe("Milestone 5 audio builders", () => {
+describe("Audio builders", () => {
   it("parses FFmpeg silencedetect stderr into typed intervals", () => {
     const stderr = `
 [silencedetect @ 0x1] silence_start: 0.302

@@ -1,4 +1,4 @@
-# Milestone 12 — Test Suite & Media Fixtures — Checklist
+# Test Suite & Media Fixtures — Checklist
 
 **Target:** `v0.9.5`  
 **Status:** Implemented; local validation required before merge
@@ -45,15 +45,6 @@
 - [x] GIF requires multiple decoded frames; animated WebP requires `ANIM` plus multiple `ANMF` chunks to accommodate FFprobe 7.1 limitations.
 - [x] Missing required encoders fail explicitly.
 
-## Legacy migration regression
-
-- [x] All 21 files under `legacy/bash/` are enumerated in the migration map.
-- [x] Every migrated Bash script has an explicit equivalent integration-test case.
-- [x] Incorrect legacy GIF→WebM semantics remain covered by a real VP9 WebM assertion.
-- [x] Legacy `gsm-ulaw` naming remains covered by an explicit `pcm_mulaw != gsm` assertion.
-- [x] Legacy WebP→PNG regression uses a decodable static WebP fixture; animated WebP remains independently validated.
-- [x] Legacy “WebSocket” streaming remains covered as an HTTP MPEG-TS relay plan.
-
 ## Tooling
 
 - [x] `fixtures:generate`.
@@ -68,4 +59,4 @@
 
 ## Acceptance criterion
 
-Every migrated Bash script has at least one equivalent integration test, and fixture regressions verify actual media properties with FFprobe rather than only checking that files were created.
+Current domain integration tests cover the supported media operations, and fixture regressions verify actual media properties with FFprobe rather than only checking that files were created.

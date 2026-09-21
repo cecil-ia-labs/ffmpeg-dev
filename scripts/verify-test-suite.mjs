@@ -8,27 +8,7 @@ function assert(condition, message) {
   if (!condition) throw new Error(message);
 }
 
-async function readJson(relative) {
-  return JSON.parse(await readFile(path.join(root, relative), "utf8"));
-}
-
-const migration = await readJson("test/fixtures/legacy-migration-map.json");
-const mapped = migration.migrations.map((entry) => entry.legacy);
-assert(mapped.length === 21, "Legacy migration integration map must preserve all 21 historical Bash migrations.");
-assert(new Set(mapped).size === mapped.length, "Legacy migration integration map must not contain duplicate script identifiers.");
-for (const legacy of mapped) {
-  assert(
-    typeof legacy === "string" && legacy.startsWith("legacy/bash/") && legacy.endsWith(".sh"),
-    `Invalid historical legacy script identifier: ${legacy}`,
-  );
-}
-assert(migration.integrationTest.endsWith(".integration.test.ts"), "Legacy migration map must target an integration test.");
-const migrationSource = await readFile(path.join(root, migration.integrationTest), "utf8");
-for (const legacy of mapped) {
-  assert(migrationSource.includes(legacy), `Missing explicit integration test case for ${legacy}`);
-}
-
-const manifest = await readJson("test/fixtures/manifest.json");
+const manifest = JSON.parse(await readFile(path.join(root, "test/fixtures/manifest.json"), "utf8"));
 const ids = new Set(manifest.fixtures.map((fixture) => fixture.id));
 for (const id of [
   "mp4-h264-aac", "mp4-h265-aac", "webm-vp9-opus", "gif", "static-webp", "animated-webp",
@@ -44,7 +24,6 @@ const layers = {
   integration: "test/video/video.integration.test.ts",
   cli: "test/cli/help.test.ts",
   ffmpegIntegration: "test/fixtures/fixture-matrix.integration.test.ts",
-  fixtureRegression: "test/regression/legacy-migrations.integration.test.ts",
   hardwareUnit: "test/hardware/selection.test.ts",
   hardwareIntegration: "test/conversion/hardware.integration.test.ts",
   pipelineUnit: "test/pipeline/presets.test.ts",
@@ -58,4 +37,4 @@ for (const [layer, relative] of Object.entries(layers)) {
 const fixtureTest = await readFile(path.join(root, layers.ffmpegIntegration), "utf8");
 assert(fixtureTest.includes("probeMedia"), "Fixture regression must verify media properties with FFprobe-backed probeMedia.");
 
-console.log(`Test-suite structure: PASS (${mapped.length} historical migrations, ${manifest.fixtures.length} fixture recipes)`);
+console.log(`Test-suite structure: PASS (${manifest.fixtures.length} fixture recipes)`);

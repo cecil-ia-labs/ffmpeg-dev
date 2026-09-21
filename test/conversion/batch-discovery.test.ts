@@ -6,7 +6,7 @@ import { describe, expect, it } from "vitest";
 
 import { convertBatch, discoverBatchInputs } from "../../src/conversion/batch.js";
 
-describe("Milestone 6 batch discovery", () => {
+describe("Batch discovery", () => {
   it("filters by extension, recursion, include, and exclude patterns", async () => {
     const directory = await mkdtemp(path.join(os.tmpdir(), "cecilia-conversion-discovery-"));
     try {

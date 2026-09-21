@@ -76,14 +76,6 @@ for (const token of [
 }
 assert(!agentWorkflows.includes("cecilia-ffmpeg run <pipeline>"), "Agent workflow guide must not document the removed top-level pipeline action.");
 
-const migrationDoc = await text("docs/migration-from-bash.md");
-const migrationMap = JSON.parse(await text("test/fixtures/legacy-migration-map.json"));
-for (const migration of migrationMap.migrations) {
-  const filename = path.basename(migration.legacy);
-  assert(migrationDoc.includes(filename), `Migration guide is missing legacy script: ${filename}`);
-}
-assert(migrationMap.migrations.length === 21, "Documentation coverage expects all 21 historical migrations.");
-
 const hardware = await text("docs/hardware-acceleration.md");
 for (const token of ["--hardware auto", "NVENC", "NVDEC", "Quick Sync", "VAAPI", "VideoToolbox", "W_HARDWARE_SOFTWARE_FALLBACK"]) {
   assert(hardware.includes(token), "Hardware docs are missing current v1.2 behavior: " + token);
@@ -109,4 +101,4 @@ const packageJson = JSON.parse(await text("package.json"));
 assert(packageJson.scripts?.["verify:docs"] === "node scripts/verify-docs.mjs", "Missing verify:docs package script.");
 assert(packageJson.scripts?.validate?.includes("verify:docs"), "validate must include verify:docs.");
 
-console.log(`Documentation coverage: PASS (${requiredDocs.length} guides, ${publicLeaves.length} public leaf commands, ${migrationMap.migrations.length} legacy mappings)`);
+console.log(`Documentation coverage: PASS (${requiredDocs.length} guides, ${publicLeaves.length} public leaf commands)`);

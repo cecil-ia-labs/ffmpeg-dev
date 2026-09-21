@@ -38,7 +38,7 @@ function selection(
   };
 }
 
-describe("Milestone 17 hardware selection primitives", () => {
+describe("Hardware selection primitives", () => {
   it("uses an encoder-safe runtime probe frame size", () => {
     expect(HARDWARE_RUNTIME_PROBE_SIZE).toBe("256x256");
   });

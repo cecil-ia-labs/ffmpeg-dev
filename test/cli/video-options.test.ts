@@ -12,7 +12,7 @@ function findCommand(path: readonly string[]) {
   return current;
 }
 
-describe("Milestone 4 CLI options", () => {
+describe("Video CLI options", () => {
   it("exposes trim-specific options", () => {
     const help = findCommand(["video", "trim-start"]).helpInformation();
     expect(help).toContain("--seconds");
@@ -31,7 +31,7 @@ describe("Milestone 4 CLI options", () => {
     expect(upscaleHelp).toContain("--hardware-strict");
     const fromImageHelp = findCommand(["video", "from-image"]).helpInformation();
     expect(fromImageHelp).toContain("--hardware");
-    const legacyRestoreHelp = findCommand(["video", "restore"]).helpInformation();
-    expect(legacyRestoreHelp).toContain("--resolution");
+    const restoreHelp = findCommand(["video", "restore"]).helpInformation();
+    expect(restoreHelp).toContain("--resolution");
   });
 });

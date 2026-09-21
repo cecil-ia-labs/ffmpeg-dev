@@ -5,7 +5,7 @@ import { colorizeError, colorizeHumanOutput, colorizeWarning } from "../../src/c
 import { CLI_ICONS, decorateCommandDescription } from "../../src/cli/icons.js";
 import { CliProgressReporter, formatHumanProgress } from "../../src/cli/progress-renderer.js";
 
-describe("Milestone 14 semantic human UX", () => {
+describe("Semantic human UX", () => {
   const event = {
     runId: "ffmpeg-1",
     state: "continue" as const,

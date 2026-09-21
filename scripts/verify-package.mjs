@@ -73,7 +73,7 @@ if (process.platform !== "win32") {
   }
 }
 
-const deniedPrefixes = ["legacy/", "test/", "scripts/", "node_modules/"];
+const deniedPrefixes = ["test/", "scripts/", "node_modules/"];
 for (const file of files) {
   if (deniedPrefixes.some((prefix) => file.startsWith(prefix))) {
     throw new Error(`Repository-only path leaked into npm package: ${file}`);

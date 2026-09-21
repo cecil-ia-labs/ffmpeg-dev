@@ -99,7 +99,7 @@ try {
   const batchRoot = path.join(directory, "batch");
   await mkdir(path.join(batchRoot, "nested"), { recursive: true });
   console.log("Conversion conversion verifier: PASS");
-  console.log("routes: legacy visual routes plus MP4/JPEG targets and typed audio conversion profiles");
+  console.log("routes: visual routes plus MP4/JPEG targets and typed audio conversion profiles");
   console.log("batch engine: structural support for recursion, patterns, concurrency, failure modes, hierarchy, existing-output policy, progress, and JSON reports");
 } finally {
   await rm(directory, { recursive: true, force: true });
