@@ -67,6 +67,8 @@ const versionMatch = versionSource.match(/VERSION\s*=\s*"([^"]+)"/);
 assert(pkg.name === "@cecilialabs/ffmpeg", "Unexpected npm package name");
 assert(pkg.bin?.["cecilia-ffmpeg"] === "./dist/cli.js", "Unexpected npm bin mapping");
 assert(pkg.type === "module", "package.json must use ESM");
+assert(pkg.scripts?.["verify:foundation"] === "node scripts/verify-foundation.mjs", "Foundation verifier script is not wired.");
+assert(pkg.scripts?.validate?.includes("verify:foundation"), "validate must include verify:foundation.");
 assert(plugin.name === "cecilialabs-ffmpeg", "Unexpected plugin name");
 assert(versionMatch, "VERSION constant not found");
 assert(pkg.version === plugin.version, "package.json/plugin.json version mismatch");

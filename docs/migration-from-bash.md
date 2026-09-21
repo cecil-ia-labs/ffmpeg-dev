@@ -1,6 +1,23 @@
 # Migration from Legacy Bash
 
-The original shell utilities were used as historical behavioral references during migration and have now been removed from the distributable repository tree. Their stable script identifiers, migration map, regression tests, and semantic corrections remain documented here.
+The original shell utilities were historical behavioral references. They are no
+longer a runtime or distribution surface; their stable identifiers and semantic
+corrections remain documented here as a migration guide. The current test
+suite validates typed domain operations directly and does not depend on the old
+files.
+
+## Current migration flow
+
+For a migrated operation, route the request through the matching Skill and its
+associated JSON script when the host can execute local files. Otherwise use the
+canonical `cecilia-ffmpeg` command or the explicit npm package-runner form.
+Always keep the typed input/output contract, output preflight, and final
+FFprobe verification. The [Agent workflows](agent-workflows.md) guide defines
+the context and result rules.
+
+The old top-level pipeline action has no compatibility alias. Replace it with
+`cecilia-ffmpeg pipeline <file> <validate|print|run>` and choose the action
+explicitly.
 
 ## Migration principles
 
@@ -55,6 +72,6 @@ The legacy stream script wrote MPEG-TS to an HTTP URL. The toolkit models transp
 
 The canonical command is `video upscale`. `video restore` is retained as a compatibility alias during the pre-v1 transition.
 
-## Regression guarantee
+## Current validation
 
-Every one of the 21 historical scripts is represented by an explicit integration-regression case. The structural verifier validates the 21 stable migration identifiers and their explicit regression cases without requiring the removed `legacy/` directory.
+The domain integration suites validate the supported video, audio, conversion, composition, diagnostics, and streaming operations directly. The historical mapping above is documentation only and is not a runtime or test dependency.

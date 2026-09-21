@@ -39,7 +39,7 @@ try {
   if (!Array.isArray(parsed.streams) || parsed.streams.length < 2) throw new Error("FFprobe stream inspection failed");
   if (!parsed.format || typeof parsed.format !== "object") throw new Error("FFprobe format inspection failed");
 
-  console.log("Milestone 3 environment verifier: PASS");
+  console.log("Environment verifier: PASS");
   console.log(ffmpegVersion.stdout.split(/\r?\n/)[0]);
   console.log(ffprobeVersion.stdout.split(/\r?\n/)[0]);
   console.log(`fixture streams: ${parsed.streams.length}`);

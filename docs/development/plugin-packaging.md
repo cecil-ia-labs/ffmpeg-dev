@@ -1,6 +1,7 @@
-# Milestone 11 — Plugin Packaging & Assets
+# Plugin Packaging & Assets
 
-Milestone 11 finalizes the portable Agent Plugin package surface for `v0.9.0`.
+The package publishes a portable Agent Plugin surface with the canonical CLI,
+ten Skills, documentation, schemas, and self-contained branding assets.
 
 ## Standards alignment
 
@@ -30,7 +31,7 @@ This preserves Agent Plugins conformance while keeping product-specific packagin
 
 ## Component discovery
 
-The package includes all seven Milestone 10 skills under the standard fixed location:
+The package includes all Skills under the standard fixed location:
 
 ```text
 skills/<skill-name>/SKILL.md

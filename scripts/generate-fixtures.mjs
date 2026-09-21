@@ -54,7 +54,7 @@ const encoderOutput = run(["-hide_banner", "-encoders"]).stdout + run(["-hide_ba
 function requireEncoder(name) {
   const escaped = name.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
   if (!(new RegExp(`\\b${escaped}\\b`)).test(encoderOutput)) {
-    fail(`Required FFmpeg encoder is unavailable for the Milestone 12 fixture matrix: ${name}`);
+    fail(`Required FFmpeg encoder is unavailable for the fixture matrix: ${name}`);
   }
 }
 
@@ -63,7 +63,7 @@ for (const encoder of ["libx264", "libx265", "libvpx-vp9", "libopus", "libwebp",
 }
 
 if (!force && await complete()) {
-  if (!quiet) console.log(`Milestone 12 fixtures already generated: ${outputDirectory}`);
+  if (!quiet) console.log(`Fixtures already generated: ${outputDirectory}`);
   process.exit(0);
 }
 
@@ -162,4 +162,4 @@ for (const file of ["vfr-a.png", "vfr-b.png", "vfr-c.png", "vfr.ffconcat"]) {
 }
 await writeFile(path.join(outputDirectory, ".fixture-version"), String(manifest.generatorVersion) + "\n", "utf8");
 
-if (!quiet) console.log(`Milestone 12 fixture generation: PASS (${manifest.fixtures.length} fixtures)`);
+if (!quiet) console.log(`Fixture generation: PASS (${manifest.fixtures.length} fixtures)`);

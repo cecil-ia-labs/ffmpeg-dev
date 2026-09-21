@@ -18,7 +18,7 @@ async function hasFFmpeg(): Promise<boolean> {
   }
 }
 
-describe("Milestone 9 streaming integration", () => {
+describe("Streaming integration", () => {
   it("plans file streaming after a real FFprobe preflight without opening a socket", async () => {
     if (!(await hasFFmpeg())) return;
     const directory = await mkdtemp(path.join(os.tmpdir(), "cecilia-ffmpeg-m9-"));

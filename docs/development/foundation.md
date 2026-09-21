@@ -81,14 +81,14 @@ Development:
 npm install
 npm run dev -- --help
 # equivalent to:
-npx tsx src/cli.ts --help
+cecilia-ffmpeg --help
 ```
 
 Production:
 
 ```bash
 npm run build
-node dist/cli.js --help
+cecilia-ffmpeg --help
 ```
 
 Published package:

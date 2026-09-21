@@ -4,7 +4,7 @@
 > **Package:** @cecilialabs/ffmpeg
 > **Current baseline:** v1.3.0 on master
 > **Next architectural line:** planned v2.0.0
-> **Status:** Milestone 23 implementation in progress; later milestones remain planned
+> **Status:** Milestone 24 implemented; Milestone 25 remains planned
 
 This roadmap replaces the previous MCP-centered evolution plan. It records the
 post-v1.3 architectural decision and defines the work required to make the
@@ -384,6 +384,7 @@ as a supported current execution path.
 Replace MCP-specific gates with gates for the new architecture:
 
 ~~~
+verify:foundation
 verify:cli-surface
 verify:skill-scripts
 verify:agent-workflows
@@ -413,6 +414,7 @@ Final validation, after implementation, will be proportional to the release
 risk:
 
 ~~~
+npm run verify:foundation
 npm run check
 npm run lint
 npm run test
@@ -474,7 +476,7 @@ npm run validate:release
 
 ### Milestone 23 — MCP removal
 
-**Status:** implementation in progress on `codex/milestone-23-mcp-removal`
+**Status:** implemented on merged `master` from `codex/milestone-23-mcp-removal`
 
 - remove MCP runtime and package surfaces;
 - remove MCP tests, schemas, verifiers, docs, metadata, and validation gates;
@@ -482,6 +484,8 @@ npm run validate:release
 - prove the CLI and scripts are the only supported agent execution path.
 
 ### Milestone 24 — Documentation and development-record cleanup
+
+**Status:** implemented on `codex/milestone-24-documentation`
 
 - publish the new onboarding and workflow guides;
 - align README, CLI reference, pipeline guide, and migration guide;
@@ -537,5 +541,5 @@ and all of the following are true:
 - clean installation, package inspection, typecheck, lint, tests, build, and
   release gates pass.
 
-Milestones 20 through 23 are implemented on their respective branches or
-merged bases; Milestones 24 and 25 remain planned.
+Milestones 20 through 24 are implemented on their respective branches or
+merged bases; Milestone 25 remains planned.

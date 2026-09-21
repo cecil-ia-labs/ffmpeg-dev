@@ -41,7 +41,7 @@ async function createStaticWebp(directory: string): Promise<string> {
   return output;
 }
 
-describe("Milestone 6 media conversion integration", () => {
+describe("Media conversion integration", () => {
   it("executes all six initial conversion routes", async () => {
     if (!(await hasFFmpeg())) return;
     const directory = await mkdtemp(path.join(os.tmpdir(), "cecilia ffmpeg m6-"));

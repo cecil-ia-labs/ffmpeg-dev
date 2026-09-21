@@ -152,4 +152,4 @@ for (const required of ["dist/", "assets/", "skills/", "specs/", "docs/", "plugi
   assert(pkg.files?.includes(required), `package.json files allowlist is missing ${required}`);
 }
 
-console.log(`Milestone 11 plugin packaging structure: PASS (${expectedSkills.length} skills)`);
+console.log(`Plugin packaging structure: PASS (${expectedSkills.length} skills)`);

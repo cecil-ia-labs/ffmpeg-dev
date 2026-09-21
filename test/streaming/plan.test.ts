@@ -8,7 +8,7 @@ import {
   resolveDestination,
 } from "../../src/streaming/index.js";
 
-describe("Milestone 9 stream planning", () => {
+describe("Stream planning", () => {
   it("infers supported network transports from URL schemes", () => {
     expect(inferTransport("https://localhost:8083/live")).toBe("http");
     expect(inferTransport("rtmp://localhost/live/key")).toBe("rtmp");
@@ -41,7 +41,7 @@ describe("Milestone 9 stream planning", () => {
     ).toThrow(/Direct WebSocket streaming/);
   });
 
-  it("builds the legacy V4L2/JSMpeg-shaped camera plan without shell strings", () => {
+  it("builds the V4L2/MPEG-1 camera plan without shell strings", () => {
     const plan = buildCameraStreamPlan({
       device: "/dev/video0",
       inputFormat: "v4l2",

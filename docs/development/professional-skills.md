@@ -1,6 +1,7 @@
-# Milestone 10 — Professional-Level Skills
+# Professional Skills
 
-Milestone 10 converts the toolkit's implemented domains into seven portable agent skills.
+The current package ships ten portable Skills: two behavioral Skills for
+context/routing and eight domain Skills for concrete media operations.
 
 ## Skill architecture
 
@@ -24,10 +25,12 @@ error recovery or native fallback
 
 The skills are intentionally domain-oriented rather than one skill per CLI command. This keeps activation precise while preserving enough context to choose between related operations.
 
-## Installed skills
+## Installed Skills
 
 | Skill | Owns |
 |---|---|
+| ffmpeg-onboarding | execution context, readiness, installation guidance |
+| ffmpeg-workflow | natural-language routing, preflight, artifact verification |
 | ffmpeg-environment | doctor, versions, capabilities, probe |
 | ffmpeg-video-editing | trim, speed, image-to-video, restore |
 | ffmpeg-audio | attach, silence, silence detection/removal, telephony |
@@ -35,6 +38,7 @@ The skills are intentionally domain-oriented rather than one skill per CLI comma
 | ffmpeg-composition | concat, transitions, slideshow |
 | ffmpeg-streaming | camera/file capture and transport planning |
 | ffmpeg-diagnostics | diagnose, timestamp repair, normalization repair |
+| ffmpeg-pipelines | YAML pipelines, presets, validation, execution |
 
 ## Portable skill contract
 
@@ -77,4 +81,7 @@ Reference material is kept under each skill's `references/` directory. The main 
 
 ## Validation
 
-`scripts/verify-skills.mjs` verifies the seven skill roots, required workflow sections, toolkit-first policy, and referenced documentation. Vitest adds a corresponding repository-level contract test.
+`scripts/verify-skills.mjs` verifies all ten Skill roots, required workflow
+sections, toolkit-first policy, and referenced documentation. The associated
+script catalog is checked by `verify:skill-scripts`, while context and routing
+guidance is checked by `verify:agent-workflows`.

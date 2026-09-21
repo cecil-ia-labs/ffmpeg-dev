@@ -1,6 +1,6 @@
-# Milestone 12 — Test Suite & Media Fixtures
+# Test Suite & Media Fixtures
 
-Milestone 12 turns the accumulated domain tests into an explicit regression system and adds a reproducible media-fixture matrix for `v0.9.5`.
+The test suite provides explicit domain coverage and a reproducible media-fixture matrix for the stable v1 release line.
 
 ## Test layers
 
@@ -12,7 +12,7 @@ FFmpeg integration
 fixture-based regression
 ```
 
-The repository already contained unit, integration, CLI, and FFmpeg-backed tests from earlier milestones. Milestone 12 formalizes those layers, adds fixture-property regression, and adds one explicit integration regression case for every migrated Bash script.
+The repository contains unit, integration, CLI, and FFmpeg-backed tests. The suite formalizes those layers and adds fixture-property regression for current media operations.
 
 ## Reproducible fixtures
 
@@ -69,17 +69,9 @@ speech-like audio with silence intervals
 
 For VFR, verification additionally reads frame timestamps and requires at least two distinct positive timestamp deltas. GIF requires multiple decoded frames. Animated WebP is validated through its RIFF `ANIM`/`ANMF` chunks because FFprobe 7.1 may identify the WebP codec while reporting zero decoded frame geometry for animated files.
 
-The legacy `convert-all-webp-in-folder-to-png.sh` regression intentionally uses the **static WebP** fixture. FFmpeg/FFprobe 7.1.x can identify an animated WebP container while its native decoder fails to expose a decodable first frame. Animated WebP remains covered independently as a container/animation regression so this compatibility limitation is not hidden.
+The WebP → PNG conversion path intentionally uses the **static WebP** fixture. FFmpeg/FFprobe 7.1.x can identify an animated WebP container while its native decoder fails to expose a decodable first frame. Animated WebP remains covered independently as a container/animation regression so this compatibility limitation is not hidden.
 
 File existence alone is never considered a successful regression result.
-
-## Legacy migration regression
-
-`test/fixtures/legacy-migration-map.json` enumerates all 21 scripts under `legacy/bash/`.
-
-`test/regression/legacy-migrations.integration.test.ts` contains an explicit equivalent integration test for every entry, covering video, audio, conversion, composition, diagnostics/repair, and streaming-plan behavior.
-
-The structural verifier compares the map against the actual legacy directory, so adding/removing a Bash script without updating migration regression causes validation to fail.
 
 ## Commands
 

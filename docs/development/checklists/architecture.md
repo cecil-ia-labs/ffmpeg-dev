@@ -19,9 +19,9 @@
 | Define temporary-file lifecycle | ✅ | `docs/development/io-overwrite-temp-policy.md` |
 | Define batch execution semantics | ✅ | `docs/development/batch-semantics.md` |
 | Define supported operating systems | ✅ | `docs/development/platform-runtime-policy.md` |
-| Catalog all existing Bash scripts | ✅ | `docs/development/legacy-script-catalog.md` |
-| Map each Bash script to its semantic command | ✅ | `docs/development/legacy-script-catalog.md` |
-| Identify incorrect/misleading legacy names | ✅ | `docs/development/legacy-script-catalog.md` |
+| Catalog all existing Bash scripts | ✅ | `docs/migration-from-bash.md` |
+| Map each Bash script to its semantic command | ✅ | `docs/migration-from-bash.md` |
+| Identify incorrect/misleading legacy names | ✅ | `docs/migration-from-bash.md` |
 | Identify legacy behavior that must not be reproduced literally | ✅ | `docs/development/migration-rules.md` |
 
 ## Milestone 0 acceptance criterion

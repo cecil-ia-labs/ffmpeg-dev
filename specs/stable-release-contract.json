@@ -46,7 +46,6 @@
     ]
   },
   "compatibility": {
-    "historicalBashMigrations": 21,
     "runtimeShellDependency": false
   },
   "skills": [

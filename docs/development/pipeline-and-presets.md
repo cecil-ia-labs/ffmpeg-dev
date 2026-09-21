@@ -1,6 +1,8 @@
 # Pipeline & Preset System
 
-Milestone 18 introduces a declarative orchestration layer above the existing typed media domains.
+The pipeline layer is a declarative orchestration layer above the existing
+typed media domains. It is exposed through the namespaced CLI and the
+`ffmpeg-pipelines` Skill script.
 
 ## Boundary
 
@@ -33,6 +35,15 @@ existing core FFmpeg/FFprobe runtime
 ```
 
 The pipeline layer never imports `node:child_process` and never shells out to the CLI.
+
+The public grammar is:
+
+```text
+cecilia-ffmpeg pipeline <file> <validate|print|run>
+```
+
+The associated script accepts the same action set and delegates to the same
+typed parser, validation, preflight, and executor.
 
 ## Relative paths
 

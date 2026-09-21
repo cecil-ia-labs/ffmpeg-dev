@@ -16,8 +16,8 @@ const mediaWithAudio: MediaInfo = {
   audio: [{ index: 1, codecType: "audio", codecName: "aac", sampleRate: 48000, channels: 2 }],
 };
 
-describe("Milestone 6 conversion profiles", () => {
-  it("recognizes the supported migration formats and pairs", () => {
+describe("Conversion profiles", () => {
+  it("recognizes the supported input formats and pairs", () => {
     expect(inferConversionFormat("clip.MP4")).toBe("mp4");
     expect(inferConversionFormat("animation.webp")).toBe("webp");
     expect(inferConversionFormat("photo.JPG")).toBe("jpeg");
@@ -70,7 +70,7 @@ describe("Milestone 6 conversion profiles", () => {
   });
 });
 
-describe("Milestone 6 glob matching", () => {
+describe("Conversion glob matching", () => {
   it("supports *, ?, and ** path matching", () => {
     expect(globToRegExp("**/keep-*.mp4").test("nested/keep-one.mp4")).toBe(true);
     expect(globToRegExp("skip-?.mp4").test("skip-a.mp4")).toBe(true);

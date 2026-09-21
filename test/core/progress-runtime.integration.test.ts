@@ -18,7 +18,7 @@ async function ffmpegAvailable(): Promise<boolean> {
   }
 }
 
-describe("Milestone 13 progress runtime integration", () => {
+describe("Progress runtime integration", () => {
   it("collects structured FFmpeg progress without scraping decorated stderr", async () => {
     if (!(await ffmpegAvailable())) return;
     const directory = await mkdtemp(path.join(os.tmpdir(), "cecilia-progress-"));

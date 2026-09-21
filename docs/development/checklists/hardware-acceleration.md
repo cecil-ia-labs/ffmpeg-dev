@@ -39,7 +39,8 @@
 
 ## Documentation & Skills
 
-- [x] Replace ambiguous public `npx @cecilialabs/ffmpeg` examples.
+- [x] Replace the ambiguous multi-bin package-runner shorthand with an
+  explicit CLI executable.
 - [x] Make global `cecilia-ffmpeg` the canonical public example.
 - [x] Document explicit `npm exec --package ... -- cecilia-ffmpeg` fallback.
 - [x] Make all seven Skills script/CLI-aware.

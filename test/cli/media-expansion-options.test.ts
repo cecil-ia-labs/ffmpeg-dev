@@ -12,7 +12,7 @@ function findCommand(path: readonly string[]) {
   return current;
 }
 
-describe("Milestone 13.5 media capability CLI", () => {
+describe("Media capability CLI", () => {
   it("registers image convert and extract", () => {
     const convert = findCommand(["image", "convert"]).helpInformation();
     const extract = findCommand(["image", "extract"]).helpInformation();

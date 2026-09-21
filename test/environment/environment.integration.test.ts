@@ -21,7 +21,7 @@ async function hasFFmpeg(): Promise<boolean> {
   }
 }
 
-describe("Milestone 3 environment inspection", () => {
+describe("Environment inspection", () => {
   it("inspects versions, capabilities and doctor report when FFmpeg is installed", async () => {
     if (!(await hasFFmpeg())) return;
     const versions = await inspectEnvironmentVersions();

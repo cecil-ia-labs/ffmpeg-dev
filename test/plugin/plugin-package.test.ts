@@ -52,7 +52,7 @@ async function manifest(): Promise<PluginManifest> {
   return JSON.parse(await readFile(path.join(root, "plugin.json"), "utf8")) as PluginManifest;
 }
 
-describe("Milestone 11 plugin package", () => {
+describe("Plugin package", () => {
   it("keeps portable manifest fields schema-conformant", async () => {
     const plugin = await manifest();
     const keys = Object.keys(plugin);

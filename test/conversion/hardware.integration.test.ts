@@ -9,7 +9,7 @@ beforeAll(async () => {
   available = await ensureFixtureMatrix();
 }, 120_000);
 
-describe("Milestone 17 hardware conversion policy", () => {
+describe("Hardware conversion policy", () => {
   it("plans auto hardware encoding from actual FFmpeg capabilities", async () => {
     if (!available) return;
     const webm = await fixturePath("webm-vp9-opus");

@@ -38,7 +38,7 @@ beforeAll(async () => {
   manifest = raw.fixtures;
 }, 120_000);
 
-describe("Milestone 12 FFprobe fixture matrix", () => {
+describe("FFprobe fixture matrix", () => {
   it("verifies media properties rather than only file existence", async () => {
     if (!available) return;
     for (const fixture of manifest) {

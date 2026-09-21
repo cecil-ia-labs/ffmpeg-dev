@@ -12,7 +12,7 @@ function findCommand(path: readonly string[]) {
   return current;
 }
 
-describe("Milestone 5 CLI options", () => {
+describe("Audio CLI options", () => {
   it("exposes attach and silence generation options", () => {
     const attach = findCommand(["audio", "attach"]).helpInformation();
     expect(attach).toContain("--mode");

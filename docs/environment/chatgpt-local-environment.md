@@ -55,7 +55,16 @@ Create these actions in the **Actions** section of the Environment screen:
 | Doctor | `npm run doctor` |
 | CLI Help | `npm run cli -- --help` |
 
-`Validate` is the release gate for a milestone because it runs every milestone verifier followed by TypeScript, ESLint, Vitest, and the production build.
+`Validate` is the release gate for a milestone because it starts with the
+foundation verifier, runs every current runtime/documentation/packaging gate,
+and then runs TypeScript, ESLint, Vitest, and the production build.
+
+The foundation check can also be run directly when a change touches package
+identity, CLI wiring, TypeScript configuration, or the process boundary:
+
+```bash
+npm run verify:foundation
+```
 
 ## Worktrees
 

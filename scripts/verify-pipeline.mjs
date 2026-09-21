@@ -112,4 +112,4 @@ for (const entry of await readdir(pipelineDir, { withFileTypes: true })) {
   assert(!/node:child_process|from\s+["']child_process["']/.test(source), "Pipeline module must not execute child processes directly: " + entry.name);
 }
 
-console.log("Milestone 21 namespaced pipeline CLI: PASS");
+console.log("Namespaced pipeline CLI: PASS");

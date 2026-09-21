@@ -1,5 +1,9 @@
 # CLI Reference
 
+The CLI is the canonical command surface after the host and required
+capabilities are known. For context detection, associated scripts, and the
+distinction between a plan and a verified artifact, see [Agent workflows](agent-workflows.md).
+
 ## Global options
 
 ```text
@@ -40,6 +44,9 @@ Validate, print, or execute a v1 declarative YAML pipeline. Inline pipelines
 use repeated `--step` blocks and converge to the same typed document. Supported
 steps are `trim`, `speed`, `resize`, `normalize`, `audio.normalize`, `convert`,
 and named `preset` references.
+
+Pipeline execution is namespaced under `pipeline`; the old top-level pipeline
+action is not a compatibility alias.
 
 Global `--dry-run`, `--json`, `--overwrite`, `--keep-temp`, binary overrides,
 and `--output` apply to pipeline execution.
@@ -215,3 +222,8 @@ cecilia-ffmpeg ... --json
 ```
 
 emits one stable JSON result envelope on stdout.
+
+`--dry-run` and an onboarding plan are planning states, not completed media
+operations. A file-producing command is complete only when the output passes
+the operation's final FFprobe validation. Streaming commands report transport
+and process state instead of claiming a local file artifact.

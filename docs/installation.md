@@ -28,6 +28,9 @@ The executables are provided by the package `bin` mapping:
 
 `cecilia-ffmpeg` is the human/automation CLI and the canonical executable for agent workflows.
 
+Use [Agent workflows](agent-workflows.md) when an assistant also needs to
+choose an execution context or an associated Skill script.
+
 npm creates the executable link automatically. The package deliberately has **no `postinstall` shell mutation**.
 
 ## Run without installing globally
@@ -42,7 +45,7 @@ Or install as a project dependency:
 
 ```bash
 npm install @cecilialabs/ffmpeg
-npx cecilia-ffmpeg doctor
+npm exec -- cecilia-ffmpeg doctor
 ```
 
 All subsequent CLI examples in the public documentation assume the recommended global installation and therefore use `cecilia-ffmpeg ...` directly.
@@ -121,6 +124,15 @@ installs system FFmpeg packages or mutates a shell startup file. Repeat the
 check after installation. In v1.2, hardware encoding selection performs an
 additional runtime usability probe before choosing an accelerator; capability
 discovery alone still does not prove that a device is usable.
+
+For a repository checkout, build before invoking a Skill-associated script:
+
+```bash
+npm install
+npm run build
+printf '%s\n' '{"context":"codex","input":{}}' \
+  | node skills/ffmpeg-onboarding/scripts/check.mjs
+```
 
 ## Packaging and release lifecycle
 

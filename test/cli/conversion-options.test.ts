@@ -12,7 +12,7 @@ function findCommand(path: readonly string[]) {
   return current;
 }
 
-describe("Milestone 6 CLI options", () => {
+describe("Conversion CLI options", () => {
   it("exposes single-file conversion controls", () => {
     const help = findCommand(["convert", "file"]).helpInformation();
     expect(help).toContain("--to");
