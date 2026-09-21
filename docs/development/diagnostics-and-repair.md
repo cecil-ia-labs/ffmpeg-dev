@@ -34,13 +34,13 @@ Repairs run only after this read-only inspection.
 ## Diagnose
 
 ```bash
-npx tsx src/cli.ts diagnose ./broken.mp4
+cecilia-ffmpeg diagnose ./broken.mp4
 ```
 
 Deep freeze detection:
 
 ```bash
-npx tsx src/cli.ts diagnose ./broken.mp4 \
+cecilia-ffmpeg diagnose ./broken.mp4 \
   --deep \
   --freeze-noise-db -50 \
   --freeze-duration 2
@@ -49,7 +49,7 @@ npx tsx src/cli.ts diagnose ./broken.mp4 \
 Merge an existing FFmpeg stderr log:
 
 ```bash
-npx tsx src/cli.ts diagnose ./broken.mp4 \
+cecilia-ffmpeg diagnose ./broken.mp4 \
   --log ./ffmpeg-error.log \
   --json
 ```
@@ -61,7 +61,7 @@ The report distinguishes `info`, `warning`, and `error` findings rather than pre
 Re-encode for the strongest repair semantics:
 
 ```bash
-npx tsx src/cli.ts repair timestamps ./broken.mp4 \
+cecilia-ffmpeg repair timestamps ./broken.mp4 \
   --mode reencode \
   --fps 30 \
   --output ./fixed.mp4
@@ -70,7 +70,7 @@ npx tsx src/cli.ts repair timestamps ./broken.mp4 \
 Container-level remux only:
 
 ```bash
-npx tsx src/cli.ts repair timestamps ./broken.mp4 \
+cecilia-ffmpeg repair timestamps ./broken.mp4 \
   --mode remux \
   --output ./remuxed.mkv
 ```
@@ -80,7 +80,7 @@ npx tsx src/cli.ts repair timestamps ./broken.mp4 \
 ## Normalize
 
 ```bash
-npx tsx src/cli.ts repair normalize ./source.mp4 \
+cecilia-ffmpeg repair normalize ./source.mp4 \
   --width 1920 \
   --height 1080 \
   --fps 30 \

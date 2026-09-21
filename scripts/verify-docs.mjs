@@ -15,6 +15,7 @@ async function text(relative) {
 const requiredDocs = [
   "docs/getting-started.md",
   "docs/installation.md",
+  "docs/agent-workflows.md",
   "docs/cli-reference.md",
   "docs/pipelines.md",
   "docs/video.md",
@@ -59,6 +60,22 @@ for (const command of publicLeaves) {
 assert(cliReference.includes("environment check"), "CLI reference must document environment check.");
 assert(cliReference.includes("environment install"), "CLI reference must document environment install.");
 
+const agentWorkflows = await text("docs/agent-workflows.md");
+for (const token of [
+  "ChatGPT regular",
+  "ffmpeg-onboarding",
+  "ffmpeg-workflow",
+  "scripts/run.mjs",
+  "cecilia-ffmpeg",
+  "npm exec --yes --package=@cecilialabs/ffmpeg -- cecilia-ffmpeg",
+  "FFprobe",
+  "dry-run",
+  "structured result",
+]) {
+  assert(agentWorkflows.includes(token), `Agent workflow guide is missing: ${token}`);
+}
+assert(!agentWorkflows.includes("cecilia-ffmpeg run <pipeline>"), "Agent workflow guide must not document the removed top-level pipeline action.");
+
 const migrationDoc = await text("docs/migration-from-bash.md");
 const migrationMap = JSON.parse(await text("test/fixtures/legacy-migration-map.json"));
 for (const migration of migrationMap.migrations) {
@@ -81,9 +98,12 @@ for (const [relative, content] of [["docs/installation.md", installation], ["doc
 }
 
 const readme = await text("README.md");
-for (const relative of ["getting-started.md", "cli-reference.md", "pipelines.md", "migration-from-bash.md", "skill-request-examples.md"]) {
+for (const relative of ["getting-started.md", "installation.md", "agent-workflows.md", "cli-reference.md", "pipelines.md", "migration-from-bash.md", "skill-request-examples.md"]) {
   assert(readme.includes(relative), `README documentation index is missing ${relative}`);
 }
+
+const docsIndex = await text("docs/README.md");
+assert(docsIndex.includes("agent-workflows.md"), "Documentation index is missing agent-workflows.md.");
 
 const packageJson = JSON.parse(await text("package.json"));
 assert(packageJson.scripts?.["verify:docs"] === "node scripts/verify-docs.mjs", "Missing verify:docs package script.");

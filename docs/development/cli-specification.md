@@ -25,13 +25,18 @@ cecilia-ffmpeg
 │   ├── check
 │   └── install [scope]
 │
+├── pipeline <file> <validate|print|run>
+│
 ├── video
 │   ├── trim-start <input>
 │   ├── trim-end <input>
 │   ├── trim <input>
 │   ├── speed <input>
 │   ├── from-image <input>
-│   └── restore <input>
+│   ├── upscale <input>
+│   ├── restore <input>
+│   ├── attach-audio <video> <audio>
+│   └── add-silence <video>
 │
 ├── audio
 │   ├── attach <video> <audio>

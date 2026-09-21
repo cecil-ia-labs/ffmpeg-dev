@@ -1,6 +1,10 @@
 # Declarative Pipelines & Presets
 
-Milestone 18 adds a declarative YAML job format that composes existing typed media operations without introducing a second FFmpeg execution engine.
+The pipeline format composes existing typed media operations without
+introducing a second FFmpeg execution engine. Use it for ordered or reusable
+workflows; use a domain command for one simple operation. The [Agent
+workflows](agent-workflows.md) guide explains how to choose the pipeline Skill
+and how planned, running, and completed results differ.
 
 ## Validate, inspect, and run a pipeline
 
@@ -14,6 +18,17 @@ cecilia-ffmpeg pipeline pipeline.yaml run
 normalized expanded plan without executing media operations. `run` validates
 again before execution. Relative `input`, `output.path`, and preset references
 are resolved from the pipeline file directory.
+
+The equivalent Skill-associated request is:
+
+```bash
+printf '%s\n' '{"context":"codex","input":{"action":"validate","file":"pipeline.yaml"}}' \
+  | node skills/ffmpeg-pipelines/scripts/run.mjs
+```
+
+From a repository checkout, run `npm run build` first so the script can use the
+compiled toolkit. A regular ChatGPT request returns a plan rather than reading
+the pipeline file locally.
 
 An inline pipeline uses the same typed schema and can be chained without a
 temporary YAML file:
@@ -224,6 +239,9 @@ Pipeline dry-run validates:
 - executable step order.
 
 It does not execute FFmpeg and therefore does not require fictitious intermediate files to exist.
+
+Dry-run is a planning state. It is not evidence that a final media artifact
+exists, and it must not be reported as completed execution.
 
 ## Output override
 

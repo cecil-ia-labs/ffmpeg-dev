@@ -58,6 +58,11 @@ const currentSurfaceFiles = [
   "test",
 ];
 const forbidden = /\bMCP\b|modelcontextprotocol|cecilia-ffmpeg-mcp|src\/mcp|\bmedia_[a-z_]+\b/;
+const contradictoryExecution = [
+  [/\bcecilia-ffmpeg\s+run\s+<pipeline>/i, "removed top-level pipeline action"],
+  [/\bnpx\s+@cecilialabs\/ffmpeg\b/i, "ambiguous multi-bin package runner"],
+  [/\bnpx\s+tsx\s+src\/cli\.ts\b/i, "obsolete source-mode CLI invocation"],
+];
 const files = [];
 for (const relative of currentSurfaceFiles) {
   if (relative.includes(".")) files.push(relative);
@@ -67,11 +72,22 @@ for (const relative of currentSurfaceFiles) {
 for (const relative of files) {
   const source = await read(relative);
   assert(!forbidden.test(source), `Removed MCP execution reference remains in current surface: ${relative}.`);
+  if (relative.startsWith("docs/") || relative.startsWith("skills/")) {
+    for (const [pattern, description] of contradictoryExecution) {
+      assert(!pattern.test(source), `${description} remains in current guidance: ${relative}.`);
+    }
+  }
 }
 
 const workflow = await read("skills/ffmpeg-workflow/SKILL.md");
 assert(workflow.includes("scripts/run.mjs"), "Workflow Skill must identify the script execution boundary.");
 assert(workflow.includes("When execution is available"), "Workflow Skill must preserve context-aware execution guidance.");
+
+const agentGuide = await read("docs/agent-workflows.md");
+for (const token of ["execution context", "associated script", "FFprobe", "dry-run", "structured result"]) {
+  assert(agentGuide.toLowerCase().includes(token.toLowerCase()), `Agent workflow guide is missing ${token}.`);
+}
+assert(!agentGuide.includes("cecilia-ffmpeg run <pipeline>"), "Agent workflow guide documents the removed top-level pipeline action.");
 
 const onboarding = await read("skills/ffmpeg-onboarding/SKILL.md");
 assert(onboarding.includes("scripts/check.mjs"), "Onboarding Skill must expose its readiness script.");

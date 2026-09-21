@@ -1,6 +1,21 @@
 # Migration from Legacy Bash
 
-The original shell utilities were used as historical behavioral references during migration and have now been removed from the distributable repository tree. Their stable script identifiers, migration map, regression tests, and semantic corrections remain documented here.
+The original shell utilities were historical behavioral references. They are no
+longer a runtime or distribution surface; their stable identifiers, migration
+map, regression tests, and semantic corrections remain documented here.
+
+## Current migration flow
+
+For a migrated operation, route the request through the matching Skill and its
+associated JSON script when the host can execute local files. Otherwise use the
+canonical `cecilia-ffmpeg` command or the explicit npm package-runner form.
+Always keep the typed input/output contract, output preflight, and final
+FFprobe verification. The [Agent workflows](agent-workflows.md) guide defines
+the context and result rules.
+
+The old top-level pipeline action has no compatibility alias. Replace it with
+`cecilia-ffmpeg pipeline <file> <validate|print|run>` and choose the action
+explicitly.
 
 ## Migration principles
 

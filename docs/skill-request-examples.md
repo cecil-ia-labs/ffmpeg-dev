@@ -1,6 +1,8 @@
 # Skill request examples
 
-This page is the canonical example set for the behavioral Skills. Start with
+This page is the copy/paste request set for the Skills. The policy for choosing
+an execution context, routing a request, and distinguishing a plan from a
+verified artifact lives in [Agent workflows](agent-workflows.md). Start with
 the user's desired result, select the narrowest Skill, and use its associated
 script when the active host can execute local files. The scripts read one JSON
 request from stdin and emit one JSON result envelope; the output contract is

@@ -37,7 +37,7 @@
 Required target:
 
 ```bash
-npx tsx src/cli.ts --help
+npm run cli -- --help
 ```
 
 The implementation is wired for this command and does not import or execute FFmpeg/FFprobe. In the assembly environment, npm dependencies could not be fetched because outbound DNS for `registry.npmjs.org` is unavailable. Therefore the exact dependency-backed command could not be executed here.
@@ -54,7 +54,7 @@ The implementation is wired for this command and does not import or execute FFmp
 ```bash
 npm install
 npm run validate
-npx tsx src/cli.ts --help
+npm run cli -- --help
 ```
 
 ## Gate to Milestone 2

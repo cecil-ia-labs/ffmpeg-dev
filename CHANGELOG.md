@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased — Agent-first scripts & Skills preparation
+## Unreleased — Agent-first scripts, Skills & documentation
 
 ### Added
 
@@ -28,6 +28,28 @@
   and pipelines.
 - Skill script catalog verification, executable-bit checks, and per-Skill
   documentation links for the associated operational entry points.
+
+### Milestone 24 — Documentation and development-record cleanup
+
+#### Added
+
+- `docs/agent-workflows.md` as the authoritative guide for execution context,
+  Skill routing, associated scripts, CLI fallback, preflight, and verified
+  artifacts.
+
+#### Changed
+
+- README, installation, getting-started, CLI, pipeline, migration, and Skill
+  catalog documentation now share one current execution flow.
+- `verify:foundation` is restored to the start of `npm run validate` and now
+  verifies that its own gate remains wired.
+- Documentation verification covers the agent workflow guide and rejects the
+  removed top-level pipeline action there.
+
+#### Removed
+
+- Obsolete checked-in validation transcripts and duplicate legacy catalog
+  records that were not current user or agent guidance.
 
 ### Removed
 

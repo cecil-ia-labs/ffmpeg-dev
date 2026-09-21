@@ -59,9 +59,9 @@ The npm scope assumes the Cecília Labs scope is available/owned at publication 
 9. Output files are not silently overwritten.
 10. Batch behavior is deterministic and produces an aggregate report.
 
-## 4. Target repository topology
+## 4. Repository topology
 
-Milestone 1 should instantiate this structure:
+The original foundation target has since grown into the current layout:
 
 ```text
 ffmpeg-media-toolkit/
@@ -73,13 +73,16 @@ ffmpeg-media-toolkit/
 ├── assets/
 ├── docs/
 ├── skills/
+│   ├── ffmpeg-onboarding/
+│   ├── ffmpeg-workflow/
 │   ├── ffmpeg-environment/
 │   ├── ffmpeg-video-editing/
 │   ├── ffmpeg-audio/
 │   ├── ffmpeg-conversion/
 │   ├── ffmpeg-composition/
 │   ├── ffmpeg-streaming/
-│   └── ffmpeg-diagnostics/
+│   ├── ffmpeg-diagnostics/
+│   └── ffmpeg-pipelines/
 ├── src/
 │   ├── cli.ts
 │   ├── core/
@@ -92,7 +95,7 @@ ffmpeg-media-toolkit/
 │   ├── fixtures/
 │   ├── unit/
 │   └── integration/
-└── legacy/
+└── specs/
 ```
 
 ## 5. Domain boundaries
