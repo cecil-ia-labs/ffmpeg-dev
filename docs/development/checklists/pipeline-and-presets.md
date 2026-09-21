@@ -71,4 +71,4 @@
 - [x] Run `npm run test`.
 - [x] Run `npm run validate`.
 - [x] Run `npm run validate:release`.
-- [ ] Run a real CLI pipeline smoke test.
+- [x] Run a real CLI pipeline smoke test through `scripts/smoke-release.mjs`.

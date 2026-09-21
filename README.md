@@ -1,7 +1,7 @@
 # FFmpeg Media Toolkit
 
-**Release status:** `1.3.0` — released 2026-09-20 with declarative pipelines
-and presets.
+**Release status:** `2.0.0` — release validation complete on the milestone
+branch; publication follows merge and final registry checks.
 
 FFmpeg Media Toolkit is a TypeScript package, CLI, and Skills-based plugin for
 deterministic FFmpeg/FFprobe workflows. It keeps media operations typed,
@@ -215,6 +215,16 @@ The milestone gate is:
 ```bash
 npm run validate
 ```
+
+The publication-quality v2 gate is:
+
+```bash
+npm run validate:release
+```
+
+It adds the v2 release contract, clean npm tarball installation, package
+inspection, and real environment/media/CLI/Skill smoke flows. A passing local
+gate is evidence for this checkout only; it does not publish the package.
 
 It starts with `verify:foundation`, which protects package identity, strict
 TypeScript configuration, global CLI options, required repository files, and

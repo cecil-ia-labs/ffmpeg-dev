@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased — Agent-first scripts, Skills & documentation
+## 2.0.0 — 2026-09-21 — Agent-first scripts, Skills & release validation
 
 ### Added
 
@@ -50,6 +50,26 @@
 
 - Obsolete checked-in validation transcripts and duplicate legacy catalog
   records that were not current user or agent guidance.
+
+### Milestone 25 — v2.0 release validation
+
+#### Added
+
+- A publication-quality v2 release gate that runs the full validation matrix,
+  stable release contract, clean npm installation, package inspection, and
+  real environment/media smoke flows.
+- Cross-platform release smoke coverage for FFmpeg/FFprobe readiness, media
+  probing and trimming, the namespaced pipeline grammar, and the associated
+  environment/video Skill scripts.
+
+#### Changed
+
+- Synchronized package, plugin, lockfile, source, project identity, and stable
+  contract metadata to `2.0.0`.
+- Replaced the v1 release workflow with the v2 release-validation matrix and
+  made publication depend on the complete v2 gate.
+- Strengthened release verification so removed MCP/runtime surfaces and
+  contradictory migration artifacts fail before publication.
 
 ### Removed
 

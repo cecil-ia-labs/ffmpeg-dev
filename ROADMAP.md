@@ -3,8 +3,8 @@
 > **Project:** ffmpeg-media-toolkit
 > **Package:** @cecilialabs/ffmpeg
 > **Current baseline:** v1.3.0 on master
-> **Next architectural line:** planned v2.0.0
-> **Status:** Milestone 24 implemented; Milestone 25 remains planned
+> **Next release line:** v2.0.0
+> **Status:** Milestone 25 implemented on `codex/milestone-25-release-validation`; merge and publication remain pending
 
 This roadmap replaces the previous MCP-centered evolution plan. It records the
 post-v1.3 architectural decision and defines the work required to make the
@@ -495,12 +495,22 @@ npm run validate:release
 
 ### Milestone 25 — v2.0 release validation
 
+**Status:** implemented on `codex/milestone-25-release-validation`; merge and
+publication remain pending.
+
 - run the full validation matrix;
 - test clean install and package contents;
 - run real environment and media smoke tests;
 - verify the new CLI grammar and script flows;
 - update release metadata and changelog;
 - publish only after the migration and removal gates pass.
+
+The release gate is `npm run validate:release`. It includes the repository
+validation matrix, v2.0.0 identity checks, package inspection, clean tarball
+installation, and `npm run smoke:release`. The smoke exercises a real FFmpeg /
+FFprobe environment, a file-producing CLI operation, the namespaced pipeline
+grammar, and the associated environment/video Skill scripts. Publication is
+intentionally outside this implementation PR.
 
 ## 12. Definition of done
 
@@ -541,5 +551,6 @@ and all of the following are true:
 - clean installation, package inspection, typecheck, lint, tests, build, and
   release gates pass.
 
-Milestones 20 through 24 are implemented on their respective branches or
-merged bases; Milestone 25 remains planned.
+Milestones 20 through 25 are implemented on their respective branches or
+merged bases. The v2.0.0 npm publication and annotated tag remain pending the
+milestone 25 merge and final registry verification.

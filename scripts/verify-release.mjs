@@ -56,7 +56,7 @@ for (const [source, version] of versions) {
 
 const semanticVersion = /^(\d+)\.(\d+)\.(\d+)$/.exec(pkg.version);
 assert(semanticVersion, "Stable release version must be plain semantic versioning.");
-assert(Number(semanticVersion[1]) === 1, "Stable release verification is limited to the v1 compatibility line.");
+assert(Number(semanticVersion[1]) === 2, "Stable release verification is limited to the v2 compatibility line.");
 assert(pkg.name === contract.package.name, "npm package identity drifted from stable contract.");
 assert(pkg.bin?.[contract.package.binary] === "./dist/cli.js", "Stable CLI binary mapping changed.");
 assert(pkg.engines?.node === contract.package.node, "Node runtime policy drifted from stable contract.");
@@ -93,6 +93,25 @@ for (const sourceFile of sourceFiles) {
   );
 }
 
+const removalSurface = [
+  "README.md",
+  "docs",
+  "plugin.json",
+  "package.json",
+  "skills",
+  "specs",
+  "src",
+  "test",
+];
+const removedMcpSurface = /\bMCP\b|modelcontextprotocol|cecilia-ffmpeg-mcp|src\/mcp|\bmedia_[a-z_]+\b/i;
+for (const relative of removalSurface) {
+  const files = relative.includes(".") ? [relative] : await walk(relative);
+  for (const file of files) {
+    const source = await text(file);
+    assert(!removedMcpSurface.test(source), "Removed MCP execution reference remains in release surface: " + file);
+  }
+}
+
 const packageRoots = pkg.files ?? [];
 for (const denied of ["test/", "scripts/", "node_modules/"]) {
   assert(
@@ -106,11 +125,14 @@ assert(pkg.scripts?.["validate:release"]?.includes("verify:release"), "Release v
 assert(pkg.scripts?.["validate:release"]?.includes("verify:install"), "Release validation must include clean-install verification.");
 assert(pkg.scripts?.["verify:install"]?.includes("scripts/verify-install.mjs"), "Clean-install verifier script is not wired.");
 assert(pkg.scripts?.["smoke:platform"] === "node scripts/smoke-platform.mjs", "Platform smoke script is not wired.");
+assert(pkg.scripts?.["smoke:release"] === "node scripts/smoke-release.mjs", "Release smoke script is not wired.");
+assert(pkg.scripts?.["validate:release"]?.includes("smoke:release"), "Release validation must execute the real environment/media smoke.");
 assert(pkg.scripts?.prepublishOnly === "npm run validate:release", "npm publication must use the release validation gate.");
 
 for (const required of [
   "docs/platform-support.md",
-  ".github/workflows/v1-release-validation.yml",
+  ".github/workflows/v2-release-validation.yml",
+  "scripts/smoke-release.mjs",
 ]) {
   await text(required);
 }
@@ -119,4 +141,4 @@ const readme = await text("README.md");
 assert(readme.includes(releaseVersion), "README must identify the current stable release line.");
 assert(readme.includes("cecilia-ffmpeg"), "README must document the stable executable.");
 
-console.log("Stable v" + releaseVersion + " release contract: PASS");
+console.log("Stable v" + releaseVersion + " release contract and removal gates: PASS");

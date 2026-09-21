@@ -1,6 +1,6 @@
 # Test Suite & Media Fixtures
 
-The test suite provides explicit domain coverage and a reproducible media-fixture matrix for the stable v1 release line.
+The test suite provides explicit domain coverage and a reproducible media-fixture matrix for the stable v2 release line.
 
 ## Test layers
 
