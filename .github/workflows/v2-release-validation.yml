@@ -1,4 +1,4 @@
-name: v1 release validation
+name: v2 release validation
 
 on:
   pull_request:
@@ -10,7 +10,7 @@ on:
   workflow_dispatch:
 
 concurrency:
-  group: v1-release-${{ github.workflow }}-${{ github.ref }}
+  group: v2-release-${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
@@ -36,7 +36,7 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Validate stable release
+      - name: Validate v2 release
         run: npm run validate:release
 
       - name: Platform smoke
@@ -78,11 +78,14 @@ jobs:
       - name: Build
         run: npm run build
 
-      - name: Verify stable release contract
+      - name: Verify v2 release contract
         run: npm run verify:release
 
       - name: Verify clean npm installation
         run: npm run verify:install
+
+      - name: Run real environment and media smoke
+        run: npm run smoke:release
 
       - name: Platform smoke
         run: npm run smoke:platform
