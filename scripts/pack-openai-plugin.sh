@@ -31,7 +31,7 @@ if find "$PLUGIN_ROOT" -type l -print -quit | grep -q .; then
   exit 1
 fi
 
-for forbidden in mcp.json .mcp.json .app.json; do
+for forbidden in .app.json; do
   if find "$PLUGIN_ROOT" -name "$forbidden" -print -quit | grep -q .; then
     echo "Skills-only submission must not contain $forbidden." >&2
     exit 1

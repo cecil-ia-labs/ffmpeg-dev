@@ -39,8 +39,8 @@ Probe media when stream presence matters. Never assume a video lacks audio. For 
 
 Use the highest-level toolkit surface available to the host:
 
-1. In an MCP-enabled host, prefer `media_attach_audio`, `media_generate_silence`, or `media_remove_silence` when they match the requested operation.
-2. For silence detection, add-silence, telephony transcoding, or other supported audio operations not exposed through MCP, use `cecilia-ffmpeg`.
+1. Use the associated `scripts/run.mjs` entry point for supported audio actions.
+2. For silence detection, add-silence, telephony transcoding, or other supported audio operations, use `cecilia-ffmpeg`.
 3. If the global binary is unavailable, use:
    `npm exec --yes --package=@cecilialabs/ffmpeg -- cecilia-ffmpeg <command>`.
 4. Use native FFmpeg only when the toolkit lacks the required operation or the user explicitly requests native syntax.

@@ -79,7 +79,7 @@ Before an actual accelerated encode, the toolkit executes a small FFmpeg runtime
 - an encoder compiled into FFmpeg but unusable on the current machine;
 - unsupported runtime device setup.
 
-Successful and failed runtime probes are cached for the current process. Failed attempts retain a short FFmpeg diagnostic in structured hardware metadata so CLI/MCP callers can distinguish missing drivers/devices from encoder-parameter failures.
+Successful and failed runtime probes are cached for the current process. Failed attempts retain a short FFmpeg diagnostic in structured hardware metadata so CLI and Skill-script callers can distinguish missing drivers/devices from encoder-parameter failures.
 
 If no requested backend is usable, the default behavior is to fall back to the software encoder and emit:
 
@@ -149,17 +149,8 @@ cecilia-ffmpeg video upscale input.mp4 \
   --hardware-strict
 ```
 
-The same policy is available to `video from-image`, `video upscale` / `video restore`, single-file conversion, and batch conversion.
-
-For MCP-enabled hosts, `media_convert` and `media_restore` expose the equivalent fields:
-
-```json
-{
-  "hardware": "auto",
-  "hardware_device": "/dev/dri/renderD128",
-  "hardware_strict": false
-}
-```
+The same policy is available to `video from-image`, `video upscale` /
+`video restore`, single-file conversion, and batch conversion.
 
 ## Capability inspection
 

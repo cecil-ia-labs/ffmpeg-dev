@@ -39,13 +39,11 @@ Collect only what is needed:
 
 Use the highest-level toolkit surface available to the host:
 
-1. If the connected MCP server exposes `media_probe` and the task is media inspection, prefer that tool.
+1. Use the associated `scripts/inspect.mjs` entry point for supported inspection actions.
 2. For `doctor`, version checks, and capability inspection, use the global `cecilia-ffmpeg` binary.
 3. If the global binary is unavailable, use:
    `npm exec --yes --package=@cecilialabs/ffmpeg -- cecilia-ffmpeg <command>`.
 4. Use native FFmpeg/FFprobe only when the toolkit lacks the required inspection or the user explicitly requests native syntax.
-
-MCP v1.2 does not expose `doctor` or `environment capabilities`; do not invent MCP tools for those operations.
 
 ## Associated scripts
 

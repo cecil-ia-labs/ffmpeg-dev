@@ -4,7 +4,7 @@
 > **Package:** @cecilialabs/ffmpeg
 > **Current baseline:** v1.3.0 on master
 > **Next architectural line:** planned v2.0.0
-> **Status:** Milestone 22 implementation in progress; later milestones remain planned
+> **Status:** Milestone 23 implementation in progress; later milestones remain planned
 
 This roadmap replaces the previous MCP-centered evolution plan. It records the
 post-v1.3 architectural decision and defines the work required to make the
@@ -474,6 +474,8 @@ npm run validate:release
 
 ### Milestone 23 — MCP removal
 
+**Status:** implementation in progress on `codex/milestone-23-mcp-removal`
+
 - remove MCP runtime and package surfaces;
 - remove MCP tests, schemas, verifiers, docs, metadata, and validation gates;
 - update package/plugin contracts and distribution checks;
@@ -535,4 +537,5 @@ and all of the following are true:
 - clean installation, package inspection, typecheck, lint, tests, build, and
   release gates pass.
 
-No implementation is part of this roadmap-only change.
+Milestones 20 through 23 are implemented on their respective branches or
+merged bases; Milestones 24 and 25 remain planned.

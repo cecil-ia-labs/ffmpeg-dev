@@ -45,8 +45,8 @@ Collect:
 
 Use the highest-level toolkit surface available to the host:
 
-1. In an MCP-enabled host, prefer `media_diagnose` for diagnosis and `media_probe` for media inspection.
-2. For `repair timestamps` and `repair normalize`, use the global `cecilia-ffmpeg` binary because repair mutations are not MCP tools in v1.2.
+1. Use the associated `scripts/run.mjs` entry point for supported diagnostic and repair actions.
+2. For `repair timestamps` and `repair normalize`, use the global `cecilia-ffmpeg` binary.
 3. If the global binary is unavailable, use:
    `npm exec --yes --package=@cecilialabs/ffmpeg -- cecilia-ffmpeg <command>`.
 4. Use native FFmpeg only for unsupported repair cases or an explicit native-command request.

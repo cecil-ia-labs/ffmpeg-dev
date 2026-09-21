@@ -37,7 +37,6 @@ function localPaths(extension) {
     extension.documentation?.readme,
     extension.documentation?.skills,
     extension.documentation?.packaging,
-    extension.documentation?.mcp,
     ...(extension.skillCatalog ?? []).map((entry) => entry.path),
   ].filter((value) => typeof value === "string");
 }
@@ -71,11 +70,8 @@ assert(extension && typeof extension === "object", "Missing com.cecilialabs.ffmp
 assert(extension.branding?.displayName === "Cecil-IA Labs FFmpeg", "Unexpected branding display name");
 assert(extension.npm?.package === "@cecilialabs/ffmpeg", "Unexpected npm package identity");
 assert(extension.npm?.binary === "cecilia-ffmpeg", "Unexpected CLI binary identity");
-assert(extension.mcp?.binary === "cecilia-ffmpeg-mcp", "Unexpected MCP binary identity");
-assert(extension.mcp?.transport === "stdio", "Milestone 16 MCP transport must be stdio");
-assert(extension.mcp?.protocol === "2026-07-28", "Unexpected MCP protocol revision");
-assert(Array.isArray(extension.mcp?.tools) && extension.mcp.tools.length === 10, "Unexpected MCP tool catalog");
-assert(extension.mcp.tools.includes("media_run_pipeline"), "MCP catalog must expose media_run_pipeline");
+assert(extension.mcp === undefined, "Plugin metadata must not expose a removed MCP extension");
+assert(!JSON.stringify(plugin).toLowerCase().includes("mcp"), "Plugin metadata contains a removed MCP surface");
 assert(extension.hardware?.fallback === "software", "Hardware metadata must preserve software fallback");
 assert(extension.hardware?.runtimeProbe === true, "Hardware metadata must declare runtime probing");
 assert(extension.hardware?.modes?.includes("auto"), "Hardware metadata must expose auto mode");

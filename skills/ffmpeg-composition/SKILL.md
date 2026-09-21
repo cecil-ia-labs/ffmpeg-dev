@@ -41,8 +41,8 @@ Probe every media input. Before transitions, normalize properties that FFmpeg re
 
 Use the highest-level toolkit surface available to the host:
 
-1. In an MCP-enabled host, prefer `media_concat` when the request is concatenation covered by that tool.
-2. For explicit transition commands, slideshows, or composition capabilities not exposed through MCP, use `cecilia-ffmpeg`.
+1. Use the associated `scripts/run.mjs` entry point for supported composition actions.
+2. For explicit transition commands, slideshows, or other composition capabilities, use `cecilia-ffmpeg`.
 3. If the global binary is unavailable, use:
    `npm exec --yes --package=@cecilialabs/ffmpeg -- cecilia-ffmpeg <command>`.
 4. Use native FFmpeg only for unsupported composition graphs or an explicit native-command request.

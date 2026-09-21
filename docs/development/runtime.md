@@ -9,7 +9,7 @@ Implemented for `v0.1.0-alpha.2`.
 Milestone 2 creates the single execution boundary used by future media-domain commands. No video, audio, conversion, composition, repair, diagnostic, or streaming command is allowed to invoke FFmpeg or FFprobe directly.
 
 ```text
-CLI / Skills / future MCP
+CLI / Skill scripts / package API
           │
           ▼
      domain operation

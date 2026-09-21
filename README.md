@@ -8,19 +8,16 @@
 
 FFmpeg Media Toolkit is a professional, agent-friendly TypeScript CLI and plugin foundation for deterministic FFmpeg/FFprobe media workflows.
 
-## Architecture transition (planned)
+## Architecture
 
-The v1.3.0 implementation remains the current baseline, including its local
-stdio MCP adapter. The next architectural line is intentionally
-script/Skills-first: an execution-context check routes a request through a
-behavioral Skill, a domain Skill, and an associated script over the typed CLI
-and media runtime.
+The implementation is script/Skills-first: an execution-context check routes a
+request through a behavioral Skill, a domain Skill, and an associated script
+over the typed CLI and media runtime. Skill-associated scripts and the
+canonical CLI are the supported agent execution paths.
 
-The project will not add a public MCP endpoint, dynamic-domain proxy,
-HTTPS/mTLS gateway, containerized NAT arrangement, or a parallel network MCP
-surface. Milestone 22 now ships the associated JSON-in/JSON-out scripts for
-environment inspection and domain operations; runtime MCP removal and CLI
-migration remain roadmap work and are not claimed as implemented here.
+Milestone 23 removed the legacy alternate agent adapter and its package,
+plugin, documentation, and validation surfaces. The v2 release line still
+requires the remaining migration and release gates described in ROADMAP.md.
 
 See ROADMAP.md for the migration milestones.
 
@@ -29,7 +26,6 @@ See ROADMAP.md for the migration milestones.
 - **Plugin:** `cecilialabs-ffmpeg`
 - **npm package:** `@cecilialabs/ffmpeg`
 - **CLI binary:** `cecilia-ffmpeg`
-- **MCP binary:** `cecilia-ffmpeg-mcp`
 - **Language:** TypeScript
 - **Runtime:** Node.js `>=22`
 - **Media engine:** FFmpeg + FFprobe
@@ -37,7 +33,7 @@ See ROADMAP.md for the migration milestones.
 
 ## Release status
 
-v1.3.0 is published with declarative YAML pipelines, reusable presets, the namespaced `pipeline <file> <action>` CLI, `media_run_pipeline` MCP execution, runtime-verified hardware acceleration, and a dedicated pipeline-authoring Skill.
+v1.3.0 is published with declarative YAML pipelines, reusable presets, the namespaced `pipeline <file> <action>` CLI, runtime-verified hardware acceleration, and a dedicated pipeline-authoring Skill.
 
 Implemented now:
 
@@ -96,7 +92,6 @@ The public CLI is now documented without requiring source inspection:
 - [Getting started](docs/getting-started.md)
 - [Installation](docs/installation.md)
 - [CLI reference](docs/cli-reference.md)
-- [MCP server](docs/mcp.md)
 - [Declarative pipelines & presets](docs/pipelines.md)
 - [Video](docs/video.md)
 - [Image](docs/image.md)
@@ -119,52 +114,6 @@ Interactive human output now uses semantic icons in addition to the stronger col
 
 `--no-color` disables ANSI color and friendly semantic icons. `--json` remains machine-only and non-TTY progress remains plain.
 
-## MCP server
-
-v1.1.0 adds a dedicated stdio MCP server without changing the stable CLI command grammar.
-
-```bash
-npm install -g @cecilialabs/ffmpeg
-cecilia-ffmpeg-mcp
-```
-
-A host can launch it directly:
-
-```json
-{
-  "mcpServers": {
-    "cecilia-ffmpeg": {
-      "command": "cecilia-ffmpeg-mcp"
-    }
-  }
-}
-```
-
-The MCP tool catalog is:
-
-```text
-media_probe
-media_trim
-media_convert
-media_concat
-media_attach_audio
-media_remove_silence
-media_generate_silence
-media_restore
-media_run_pipeline
-media_diagnose
-```
-
-The adapter path is deliberately:
-
-```text
-MCP tool -> src/mcp/adapters.ts -> existing typed domain function -> core FFmpeg/FFprobe runtime
-```
-
-It does not invoke CLI actions and does not create another child-process execution boundary. MCP cancellation is propagated into the same `AbortSignal` used by domain operations. Successful tool calls return both JSON text content and MCP structured content.
-
-See [MCP server](docs/mcp.md) and [MCP architecture](docs/development/mcp-server.md).
-
 ## Declarative pipelines & presets
 
 Milestone 18 introduces declarative YAML workflows that compose existing typed operations:
@@ -174,8 +123,6 @@ cecilia-ffmpeg pipeline pipeline.yaml run
 ```
 
 A pipeline can chain trim, speed, resize, normalization, conversion, and reusable named presets. Multi-step execution uses isolated intermediate files, while `--dry-run` validates and expands the job without mutating media.
-
-MCP-enabled agents can run the same document through `media_run_pipeline`.
 
 See [Declarative pipelines & presets](docs/pipelines.md).
 
@@ -202,9 +149,7 @@ Supported hardware-aware operations currently include:
 - `convert file`;
 - `convert batch`;
 - `video from-image`;
-- `video upscale` / `video restore`;
-- MCP `media_convert`;
-- MCP `media_restore`.
+- `video upscale` / `video restore`.
 
 NVDEC/CUVID is surfaced in capability inspection, while automatic decode-path insertion remains conservative in v1.2 because filtered workflows require explicit hardware-frame upload/download negotiation.
 
@@ -305,7 +250,7 @@ See [test-suite and fixture architecture](docs/development/test-suite-and-fixtur
 
 `plugin.json` remains conformant with the closed Agent Plugins 1.0.0 manifest schema. Portable metadata uses the standard fields. Cecil-IA Labs runtime/documentation metadata remains under `extensions.com.cecilialabs.ffmpeg`, while OpenAI directory presentation metadata is defined under `extensions.com.openai.interface`.
 
-Skills remain portable components discovered from the standard fixed `skills/` directory rather than a non-standard manifest field. The public OpenAI v1.3.0 submission is branded **Cecil-IA Labs FFmpeg** and is intentionally Skills-only because the bundled MCP server is a local stdio server rather than a public HTTPS MCP endpoint.
+Skills remain portable components discovered from the standard fixed `skills/` directory rather than a non-standard manifest field. The public OpenAI v1.3.0 submission is branded **Cecil-IA Labs FFmpeg** and is intentionally Skills-only.
 
 Branding assets:
 
@@ -353,8 +298,8 @@ the canonical request set is in [Skill request examples](docs/skill-request-exam
 The core execution policy is:
 
 ```text
-matching connected MCP tool
-        ↓ unavailable / not exposed
+Skill-associated script
+        ↓ unavailable or unsupported action
 cecilia-ffmpeg
         ↓ unavailable
 npm exec --yes --package=@cecilialabs/ffmpeg -- cecilia-ffmpeg ...
@@ -362,11 +307,8 @@ npm exec --yes --package=@cecilialabs/ffmpeg -- cecilia-ffmpeg ...
 native FFmpeg
 ```
 
-Skills never invent MCP tools that are not part of the current server catalog.
-When execution is available, Milestone 22 associated scripts call the typed
-domain runtime directly and return the shared result envelope. The current
-v1.3 MCP preference remains accurate until the removal milestone changes the
-supported runtime surface.
+When execution is available, associated scripts call the typed domain runtime
+directly and return the shared result envelope.
 
 Run the skill contract verifier with:
 
@@ -431,7 +373,7 @@ npm run codex:cleanup
 ```text
 User / Agent
     ↓
-CLI / MCP / package API
+    CLI / Skill scripts / package API
     ↓
 typed media-domain services
     ↓
@@ -460,7 +402,7 @@ cecilia-ffmpeg --help
 cecilia-ffmpeg doctor
 ```
 
-The package also installs `cecilia-ffmpeg-mcp`. All public CLI examples below assume this global installation and use `cecilia-ffmpeg ...` directly.
+All public CLI examples below assume this global installation and use `cecilia-ffmpeg ...` directly.
 
 Without a global install, name the intended executable explicitly:
 

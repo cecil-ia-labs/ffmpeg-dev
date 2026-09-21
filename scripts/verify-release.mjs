@@ -66,13 +66,9 @@ assert(pkg.publishConfig?.access === contract.package.access, "Scoped npm packag
 assert(plugin.name === contract.plugin.name, "Plugin identity drifted from stable contract.");
 assert(pkg.exports?.["."]?.import === "./dist/index.js", "Stable package JS entrypoint changed.");
 assert(pkg.exports?.["."]?.types === "./dist/index.d.ts", "Stable package type entrypoint changed.");
-if (contract.package.mcpBinary !== undefined) {
-  assert(pkg.bin?.[contract.package.mcpBinary] === "./dist/mcp.js", "Stable MCP binary mapping changed.");
-}
-if (contract.package.mcpExport !== undefined) {
-  assert(pkg.exports?.[contract.package.mcpExport]?.import === "./dist/mcp/index.js", "Stable MCP JS export changed.");
-  assert(pkg.exports?.[contract.package.mcpExport]?.types === "./dist/mcp/index.d.ts", "Stable MCP type export changed.");
-}
+assert(pkg.bin?.["cecilia-ffmpeg-mcp"] === undefined, "Removed MCP binary must not be published.");
+assert(pkg.exports?.["./mcp"] === undefined, "Removed MCP package export must not be published.");
+assert(contract.mcp === undefined, "Stable release contract must not retain MCP metadata.");
 
 assert(commandTree.binary === contract.package.binary, "CLI binary name drifted from command-tree contract.");
 assert(

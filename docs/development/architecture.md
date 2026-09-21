@@ -12,7 +12,7 @@
 | Runtime | Node.js |
 | Media binaries | FFmpeg + FFprobe |
 | Initial package model | Single npm package with internal modules |
-| Future MCP | Adapter over the same core/domain library |
+| Agent execution | Skill-associated scripts and canonical CLI over the same core/domain library |
 
 The npm scope assumes the Cecília Labs scope is available/owned at publication time. If registry ownership differs, only the distribution package name changes; CLI semantics and internal architecture remain stable.
 
@@ -21,7 +21,7 @@ The npm scope assumes the Cecília Labs scope is available/owned at publication 
 ```text
 ┌─────────────────────────────────────────────┐
 │ Interaction layer                           │
-│ CLI / Skills / future MCP                  │
+│ CLI / Skill scripts / package API          │
 └──────────────────────┬──────────────────────┘
                        │
 ┌──────────────────────▼──────────────────────┐
@@ -53,7 +53,7 @@ The npm scope assumes the Cecília Labs scope is available/owned at publication 
 3. FFmpeg/FFprobe receive a binary path plus `string[]` arguments.
 4. Paths with whitespace or shell metacharacters must work without manual quoting.
 5. Domain operations do not spawn processes directly.
-6. CLI and future MCP adapters call the same domain functions.
+6. CLI and Skill-associated scripts call the same domain functions.
 7. Complex operations inspect inputs with FFprobe when stream properties affect correctness.
 8. Machine-readable output has a stable envelope and is never mixed with decorated human text.
 9. Output files are not silently overwritten.
@@ -127,7 +127,7 @@ Capture source, encoding, muxing, transport and destination are modeled independ
 
 ## 6. Plugin packaging direction
 
-The portable plugin will use a root `plugin.json` and a root `skills/` directory. Skills are grouped by user intent, not one skill per legacy script. An MCP server is optional and deferred until after the stable CLI/core exists.
+The portable plugin uses a root `plugin.json` and a root `skills/` directory. Skills are grouped by user intent, not one skill per legacy script. Agent execution is provided by associated scripts and the canonical CLI.
 
 ## 7. Extension rule
 

@@ -20,12 +20,11 @@ Each skill contains a `SKILL.md` with portable YAML front matter and a `referenc
 
 ## Shared policy
 
-For the current v1.3 domain operations implemented by this toolkit, use this
-order:
+For the current domain operations implemented by this toolkit, use this order:
 
 ```text
-matching connected MCP tool
-        ↓ unavailable / not exposed
+Skill-associated script
+        ↓ unavailable or unsupported action
 global cecilia-ffmpeg binary
         ↓ unavailable
 npm exec --yes --package=@cecilialabs/ffmpeg -- cecilia-ffmpeg ...
@@ -43,10 +42,9 @@ After installation, examples should use the canonical binaries directly:
 
 ```bash
 cecilia-ffmpeg ...
-cecilia-ffmpeg-mcp
 ```
 
-Do not use the ambiguous package-only `npx` shorthand: since v1.1 the npm package exposes both the CLI and MCP binaries, so a package runner must name the intended executable explicitly.
+Use the explicit `npm exec --yes --package=@cecilialabs/ffmpeg -- cecilia-ffmpeg ...` form when the global CLI is unavailable.
 
 Use native FFmpeg only when:
 
@@ -57,8 +55,7 @@ All skills require explicit input/output intent, probe-driven decisions when med
 
 The two behavioral Skills are script/CLI-first: they establish the execution
 context, select a domain Skill, and require verified results. They do not
-require a public MCP endpoint, dynamic proxy, containerized NAT, or a new
-network MCP surface.
+require a network service or an alternate agent protocol.
 
 The onboarding Skill ships executable JSON-in/JSON-out scripts for the
 Milestone 20 environment flow:
@@ -96,27 +93,9 @@ object on stdin and emits one result envelope. `chatgpt-regular` requests are
 returned as plans; Codex, Work, and terminal execution remain subject to the
 active host and explicit installation/write policy.
 
-## Architecture transition
+## Agent execution boundary
 
-The v1.3 implementation still contains the local stdio MCP adapter documented
-below. The next roadmap line moves agent-facing execution to portable
-Skill-associated scripts over the typed CLI/domain runtime. That migration is
-not part of this milestone, so current MCP documentation remains a
-historical/current-baseline reference until the removal milestone lands.
-
-## MCP-enabled hosts
-
-The MCP tools and CLI are sibling adapters over the same typed domain implementation. Skills should prefer a matching connected MCP tool when one exists, but must not invent MCP capabilities that are not in the current catalog.
-
-Current MCP mappings relevant to the Skills include:
-
-- environment/inspection: `media_probe`;
-- video: `media_trim`, `media_restore`;
-- audio: `media_attach_audio`, `media_generate_silence`, `media_remove_silence`;
-- conversion: `media_convert`;
-- composition: `media_concat`;
-- diagnostics: `media_diagnose`, `media_probe`;
-- streaming: no dedicated MCP streaming tool;
-- pipelines: `media_run_pipeline`.
-
-The current hardware policy, introduced in v1.2, is available through `media_convert`, `media_restore`, and the corresponding CLI operations where documented.
+Every Skill routes executable work through its associated JSON-in/JSON-out
+script when available, then the canonical CLI or explicit npm-exec fallback.
+Regular Chat receives a reproducible plan; Work, Codex, and terminal agents
+execute only when the active host and write/install policy allow it.

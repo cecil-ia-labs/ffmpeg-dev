@@ -54,8 +54,8 @@ The body contains explicit workflow sections rather than assuming hidden prompt 
 The Skills now select among equivalent toolkit surfaces instead of assuming a single command runner:
 
 ```text
-matching connected MCP tool
-        ↓ unavailable / not exposed
+associated Skill script
+        ↓ unavailable or unsupported action
 cecilia-ffmpeg global binary
         ↓ unavailable
 npm exec --yes --package=@cecilialabs/ffmpeg -- cecilia-ffmpeg ...
@@ -63,9 +63,9 @@ npm exec --yes --package=@cecilialabs/ffmpeg -- cecilia-ffmpeg ...
 native FFmpeg
 ```
 
-The package exposes both `cecilia-ffmpeg` and `cecilia-ffmpeg-mcp`, so the ambiguous `npx @cecilialabs/ffmpeg ...` shorthand is intentionally avoided.
-
-Each Skill documents the MCP tools that actually belong to its domain. Streaming has no MCP tool in v1.2, while inspection, video, audio, conversion, composition, and diagnostics use their corresponding `media_*` tools when connected.
+The package exposes one canonical executable, `cecilia-ffmpeg`. The explicit
+`npm exec --yes --package=@cecilialabs/ffmpeg -- cecilia-ffmpeg ...` form keeps
+package-runner usage deterministic.
 
 Native FFmpeg remains available when the toolkit has no matching capability or when the user explicitly requests native FFmpeg syntax.
 

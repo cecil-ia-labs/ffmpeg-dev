@@ -16,47 +16,26 @@ cecilia-ffmpeg doctor
 cecilia-ffmpeg environment capabilities --json
 ```
 
-For an MCP host, configure the installed stdio server:
-
-```json
-{
-  "mcpServers": {
-    "cecilia-ffmpeg": {
-      "command": "cecilia-ffmpeg-mcp"
-    }
-  }
-}
-```
-
-See [MCP Server](mcp.md) for the tool catalog, safety model, and no-global-install configuration.
-
 The executables are provided by the package `bin` mapping:
 
 ```json
 {
   "bin": {
-    "cecilia-ffmpeg": "./dist/cli.js",
-    "cecilia-ffmpeg-mcp": "./dist/mcp.js"
+    "cecilia-ffmpeg": "./dist/cli.js"
   }
 }
 ```
 
-`cecilia-ffmpeg` is the human/automation CLI. `cecilia-ffmpeg-mcp` is the local stdio MCP server introduced in v1.1.0.
+`cecilia-ffmpeg` is the human/automation CLI and the canonical executable for agent workflows.
 
 npm creates the executable link automatically. The package deliberately has **no `postinstall` shell mutation**.
 
 ## Run without installing globally
 
-Because the package exposes both `cecilia-ffmpeg` and `cecilia-ffmpeg-mcp`, package-runner usage must name the intended executable explicitly:
+Package-runner usage names the CLI executable explicitly:
 
 ```bash
 npm exec --yes --package=@cecilialabs/ffmpeg -- cecilia-ffmpeg doctor
-```
-
-For the MCP server:
-
-```bash
-npm exec --yes --package=@cecilialabs/ffmpeg -- cecilia-ffmpeg-mcp
 ```
 
 Or install as a project dependency:

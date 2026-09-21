@@ -14,7 +14,7 @@ Typical requests include:
 - trim then resize then convert;
 - apply the same resize/format preset to multiple jobs;
 - author or review a `pipeline.yaml`;
-- execute a pipeline through CLI or MCP;
+- execute a pipeline through the associated script or CLI;
 - inspect a pipeline with dry-run before media mutation.
 
 ## Do not use
@@ -58,7 +58,7 @@ Do not assume that an FFmpeg encoder being compiled means it is usable. Hardware
 
 Use the highest-level toolkit surface available:
 
-1. In an MCP-enabled host, prefer `media_run_pipeline`.
+1. Use the associated `scripts/run.mjs` entry point for supported pipeline actions.
 2. Otherwise use the namespaced `cecilia-ffmpeg pipeline <file> <action>` command.
 3. If the global binary is unavailable, use:
    `npm exec --yes --package=@cecilialabs/ffmpeg -- cecilia-ffmpeg pipeline <file> <action>`.
@@ -129,16 +129,6 @@ Without a global install:
 
 ```bash
 npm exec --yes --package=@cecilialabs/ffmpeg -- cecilia-ffmpeg pipeline pipeline.yaml run
-```
-
-MCP:
-
-```json
-{
-  "pipeline": "/workspace/pipeline.yaml",
-  "dry_run": true,
-  "overwrite": false
-}
 ```
 
 ## Native FFmpeg fallback
