@@ -1,7 +1,7 @@
 # FFmpeg Media Toolkit
 
-**Release status:** `2.0.0` — release validation complete on the milestone
-branch; publication follows merge and final registry checks.
+**Release status:** `2.0.0` — release validation complete on `master`; npm
+publication and the annotated tag remain pending final registry checks.
 
 FFmpeg Media Toolkit is a TypeScript package, CLI, and Skills-based plugin for
 deterministic FFmpeg/FFprobe workflows. It keeps media operations typed,

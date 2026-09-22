@@ -69,6 +69,49 @@ printf '%s\n' '{"context":"codex","input":{"action":"probe","input":"./media/sou
   | node skills/ffmpeg-environment/scripts/inspect.mjs
 ```
 
+## Audio attachment
+
+`ffmpeg-audio` uses `audioInput` for the second source. `input` and
+`audioInput` are paths; `mode` is `replace` (default) or `append`; `videoMode`
+is `auto`, `copy`, or `encode`; `pad` is boolean; and `output` is an optional
+destination path. The response is completed only when `outputMedia` contains
+the resulting streams.
+
+```bash
+printf '%s\n' '{"context":"codex","input":{"action":"attach","input":"./media/video.mp4","audioInput":"./media/voice.wav","mode":"replace","videoMode":"auto","pad":true,"output":"./media/video-with-audio.mp4"}}' \
+  | node skills/ffmpeg-audio/scripts/run.mjs
+```
+
+## Video upscale or restore
+
+`ffmpeg-video-editing` actions `upscale` and `restore` require `input`,
+numeric positive `width` and `height`, and an optional `output`. Optional
+fields are `profile` (`balanced` or `aggressive`), `fps`, `crf`, `preset`,
+`fit`, `background`, and `to` (`mp4` or `webm`). `resolution` is a CLI
+convenience flag; it is not a Skill JSON field.
+
+```bash
+printf '%s\n' '{"context":"codex","input":{"action":"upscale","input":"./media/source.mp4","width":1920,"height":1080,"profile":"balanced","to":"mp4","output":"./media/upscaled.mp4"}}' \
+  | node skills/ffmpeg-video-editing/scripts/run.mjs
+```
+
+## Filtered batch conversion
+
+`ffmpeg-conversion` action `batch` requires `directory`, `from`, and `to`.
+`includes` and `excludes` are arrays of relative path patterns; they are not
+the singular CLI flags. Optional fields include `recursive`, `parallelism`,
+`failFast`, `preserveHierarchy`, `existing` (`error`, `skip`, or `replace`),
+and `outputDirectory`.
+
+```bash
+printf '%s\n' '{"context":"codex","input":{"action":"batch","directory":"./media/clips","from":"mp4","to":"webm","recursive":true,"includes":["**/*.mp4"],"excludes":["**/draft-*.mp4"],"outputDirectory":"./media/converted","existing":"error"}}' \
+  | node skills/ffmpeg-conversion/scripts/run.mjs
+```
+
+If any item fails, the envelope is `ok: false`, `status: "failed"`, and the
+error code is `E_BATCH_PARTIAL_FAILURE` with exit code `7`. Do not announce the
+output directory as verified from a partial report.
+
 ## Declarative pipeline
 
 The pipeline script accepts a file, YAML text, or already parsed document and
@@ -95,4 +138,6 @@ cecilia-ffmpeg pipeline pipeline.yaml run --dry-run
 Treat `ok`, `status`, `warnings`, `error`, `next`, and `artifacts` as the
 operational result. A planned or dry-run response is not a completed media
 artifact. Only report a produced file after the envelope contains a completed
-operation and the domain report includes the expected FFprobe metadata.
+operation, `artifacts[].verified` is `true`, and the domain report includes the
+expected FFprobe metadata. Pipeline validation is a structural report and
+does not produce an artifact.

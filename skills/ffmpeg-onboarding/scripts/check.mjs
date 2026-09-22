@@ -20,6 +20,12 @@ function optionalString(value, name) {
   return value;
 }
 
+function envelopeStatus(report) {
+  if (report.status === "planned") return "planned";
+  if (report.status === "ready") return "completed";
+  return "needs-input";
+}
+
 let request = {};
 let requestError;
 try {
@@ -61,9 +67,10 @@ process.exitCode = await runSkillScript({
       signal,
     });
     return {
-      status: report.status === "planned" ? "planned" : "completed",
+      status: envelopeStatus(report),
       input,
       output: report,
+      warnings: report.warnings,
       next: report.next,
     };
   },

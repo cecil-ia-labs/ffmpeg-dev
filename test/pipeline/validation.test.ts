@@ -58,6 +58,23 @@ describe("pipeline output validation", () => {
     expect(() => validatePipelineOutput(document, expandPipelineSteps(document), "/tmp/final.gif")).toThrow(/codec/i);
   });
 
+  it("rejects a video-only step after an audio conversion", () => {
+    const document = parsePipelineText([
+      "input: source.mp4",
+      "steps:",
+      "  - convert:",
+      "      to: mp3",
+      "  - resize:",
+      "      width: 640",
+      "      height: 360",
+      "output:",
+      "  path: final.mp4",
+    ].join("\n"));
+
+    expect(() => validatePipelineOutput(document, expandPipelineSteps(document), "/tmp/final.mp4"))
+      .toThrow(/requires video media/i);
+  });
+
   it("resolves a relative runtime output override from the pipeline file directory", async () => {
     const workspace = await mkdtemp(path.join(os.tmpdir(), "cecilia-pipeline-output-test-"));
     try {

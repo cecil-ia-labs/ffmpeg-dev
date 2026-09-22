@@ -72,6 +72,11 @@ provide `input.file`, `input.text`, or a parsed `input.document`. It uses the
 same schema, preset expansion, output preflight, and execution functions as
 the namespaced CLI. Set top-level `dryRun: true` for a plan without mutation.
 
+Dry-run validates schema, output contracts, and statically knowable step
+transitions only. It does not execute FFmpeg or prove input-specific codec,
+filter, timing, or intermediate-media compatibility. A dry-run response is
+`status: "planned"` and never authorizes announcing an artifact.
+
 ```bash
 printf '%s\n' '{"context":"codex","input":{"action":"validate","file":"pipeline.yaml"}}' \
   | node skills/ffmpeg-pipelines/scripts/run.mjs

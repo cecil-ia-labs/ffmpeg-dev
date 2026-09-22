@@ -188,7 +188,7 @@ output:
 - `vp9` requires WebM;
 - the final `convert.to` or `resize.to` must agree with the output extension.
 
-Contradictory declarations fail before the first media mutation. The resolved final output path is also preflighted before any intermediate workspace or media step is started: when the destination already exists and overwrite is not explicit, the pipeline returns `E_IO_OUTPUT_EXISTS` immediately instead of performing expensive preceding steps. After execution, a declared `output.codec` is also checked against the codec reported by FFprobe for the actual final artifact; this protects codec assertions even when a step uses stream-copy semantics.
+Contradictory declarations fail before the first media mutation. The resolved final output path is also preflighted before any intermediate workspace or media step is started: when the destination already exists and overwrite is not explicit, the pipeline returns `E_IO_OUTPUT_EXISTS` immediately instead of performing expensive preceding steps. Statically impossible transitions, such as `convert.to: mp3` followed by `resize`, are rejected before execution because the preceding step no longer produces video. The final step is rendered into the isolated workspace, probed, and checked against a declared `output.codec` before it is promoted to the requested destination; a failed assertion therefore leaves the previous destination unchanged and removes the rejected staged file.
 
 ## Pipeline safety limits
 
@@ -213,7 +213,11 @@ input
   -> final output
 ```
 
-Intermediate files are removed automatically after success or failure.
+Intermediate files are removed automatically after success or failure. If a
+final codec or media assertion fails, the rejected final candidate remains only
+in the temporary workspace (when `--keep-temp` is enabled); the requested
+destination is not published. Correct the codec/step contract and retry, or
+inspect the preserved workspace before cleaning it up.
 
 Use:
 
@@ -229,16 +233,20 @@ to preserve the workspace for debugging. The structured report includes the work
 cecilia-ffmpeg pipeline pipeline.yaml run --dry-run
 ```
 
-Pipeline dry-run validates:
+Pipeline dry-run validates the structural and statically knowable parts of a
+pipeline:
 
 - YAML syntax;
 - schema;
 - input readability;
 - preset expansion;
 - output/codec consistency;
-- executable step order.
+- statically executable step order and known media-kind transitions.
 
-It does not execute FFmpeg and therefore does not require fictitious intermediate files to exist.
+It does not execute FFmpeg, probe intermediate media, or prove that an
+input-specific filter/codec will work. Runtime-only compatibility and final
+media properties are validated only during actual execution, so a dry-run
+cannot authorize announcing an artifact.
 
 Dry-run is a planning state. It is not evidence that a final media artifact
 exists, and it must not be reported as completed execution.

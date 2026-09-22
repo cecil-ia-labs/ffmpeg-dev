@@ -7,6 +7,17 @@ import type { ConcretePipelineStep, PipelineDocument } from "./types.js";
 
 const H264_EXTENSIONS = new Set([".mp4", ".m4v", ".mov", ".mkv"]);
 const VP9_EXTENSIONS = new Set([".webm"]);
+const AUDIO_FORMATS = new Set(["wav", "mp3", "aac", "m4a", "flac", "opus", "ogg"]);
+const IMAGE_FORMATS = new Set(["gif", "webp", "png", "jpeg"]);
+
+function stepKind(step: ConcretePipelineStep): string {
+  if ("trim" in step) return "trim";
+  if ("speed" in step) return "speed";
+  if ("resize" in step) return "resize";
+  if ("normalize" in step) return "normalize";
+  if ("audio" in step) return "audio";
+  return "convert";
+}
 
 function codecForFormat(format: string): "h264" | "vp9" | undefined {
   if (format === "mp4") return "h264";
@@ -14,11 +25,44 @@ function codecForFormat(format: string): "h264" | "vp9" | undefined {
   return undefined;
 }
 
+function knownMediaKind(step: ConcretePipelineStep): "audio" | "image" | "video" | undefined {
+  if ("convert" in step) {
+    if (AUDIO_FORMATS.has(step.convert.to)) return "audio";
+    if (IMAGE_FORMATS.has(step.convert.to)) return "image";
+    if (step.convert.to === "mp4" || step.convert.to === "webm") return "video";
+  }
+  if ("trim" in step || "speed" in step || "resize" in step) return "video";
+  return undefined;
+}
+
+/** Reject statically impossible transitions without executing media. */
+export function validatePipelineStepCompatibility(steps: readonly ConcretePipelineStep[]): void {
+  let currentKind: "audio" | "image" | "video" | undefined;
+  for (const [offset, step] of steps.entries()) {
+    const index = offset + 1;
+    if (
+      currentKind !== undefined &&
+      currentKind !== "video" &&
+      ("trim" in step || "speed" in step || "resize" in step)
+    ) {
+      throw new ToolkitRuntimeError(
+        "E_CONFIG_CONFLICT",
+        `Pipeline step ${index} requires video media, but the previous step produces ${currentKind} media.`,
+        { details: { index, previousMediaKind: currentKind, step: stepKind(step) } },
+      );
+    }
+    const nextKind = knownMediaKind(step);
+    if (nextKind !== undefined) currentKind = nextKind;
+  }
+}
+
 export function validatePipelineOutput(
   document: PipelineDocument,
   steps: readonly ConcretePipelineStep[],
   output: string,
 ): void {
+  validatePipelineStepCompatibility(steps);
+
   const extension = path.extname(output).toLowerCase();
   const codec = document.output.codec;
 

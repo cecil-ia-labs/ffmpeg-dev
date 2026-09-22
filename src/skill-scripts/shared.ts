@@ -191,15 +191,57 @@ function isRecord(value: unknown): value is Record<string, unknown> {
 export function artifactsForReport(report: unknown): SkillResultEnvelope["artifacts"] {
   if (!isRecord(report)) return [];
   const planned = report["planned"] === true;
-  const output = report["output"];
-  if (typeof output === "string") {
-    return [{ kind: "file", path: output, verified: !planned }];
-  }
-  const outputDirectory = report["outputDirectory"];
-  if (typeof outputDirectory === "string") {
+  const operation = report["operation"];
+
+  if (operation === "convert-batch") {
+    const outputDirectory = report["outputDirectory"];
+    if (typeof outputDirectory !== "string") return [];
+    const failed = report["failed"];
+    if (typeof failed === "number" && failed > 0) return [];
     return [{ kind: "directory", path: outputDirectory, verified: !planned }];
   }
-  return [];
+
+  const output = report["output"];
+  if (typeof output !== "string") return [];
+
+  const producesFile =
+    isRecord(report["outputMedia"]) ||
+    (typeof operation === "string" && [
+      "add-silence", "attach", "convert-file", "from-image", "normalize",
+      "remove-silence", "restore", "silence", "speed", "telephony", "trim",
+      "trim-end", "trim-start", "upscale",
+    ].includes(operation));
+  if (!producesFile) return [];
+  return [{ kind: "file", path: output, verified: !planned && isRecord(report["outputMedia"]) }];
+}
+
+function batchFailure(report: unknown): ToolkitRuntimeError | undefined {
+  if (!isRecord(report) || report["operation"] !== "convert-batch") return undefined;
+  const failed = report["failed"];
+  if (typeof failed !== "number" || failed <= 0) return undefined;
+
+  const items = Array.isArray(report["items"]) ? report["items"] : [];
+  const failedItems = items.filter((item): item is Record<string, unknown> =>
+    isRecord(item) && item["status"] === "failed",
+  ).map((item) => ({
+    input: item["input"],
+    output: item["output"],
+    error: item["error"],
+  }));
+
+  return new ToolkitRuntimeError("E_BATCH_PARTIAL_FAILURE", "Batch conversion completed with failed items.", {
+    details: {
+      directory: report["directory"],
+      outputDirectory: report["outputDirectory"],
+      discovered: report["discovered"],
+      attempted: report["attempted"],
+      succeeded: report["succeeded"],
+      failed,
+      skipped: report["skipped"],
+      failedItems,
+      recovery: "Fix or remove the failed inputs, then retry the failed items; successful outputs remain usable.",
+    },
+  });
 }
 
 export function reportResult(
@@ -207,8 +249,13 @@ export function reportResult(
   report: unknown,
   next: readonly string[] = [],
 ): SkillScriptHandlerResult<unknown> {
+  const failure = batchFailure(report);
+  if (failure !== undefined) throw failure;
+
   const warnings = isRecord(report) && Array.isArray(report["warnings"]) ? report["warnings"] : [];
+  const planned = isRecord(report) && report["planned"] === true;
   return {
+    ...(planned ? { status: "planned" as const } : {}),
     input,
     output: report,
     artifacts: artifactsForReport(report),

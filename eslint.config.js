@@ -6,9 +6,16 @@ export default tseslint.config(
     ignores: [
       "dist/**",
       "coverage/**",
+      ".openai-pack/**",
       "node_modules/**",
       "legacy/**",
-      "*.zip"
+      "*.zip",
+      ".codex/**",
+      ".github/**",
+      ".npm-pack/**",
+      "docs/**",
+      "media/**",
+      "test/**",
     ]
   },
   js.configs.recommended,

@@ -1,3 +1,4 @@
+import { mkdir, rename, rm } from "node:fs/promises";
 import path from "node:path";
 
 import { TemporaryWorkspace } from "../core/temp-files.js";
@@ -58,6 +59,25 @@ function commonRuntime(options: PipelineRuntimeOptions, output: string, final: b
     ...(options.signal !== undefined ? { signal: options.signal } : {}),
     keepTemp: false,
   };
+}
+
+async function publishStagedOutput(staged: string, output: string, overwrite: boolean): Promise<void> {
+  await preflightOutputPath({ output, overwrite });
+  try {
+    await mkdir(path.dirname(output), { recursive: true });
+    if (overwrite) await rm(output, { force: true });
+    await rename(staged, output);
+  } catch (error: unknown) {
+    if (error instanceof ToolkitRuntimeError) throw error;
+    throw new ToolkitRuntimeError("E_IO_PERMISSION_DENIED", `Unable to publish pipeline output: ${output}`, {
+      details: { staged, output },
+      cause: error,
+    });
+  }
+}
+
+function relocateMedia(media: MediaInfo | undefined, output: string): MediaInfo | undefined {
+  return media === undefined ? undefined : { ...media, source: output };
 }
 
 function fromVideoReport(
@@ -316,21 +336,21 @@ export async function executePipeline(
       const index = offset + 1;
       const isFinal = offset === declarations.length - 1;
       const stepOutput = isFinal
-        ? output
+        ? workspace.pathFor(`final-output${path.extname(output) || ".mp4"}`)
         : workspace.pathFor(`step-${String(index).padStart(3, "0")}-${kind}${intermediateExtension(current, declaration)}`);
 
       const result = kind === "trim" && "trim" in declaration
-        ? await executeTrim(index, current, stepOutput, declaration, options, isFinal)
+        ? await executeTrim(index, current, stepOutput, declaration, options, false)
         : kind === "speed" && "speed" in declaration
-          ? await executeSpeed(index, current, stepOutput, declaration, options, isFinal)
-          : kind === "resize" && "resize" in declaration
-            ? await executeResize(index, current, stepOutput, declaration, options, isFinal)
+          ? await executeSpeed(index, current, stepOutput, declaration, options, false)
+            : kind === "resize" && "resize" in declaration
+            ? await executeResize(index, current, stepOutput, declaration, options, false)
             : kind === "normalize" && "normalize" in declaration
-              ? await executeNormalize(index, current, stepOutput, declaration, options, isFinal)
+              ? await executeNormalize(index, current, stepOutput, declaration, options, false)
               : kind === "audio" && "audio" in declaration
-                ? await executeAudioNormalize(index, current, stepOutput, declaration, options, isFinal)
+                ? await executeAudioNormalize(index, current, stepOutput, declaration, options, false)
                 : kind === "convert" && "convert" in declaration
-                  ? await executeConvert(index, current, stepOutput, declaration, options, isFinal)
+                  ? await executeConvert(index, current, stepOutput, declaration, options, false)
                   : undefined;
 
       if (result === undefined) {
@@ -344,6 +364,14 @@ export async function executePipeline(
     }
 
     validatePipelineResultCodec(loaded.document, outputMedia);
+    const stagedOutput = reports.at(-1)?.output;
+    if (stagedOutput === undefined) {
+      throw new ToolkitRuntimeError("E_INTERNAL_INVARIANT", "Pipeline completed without a final output path.");
+    }
+    await publishStagedOutput(stagedOutput, output, options.overwrite ?? false);
+    const finalStep = reports.at(-1);
+    if (finalStep !== undefined) finalStep.output = output;
+    outputMedia = relocateMedia(outputMedia, output);
 
     return {
       operation: "pipeline",
