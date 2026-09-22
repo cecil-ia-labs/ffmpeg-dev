@@ -51,7 +51,7 @@ const currentSurfaceFiles = [
   "README.md",
   "plugin.json",
   "package.json",
-  "skills/README.md",
+  "docs/skill-catalog.md",
   "docs",
   "skills",
   "specs",

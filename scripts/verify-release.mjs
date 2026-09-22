@@ -144,6 +144,7 @@ for (const token of [
   'cp -R "$ROOT_DIR/assets/." "$PLUGIN_ROOT/assets/"',
   'cp -R "$ROOT_DIR/docs" "$PLUGIN_ROOT/docs"',
   'cp -R "$ROOT_DIR/dist" "$PLUGIN_ROOT/dist"',
+  'find "$PLUGIN_ROOT/skills" -mindepth 1 -maxdepth 1 ! -type d',
   'unzip -q "$ARCHIVE" -d "$VERIFY_ROOT"',
   "Extracted OpenAI plugin Skill smoke: PASS",
 ]) {

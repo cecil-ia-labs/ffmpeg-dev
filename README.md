@@ -183,7 +183,7 @@ ffmpeg-diagnostics      diagnosis and observation-driven repair
 ffmpeg-pipelines        YAML pipelines and reusable presets
 ```
 
-See the [Skill catalog](skills/README.md) for the activation boundaries,
+See the [Skill catalog](docs/skill-catalog.md) for the activation boundaries,
 associated scripts, references, and request examples. The [agent workflow
 guide](docs/agent-workflows.md) explains how these Skills cooperate across
 regular Chat, Work, Codex, IDE, and terminal contexts.

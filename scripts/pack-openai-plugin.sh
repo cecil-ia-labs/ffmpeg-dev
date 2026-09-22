@@ -35,6 +35,11 @@ if find "$PLUGIN_ROOT" -type l -print -quit | grep -q .; then
   exit 1
 fi
 
+if find "$PLUGIN_ROOT/skills" -mindepth 1 -maxdepth 1 ! -type d -print -quit | grep -q .; then
+  echo "Skills-only submission requires directories directly under skills/." >&2
+  exit 1
+fi
+
 for forbidden in .app.json; do
   if find "$PLUGIN_ROOT" -name "$forbidden" -print -quit | grep -q .; then
     echo "Skills-only submission must not contain $forbidden." >&2

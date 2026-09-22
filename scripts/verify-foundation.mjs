@@ -50,7 +50,7 @@ const requiredFiles = [
   "src/cli/register-command-tree.ts",
   "src/index.ts",
   "test/cli/help.test.ts",
-  "skills/README.md",
+  "docs/skill-catalog.md",
   "assets/README.md",
 ];
 
