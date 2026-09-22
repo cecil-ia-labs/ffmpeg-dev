@@ -70,7 +70,9 @@ describe("Plugin package", () => {
     const plugin = await manifest();
     const extension = plugin.extensions?.["com.cecilialabs.ffmpeg"];
     expect(extension).toBeDefined();
-    const discovered = (await readdir(path.join(root, "skills"), { withFileTypes: true }))
+    const skillEntries = await readdir(path.join(root, "skills"), { withFileTypes: true });
+    expect(skillEntries.every((entry) => entry.isDirectory())).toBe(true);
+    const discovered = skillEntries
       .filter((entry) => entry.isDirectory())
       .map((entry) => entry.name)
       .sort();

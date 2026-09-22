@@ -129,7 +129,16 @@ await assertContained(openaiInterface.logo);
 
 for (const relative of localPaths(extension)) await assertContained(relative);
 
-const discoveredSkills = (await readdir(path.join(root, "skills"), { withFileTypes: true }))
+const skillEntries = await readdir(path.join(root, "skills"), { withFileTypes: true });
+const invalidSkillEntries = skillEntries
+  .filter((entry) => !entry.isDirectory())
+  .map((entry) => entry.name)
+  .sort();
+assert(
+  invalidSkillEntries.length === 0,
+  `Only Skill directories are allowed directly under skills/: ${invalidSkillEntries.join(", ")}`,
+);
+const discoveredSkills = skillEntries
   .filter((entry) => entry.isDirectory())
   .map((entry) => entry.name)
   .sort();

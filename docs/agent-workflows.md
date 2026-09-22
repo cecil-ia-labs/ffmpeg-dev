@@ -199,4 +199,4 @@ returned exit code zero without checking the final media properties.
 - [Declarative pipelines](pipelines.md) — reusable multi-step workflows.
 - [Migration from Bash](migration-from-bash.md) — semantic mapping and safety corrections.
 - [Skill request examples](skill-request-examples.md) — copy/paste JSON examples.
-- [Skill catalog](../skills/README.md) — all Skills, scripts, and references.
+- [Skill catalog](skill-catalog.md) — all Skills, scripts, and references.
