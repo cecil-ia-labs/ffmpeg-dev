@@ -1,5 +1,12 @@
 # Changelog
 
+## Unreleased
+
+### Added
+
+- Customer support, privacy policy, and terms of service documents for public
+  distribution links.
+
 ## 2.0.0 — 2026-09-21 — Agent-first scripts, Skills & release validation
 
 ### Added
