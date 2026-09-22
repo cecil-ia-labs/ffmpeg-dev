@@ -86,6 +86,12 @@ Use the matching installed-package Skill path when the package is being run
 from an installed plugin. Do not construct a generic shell runner around the
 scripts or interpolate user input into a command.
 
+An installed plugin and an installed npm runtime are separate surfaces. The
+plugin host discovers the ten Skills from `plugin.json`; the associated script
+then imports the bundled `dist/` runtime from the extracted plugin root. Use
+the plugin host's import/upload flow for activation, then run the onboarding
+Skill from that same extracted package to confirm discovery and execution.
+
 For a regular ChatGPT request, use the same request shape with
 `"context":"chatgpt-regular"`. The script returns a plan and next command;
 it does not pretend to inspect local media.
@@ -133,6 +139,27 @@ that the output exists, is non-empty, is readable by FFprobe, and satisfies the
 requested codec, stream, timing, dimension, or container contract. Streaming
 operations return a transport/execution result rather than a local file
 artifact.
+
+For a Skill envelope, the completion decision is:
+
+- `status: "completed"` and `ok: true` mean the operation completed;
+- `status: "planned"` means no media mutation occurred;
+- `status: "needs-input"` means the diagnostic ran but its result does not
+  authorize the next operation;
+- `status: "failed"` and `ok: false` mean the requested operation must not be
+  announced as successful;
+- `artifacts[].verified: true` is only evidence for a produced artifact when
+  the envelope is completed and the domain output includes FFprobe metadata.
+
+Pipeline `validate`/`print` responses never create artifacts. A batch with one
+or more failed items returns `E_BATCH_PARTIAL_FAILURE`, `status: "failed"`,
+`ok: false`, and exit code `7`; successful outputs may remain available and
+the failure details identify the failed items.
+
+For onboarding specifically, the diagnostic envelope can complete with
+`status: "needs-input"`. Execution is authorized only when `output.status` is
+exactly `"ready"`; `"warning"` and `"blocked"` require the listed remediation
+and a new check.
 
 See [the pipeline guide](pipelines.md) for YAML validation, preset expansion,
 intermediate workspaces, and final codec assertions.

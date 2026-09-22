@@ -47,6 +47,12 @@ Collect only what is needed:
 5. After an authorized installation, repeat the same checks and report the
    resolved executable paths and versions.
 
+The onboarding script can complete the diagnostic while leaving the host
+unready. Use `output.status` as the readiness decision: only `ready` permits
+the next media Skill. `warning` or `blocked` requires the listed remediation
+and a new check; the outer envelope uses `status: "needs-input"` for those
+states and exposes the same warnings at the top level.
+
 ## Toolkit surface selection
 
 Use the highest-level executable surface available:

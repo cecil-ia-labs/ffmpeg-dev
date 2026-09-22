@@ -71,6 +71,7 @@ assert(executor.includes("TemporaryWorkspace"), "Pipeline execution must isolate
 assert(executor.includes("preflightOutputPath"), "Pipeline must preflight its final output before executing media steps.");
 assert(executor.indexOf("preflightOutputPath") < executor.indexOf("TemporaryWorkspace.create"), "Pipeline output preflight must happen before workspace creation.");
 assert(executor.includes("validatePipelineResultCodec"), "Pipeline executor must enforce the final codec assertion.");
+assert(executor.includes("publishStagedOutput"), "Pipeline executor must stage final output before contract validation.");
 assert(!/node:child_process|from\s+["']child_process["']/.test(executor), "Pipeline executor must not create a process boundary.");
 
 const presets = await text("src/pipeline/presets.ts");
@@ -83,6 +84,7 @@ const validation = await text("src/pipeline/validation.ts");
 assert(validation.includes("output codec"), "Pipeline output codec consistency must be validated.");
 assert(validation.includes("Final conversion target"), "Final conversion/output extension consistency must be validated.");
 assert(validation.includes("validatePipelineResultCodec"), "Pipeline must verify the declared codec against final media.");
+assert(validation.includes("validatePipelineStepCompatibility"), "Pipeline must reject statically impossible media-kind transitions.");
 
 const parser = await text("src/pipeline/parser.ts");
 assert(parser.includes('require("js-yaml")'), "Pipeline loader must use the declared YAML parser.");

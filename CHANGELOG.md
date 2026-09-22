@@ -70,6 +70,11 @@
   made publication depend on the complete v2 gate.
 - Strengthened release verification so removed MCP/runtime surfaces and
   contradictory migration artifacts fail before publication.
+- Made the extracted plugin archive self-contained by bundling `dist/`, the
+  manifest-referenced documentation/assets, and an extraction smoke check.
+- Aligned Skill envelopes with plans, blocked onboarding, and partial batch
+  failures; pipeline final outputs are now promoted only after final media
+  contract validation.
 
 ### Removed
 

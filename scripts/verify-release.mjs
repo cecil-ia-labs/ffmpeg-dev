@@ -127,14 +127,27 @@ assert(pkg.scripts?.["verify:install"]?.includes("scripts/verify-install.mjs"), 
 assert(pkg.scripts?.["smoke:platform"] === "node scripts/smoke-platform.mjs", "Platform smoke script is not wired.");
 assert(pkg.scripts?.["smoke:release"] === "node scripts/smoke-release.mjs", "Release smoke script is not wired.");
 assert(pkg.scripts?.["validate:release"]?.includes("smoke:release"), "Release validation must execute the real environment/media smoke.");
+assert(pkg.scripts?.["validate:release"]?.includes("pack:openai-plugin"), "Release validation must exercise the extracted plugin bundle.");
 assert(pkg.scripts?.prepublishOnly === "npm run validate:release", "npm publication must use the release validation gate.");
 
 for (const required of [
   "docs/platform-support.md",
   ".github/workflows/v2-release-validation.yml",
   "scripts/smoke-release.mjs",
+  "scripts/pack-openai-plugin.sh",
 ]) {
   await text(required);
+}
+
+const pluginPack = await text("scripts/pack-openai-plugin.sh");
+for (const token of [
+  'cp -R "$ROOT_DIR/assets/." "$PLUGIN_ROOT/assets/"',
+  'cp -R "$ROOT_DIR/docs" "$PLUGIN_ROOT/docs"',
+  'cp -R "$ROOT_DIR/dist" "$PLUGIN_ROOT/dist"',
+  'unzip -q "$ARCHIVE" -d "$VERIFY_ROOT"',
+  "Extracted OpenAI plugin Skill smoke: PASS",
+]) {
+  assert(pluginPack.includes(token), "Plugin packer is missing self-contained bundle validation: " + token);
 }
 
 const readme = await text("README.md");

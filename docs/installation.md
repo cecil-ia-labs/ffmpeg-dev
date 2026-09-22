@@ -179,6 +179,29 @@ Actual publication is restricted to a clean `master` matching `origin/master`:
 
 The npm package also contains the Agent Plugin manifest, Skills, assets, specs, and documentation. Repository-only setup, test, and release scripts are not shipped in the npm tarball.
 
+Installing the npm runtime does not automatically activate the plugin in an
+agent host. Complete the two surfaces separately:
+
+1. Build the plugin archive with `npm run pack:openai-plugin`.
+2. Import or upload `.openai-pack/cecilialabs-ffmpeg-openai-v2.0.0.zip` through
+   the plugin host's supported installation flow.
+3. Confirm that `plugin.json` exposes the ten Skill entries and that the host
+   lists them.
+4. From the extracted plugin root, run the onboarding script and inspect its
+   one-line JSON envelope:
+
+```bash
+printf '%s\n' '{"context":"codex","input":{}}' \
+  | node cecilialabs-ffmpeg/skills/ffmpeg-onboarding/scripts/check.mjs
+```
+
+The archive includes `dist/`, `skills/`, `docs/`, `README.md`, and every
+manifest-referenced asset, so the associated scripts can start from the
+extracted plugin without relying on a checkout or a globally linked CLI. A
+diagnostic that returns `output.status: "blocked"` or `"warning"` proves that
+the check ran, not that media execution is ready; remediate and repeat it
+until `output.status: "ready"`.
+
 ## Platform notes
 
 Linux is the full release-validation platform for v2. macOS and Windows
