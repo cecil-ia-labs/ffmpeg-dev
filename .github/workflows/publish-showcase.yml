@@ -29,11 +29,12 @@ jobs:
         run: |
           node --check showcase/app.mjs
           node --check showcase/generator.mjs
+          node --check showcase/sequence.mjs
           node --test showcase/tests/*.test.mjs
       - name: Stage static site
         run: |
           mkdir -p _site
-          cp showcase/index.html showcase/style.css showcase/app.mjs showcase/generator.mjs showcase/media-utils.mjs showcase/sitemap.xml showcase/robots.txt _site/
+          cp showcase/index.html showcase/style.css showcase/app.mjs showcase/generator.mjs showcase/media-utils.mjs showcase/sequence.mjs showcase/sitemap.xml showcase/robots.txt _site/
           touch _site/.nojekyll
       - name: Configure GitHub Pages
         uses: actions/configure-pages@983d7736d9b0ae728b81ab479565c72886d7745b
