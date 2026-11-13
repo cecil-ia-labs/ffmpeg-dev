@@ -1,5 +1,11 @@
 # FFmpeg Media Toolkit
 
+**Languages:** [English](README.md) · [Português (Brasil)](README.pt-BR.md) · [Italiano](README.it.md)
+
+**[Media Processing Studio — browser-based editor and command generator](https://cecil-ia-labs.github.io/ffmpeg-dev/)** · **[npm package](https://www.npmjs.com/package/@cecilialabs/ffmpeg)**
+
+The standalone showroom imports media into the local browser for source playback, trimming, clip ordering, and an optional soundtrack. It generates FFmpeg shell commands or, for compatible single-input workflows, a toolkit v1 YAML pipeline. **No files are uploaded or processed remotely.** The preview is not a rendered multitrack export; the user executes commands locally after checking paths, filters, and available codecs. See [showcase scope and limitations](showcase/README.md).
+
 **Release status:** `2.0.0` — release validation complete on `master`; npm
 publication and the annotated tag remain pending final registry checks.
 
