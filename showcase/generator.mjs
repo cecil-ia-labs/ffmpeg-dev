@@ -6,7 +6,7 @@ export function shellQuote(value) {
   return "'" + value.replaceAll("'", "'\\''") + "'";
 }
 export function pathForShell(name) {
-  if (typeof name !== 'string' || !name || name.includes('/') || name.includes('\\')) throw new Error('Use a filename relative to the working directory');
+  if (typeof name !== 'string' || !name || /[\\/\0\r\n]/.test(name)) throw new Error('Use a filename relative to the working directory');
   return './' + name;
 }
 export function outputFormat(name) { return name.toLowerCase().endsWith('.webm') ? 'webm' : 'mp4'; }
@@ -74,5 +74,5 @@ export function buildPipeline(project){
 }
 export function buildScript(project){
   const output=buildFFmpeg(project);
-  return {...output,kind:'Executable Bash script',command:'# !/usr/bin/env bash\nset -euo pipefail\n\n# Run from the directory containing all selected input files.\n'+output.command+'\n'};
+  return {...output,kind:'Executable Bash script',command:'#!/usr/bin/env bash\nset -euo pipefail\n\n# Run from the directory containing all selected input files.\n'+output.command+'\n'};
 }
