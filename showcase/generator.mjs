@@ -74,5 +74,5 @@ export function buildPipeline(project){
 }
 export function buildScript(project){
   const output=buildFFmpeg(project);
-  return {...output,kind:'Executable Bash script',command:'# !/usr/bin/env bash\nset -euo pipefail\n\n# Run from the directory containing all selected input files.\n'+output.command+'\n'};
+  return {...output,kind:'Executable Bash script',command:'#!/usr/bin/env bash\nset -euo pipefail\n\n# Run from the directory containing all selected input files.\n'+output.command+'\n'};
 }
