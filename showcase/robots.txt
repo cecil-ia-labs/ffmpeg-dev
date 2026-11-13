@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://cecil-ia-labs.github.io/ffmpeg-dev/sitemap.xml
