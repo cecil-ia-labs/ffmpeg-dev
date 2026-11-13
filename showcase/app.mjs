@@ -214,8 +214,9 @@ $('sequence-play').addEventListener('click',()=>{
  seekSequence(sequencePosition);
 });
 $('sequence-scrub').addEventListener('input',event=>{
+ const requested=Number(event.target.value);
  pauseSequence();
- seekSequence(Number(event.target.value));
+ seekSequence(requested);
 });
 video.addEventListener('ended',advanceSequence);
 
