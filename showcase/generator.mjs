@@ -55,7 +55,7 @@ export function buildFFmpeg(project){
     if(a.offset+a.end-a.start<p.duration-.025)warning='The selected soundtrack is padded with silence to the full video duration.';
     else if(a.offset+a.end-a.start>p.duration+.025)warning='The soundtrack extends beyond the video and will be trimmed to its duration.';
   }else if(p.videos.length===1){
-    maps.push('-map 0:a?');
+    maps.push('-map '+shellQuote('0:a?'));
   }else{
     warning='Multiple video clips are exported without their original audio. Add a soundtrack if audio is needed.';
   }
