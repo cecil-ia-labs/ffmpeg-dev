@@ -5,7 +5,7 @@ A standalone browser-based demonstration for `@cecilialabs/ffmpeg`. Unlike a pas
 ## Scope and safeguards
 
 - **No uploads or backend.** Sources stay local in the browser and are not transmitted. URLs are revoked when sources are removed or the project is cleared.
-- **Preview is source-only.** The monitor plays the selected source; it does not render a precise multi-clip output, transitions, scale filters, audio mixing, or effects. Rendering requires a real local FFmpeg process.
+- **Sequential preview of local sources.** The monitor plays trimmed video clips in order using an independent sequence position and source seek. The sequence scrubber jumps to a position across all clips. A separate soundtrack follows its local trim, volume (up to 100% in browser preview), and offset approximately. Browser playback is **not frame-accurate** at boundaries; it does not render resizes, effects, transitions, FFmpeg filters, or a final composited file. Rendering still requires real local FFmpeg.
 - **Eight video clips** maximum, arranged sequentially, and one independent soundtrack. Set each clip's in/out seconds in the inspector.
 - **Audio:** a supplied external soundtrack replaces source audio; volume and offset are supported. Native multivideo export without external soundtrack intentionally has no audio. Single-video export without a separate soundtrack preserves any existing source audio.
 - **Waveform:** Web Audio API decoding is attempted only for audio files up to 24 MiB; other audio remains usable without a waveform.
@@ -21,7 +21,7 @@ From the repository root:
 python3 -m http.server --directory showcase 8000
 ```
 
-Open `http://localhost:8000` and add local media. For static and generator regression tests:
+Open `http://localhost:8000` and add local media. Use **Play sequence** for ordered trimmed clips, the sequence position slider to seek globally, and the clip inspector for edits. A separate audio file can be previewed approximately in sync; browser codec and autoplay restrictions may prevent playback. For static and generator regression tests:
 
 ```bash
 node --test showcase/tests/*.test.mjs
