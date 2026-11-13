@@ -6,6 +6,7 @@ const $=id=>document.getElementById(id);
 const project={videos:[],audio:null,width:1280,height:720,fps:30,output:'edited.mp4'};
 let selected=null,mode='ffmpeg',currentPreview=null,lastCode='',lastError='',sequence=0;
 let sequencePlaying=false, sequencePosition=0, sequenceWaiting=false, seekToken=0, soundtrackUrl='';
+let soundtrackPending=false, soundtrackUnavailable=false;
 const assetTypes={video:/\.(mp4|m4v|mov|mkv|webm|avi)$/i,audio:/\.(wav|mp3|m4a|flac|ogg|opus|aac)$/i};
 const fmt=seconds=>{seconds=Math.max(0,Number(seconds)||0);const min=Math.floor(seconds/60);const sec=Math.floor(seconds%60);return String(min).padStart(2,'0')+':'+String(sec).padStart(2,'0')};
 function tell(message){const el=$('messages');el.textContent=message;el.hidden=!message;}
@@ -132,12 +133,13 @@ function discardSoundtrack(){
  soundtrackPreview.pause();
  soundtrackPreview.removeAttribute('src');
  soundtrackPreview.load();
- soundtrackUrl='';
+ soundtrackUrl='';soundtrackPending=false;soundtrackUnavailable=false;
 }
 
 function pauseSequence(){
  sequencePlaying=false;sequenceWaiting=false;seekToken++;
  video.pause();soundtrackPreview.pause();video.muted=false;
+ soundtrackUnavailable=false;
  renderSequenceControls();
 }
 
@@ -148,7 +150,9 @@ function syncSoundtrack(forceSeek=false){
  if(at===null){soundtrackPreview.pause();return;}
  if(soundtrackUrl!==audio.url){
   soundtrackPreview.pause();soundtrackPreview.src=audio.url;soundtrackPreview.load();soundtrackUrl=audio.url;
+  soundtrackPending=false;soundtrackUnavailable=false;
  }
+ if(soundtrackUnavailable)return;
  const apply=()=>{
   if(!sequencePlaying||project.audio!==audio)return;
   const position=soundtrackTimeAt(audio,sequencePosition);
@@ -156,11 +160,18 @@ function syncSoundtrack(forceSeek=false){
   try{
    if(forceSeek||Math.abs(soundtrackPreview.currentTime-position)>.3)soundtrackPreview.currentTime=position;
    soundtrackPreview.volume=Math.min(1,Math.max(0,audio.volume));
-   if(soundtrackPreview.paused)void soundtrackPreview.play().catch(()=>tell('Soundtrack playback is unavailable in this browser; command export is unaffected.'));
+   if(soundtrackPreview.paused)void soundtrackPreview.play().catch(()=>{
+    if(soundtrackUnavailable)return;
+    soundtrackUnavailable=true;
+    tell('Soundtrack playback is unavailable in this browser; command export is unaffected.');
+   });
   }catch{soundtrackPreview.pause();}
  };
  if(soundtrackPreview.readyState>=1)apply();
- else soundtrackPreview.addEventListener('loadedmetadata',apply,{once:true});
+ else if(!soundtrackPending){
+  soundtrackPending=true;
+  soundtrackPreview.addEventListener('loadedmetadata',()=>{soundtrackPending=false;apply();},{once:true});
+ }
 }
 
 function seekSequence(seconds){
