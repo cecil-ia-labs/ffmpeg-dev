@@ -5,7 +5,7 @@ const sample=()=>({videos:[{name:'first clip.mp4',start:2,end:10,duration:12}],a
 test('single clip generates safe FFmpeg command and valid mapping',()=>{
  const c=buildFFmpeg(sample());
  assert.match(c.command,/-ss 2 -t 8 -i '\.\/first clip\.mp4'/);
- assert.match(c.command,/-map 0:a\?/);
+ assert.match(c.command,/-map '0:a\?'/);
  assert.match(c.command,/libx264/);
  assert.equal(c.duration,8);
 });
@@ -27,4 +27,24 @@ test('refuses unsafe filenames, overwrites and invalid dimensions',()=>{
  let p=sample();p.output='first clip.mp4';assert.throws(()=>buildFFmpeg(p),/Output must be a safe|overwrite/);
  p=sample();p.videos[0].name='../../secret.mp4';assert.throws(()=>buildFFmpeg(p),/filename relative/);
  p=sample();p.width=1279;assert.throws(()=>buildFFmpeg(p),/dimensions/);
+});
+
+test('rejects invalid or unknown source durations',()=>{
+ const p=sample();p.videos[0].duration=Infinity;
+ assert.throws(()=>buildFFmpeg(p),/Invalid in\/out range/);
+ const a=sample();a.audio={name:'song.wav',start:0,end:2,duration:NaN,offset:0,volume:1};
+ assert.throws(()=>buildFFmpeg(a),/Invalid audio in\/out range/);
+});
+test('rejects soundtracks starting outside the edited video',()=>{
+ const p=sample();p.audio={name:'late.wav',start:0,end:2,duration:5,offset:8,volume:1};
+ assert.throws(()=>buildFFmpeg(p),/Audio begins after the video ends/);
+});
+test('warns when external audio exceeds the final video duration',()=>{
+ const p=sample();p.audio={name:'long.wav',start:0,end:10,duration:12,offset:0,volume:1};
+ assert.match(buildFFmpeg(p).warning,/will be trimmed/);
+});
+test('generates executable Bash header and safe output name',()=>{
+ const p=sample();const c=buildFFmpeg(p);
+ assert.match(c.command,/'\.\/edited\.mp4'/);
+ assert.doesNotMatch(c.command,/\s-y\s/);
 });

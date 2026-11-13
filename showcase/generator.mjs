@@ -16,13 +16,15 @@ function normalize(project) {
   if(!videos.length) throw new Error('Add at least one video');
   if(videos.length>8) throw new Error('This studio supports up to eight video clips');
   for(const clip of videos){
-    if(!Number.isFinite(clip.start)||!Number.isFinite(clip.end)||clip.start<0||clip.end-clip.start<MIN_DURATION||clip.end>clip.duration+.025) throw new Error('Invalid in/out range in '+clip.name);
+    if(!Number.isFinite(clip.duration)||clip.duration<=0||!Number.isFinite(clip.start)||!Number.isFinite(clip.end)||clip.start<0||clip.end-clip.start<MIN_DURATION||clip.end>clip.duration+.025) throw new Error('Invalid in/out range in '+clip.name);
     pathForShell(clip.name);
   }
+  const duration=videos.reduce((n,v)=>n+v.end-v.start,0);
   if(project.audio){
     const a=project.audio;
-    if(!Number.isFinite(a.start)||!Number.isFinite(a.end)||a.start<0||a.end-a.start<MIN_DURATION||a.end>a.duration+.025)throw new Error('Invalid audio in/out range');
+    if(!Number.isFinite(a.duration)||a.duration<=0||!Number.isFinite(a.start)||!Number.isFinite(a.end)||a.start<0||a.end-a.start<MIN_DURATION||a.end>a.duration+.025)throw new Error('Invalid audio in/out range');
     if(!Number.isFinite(a.offset)||a.offset<0||!Number.isFinite(a.volume)||a.volume<0||a.volume>2)throw new Error('Invalid audio offset or volume');
+    if(a.offset>=duration)throw new Error('Audio begins after the video ends; move the soundtrack earlier');
     pathForShell(a.name);
   }
   const width=Number(project.width),height=Number(project.height),fps=Number(project.fps);
@@ -33,7 +35,7 @@ function normalize(project) {
   const names=[...videos.map(v=>v.name),...(project.audio?[project.audio.name]:[])];
   if(new Set(names).size!==names.length)throw new Error('Inputs have duplicate filenames; rename the files locally before generating a command');
   if(names.includes(output))throw new Error('Output cannot overwrite an input filename');
-  return {videos,audio:project.audio??null,width,height,fps,output,format:outputFormat(output),duration:videos.reduce((n,v)=>n+v.end-v.start,0)};
+  return {videos,audio:project.audio??null,width,height,fps,output,format:outputFormat(output),duration};
 }
 export function buildFFmpeg(project){
   const p=normalize(project),inputs=[],filters=[],maps=[];
@@ -50,9 +52,10 @@ export function buildFFmpeg(project){
     const delay=Math.round(a.offset*1000);
     filters.push('['+idx+':a:0]asetpts=PTS-STARTPTS,volume='+number(a.volume)+',adelay='+delay+':all=1,apad=whole_dur='+number(p.duration)+'[aout]');
     maps.push('-map '+shellQuote('[aout]'));
-    if(a.offset+a.end-a.start<p.duration)warning='The selected soundtrack is padded with silence to the full video duration.';
+    if(a.offset+a.end-a.start<p.duration-.025)warning='The selected soundtrack is padded with silence to the full video duration.';
+    else if(a.offset+a.end-a.start>p.duration+.025)warning='The soundtrack extends beyond the video and will be trimmed to its duration.';
   }else if(p.videos.length===1){
-    maps.push('-map 0:a?');
+    maps.push('-map '+shellQuote('0:a?'));
   }else{
     warning='Multiple video clips are exported without their original audio. Add a soundtrack if audio is needed.';
   }
