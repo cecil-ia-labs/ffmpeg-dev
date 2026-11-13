@@ -82,3 +82,17 @@ do not rewrite them to claim that future roadmap milestones are complete.
 Commits should state the coherent scope of the change. Push only when the user
 has explicitly authorized it, and report the exact branch, commit, and checks
 afterward.
+
+
+## Media Processing Studio — standalone browser showroom (2026-11)
+
+The static SPA resides in `showcase/`. It is strictly a browser-based **local File preview and command authoring** experience, not the FFmpeg engine or a media-processing backend. Do not upload user media, add server storage or telemetry, or pretend source preview is the final composition. Generated FFmpeg commands/scripts and Toolkit Pipeline v1 YAML are plans to execute on the user's host and must be grounded in `docs/cli-reference.md` and `specs/pipeline.schema.json`.
+
+Project-specific maintenance skills are in `.agents/skills/`:
+- `media-showroom` for local file loading, accessibility, waveform, timeline, browser privacy and feedback.
+- `command-export` for validated FFmpeg/Bash and toolkit YAML command generation.
+- `toolkit-maintenance` for respecting the package/CLI/operational Skills boundaries.
+
+The packaged operational agent Skills remain under `skills/` and must not be conflated with `.agents/skills/`. Run `node --test showcase/tests/*.test.mjs` for static SPA changes. Test with representative local audio/video fixtures before claiming runtime playback, codec support or rendered artifacts.
+
+The new `.github/workflows/publish-showcase.yml` dispatches manually only. Never add a push-based Pages trigger, change the npm publication path, or merge/show PR automatically. This repository's existing v2 release workflow runs an extensive cross-platform validation matrix on pull requests and master pushes, so **request explicit maintainer authorization before starting a PR or merge** to control CI costs.
