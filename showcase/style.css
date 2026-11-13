@@ -3,3 +3,13 @@
 @media(max-width:750px){.shell{width:calc(100% - 28px)}.topbar{height:auto;flex-wrap:wrap;padding:17px 0}.topbar nav{order:3;width:100%;justify-content:space-between}.github-link{padding:9px}.hero{padding:48px 0 15px}.hero h1{font-size:54px}.hero-art{min-height:330px}.section-title{display:block}.version{display:inline-block;margin:15px 0}.workspace-section,.how,.docs{padding:55px 0}.editor-main{grid-template-columns:1fr}.asset-pane,.preview-pane,.properties-pane{grid-column:auto;border-right:0;border-top:1px solid #294057}.asset-pane{border-top:0}.editor-id small{display:none}.editor-top{flex-wrap:wrap}.timeline-pane{padding:14px}.track{grid-template-columns:64px minmax(0,1fr)}.track-label{font-size:9px}.ruler{padding-left:72px}.output-settings{grid-template-columns:1fr 1fr}.docs-grid,.steps{grid-template-columns:1fr}.footer{flex-direction:column}.hero-art{transform:scale(.93)}}
 @media(max-width:430px){.hero h1{font-size:44px}.art-window{width:96%}.output-settings{grid-template-columns:1fr}.editor-actions{flex-wrap:wrap}.editor-actions button,.editor-actions label{font-size:11px}.timeline-header{font-size:10px}.code-tabs button{padding:9px 8px}}
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+/* Global timeline playback: independent of any server-side rendering. */
+.sequence-controls{display:flex;gap:14px;align-items:center;background:#152b3d;border:1px solid #31506a;border-radius:11px;padding:13px 15px;margin:20px 0 15px}
+.sequence-controls>button{border:1px solid #3e7a82;border-radius:9px;background:#1b4d5a;color:#c7fff1;padding:12px 15px;font-weight:750;font-size:12px;white-space:nowrap}
+.sequence-controls>button:not(:disabled):hover{background:#286578}
+.sequence-controls>button[data-playing="true"]{color:#112937;background:var(--teal)}
+.sequence-scrub-label{display:flex;align-items:center;gap:11px;min-width:0;flex:1;color:#9dbfd0;font-size:11px}
+.sequence-scrub-label input{min-width:75px;flex:1;accent-color:var(--teal);cursor:pointer}
+.sequence-controls output{font-size:12px;font-variant-numeric:tabular-nums;color:#dafaf1;white-space:nowrap}
+.sequence-context{font-size:11px;color:#93bbca;line-height:1.55;margin:8px 0 12px}
+@media(max-width:640px){.sequence-controls{flex-wrap:wrap}.sequence-scrub-label{order:3;min-width:100%;flex-basis:100%}.sequence-controls output{margin-left:auto}}

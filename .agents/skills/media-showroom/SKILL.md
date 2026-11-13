@@ -9,7 +9,7 @@ Changes to `showcase/index.html`, `style.css`, `app.mjs`, browser input, playbac
 
 ## Implementation boundary
 1. Media are imported via browser `File`, played through `URL.createObjectURL` and inspected with native metadata/Web Audio. **No media uploads, remote rendering, storage, tracking, telemetry or external file service.**
-2. Support a sequential video timeline (up to eight clips) and one optional external soundtrack. Explicitly label source-only preview; it is **not** a composited final render.
+2. Support a sequential video timeline (up to eight clips) and one optional external soundtrack. Sequence playback seeks real local sources according to `showcase/sequence.mjs` and follows audio offset approximately; it is **not** a composited, frame-accurate final render. Use `sequenceDuration`, `locateSequenceTime`, and `soundtrackTimeAt` instead of duplicating coordinate calculations.
 3. Trim seconds, source duration, offset, gain and clip order must round-trip into `generator.mjs`. Unsupported codecs may fail playback; the site must report that limitation without inventing results.
 4. Free object URLs when clips are removed or the session is reset. Limit waveform decoding memory and release AudioContext resources.
 5. Keep unique filenames required for shell-based operation and explain that absolute filesystem paths are unavailable to web pages.
