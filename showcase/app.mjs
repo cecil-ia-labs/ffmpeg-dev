@@ -1,4 +1,5 @@
-import {buildFFmpeg,buildPipeline,buildScript} from './generator.mjs';
+import {buildFFmpeg,buildPipeline,buildScript,pathForShell} from './generator.mjs';
+import {probeDuration} from './media-utils.mjs';
 
 const $=id=>document.getElementById(id);
 const project={videos:[],audio:null,width:1280,height:720,fps:30,output:'edited.mp4'};
@@ -10,26 +11,17 @@ function allClips(){return [...project.videos,...(project.audio?[project.audio]:
 function duration(){return project.videos.reduce((sum,v)=>sum+Math.max(0,v.end-v.start),0);}
 function makeNode(tag,cls,txt){const el=document.createElement(tag);if(cls)el.className=cls;if(txt!==undefined)el.textContent=txt;return el;}
 function typeOf(file){if(file.type.startsWith('video/')||assetTypes.video.test(file.name))return 'video';if(file.type.startsWith('audio/')||assetTypes.audio.test(file.name))return 'audio';return null;}
-function getMetadata(file,url,kind){
- return new Promise((resolve,reject)=>{
-  const element=document.createElement(kind==='video'?'video':'audio');element.preload='metadata';
-  const timeout=setTimeout(()=>done(null,'Timed out reading metadata for '+file.name),12000);
-  const done=(value,error)=>{clearTimeout(timeout);element.removeAttribute('src');element.load();if(error)reject(new Error(error));else resolve(value)};
-  element.onloadedmetadata=()=>{const d=element.duration;if(!Number.isFinite(d)||d<=0)done(null,'Unable to determine duration for '+file.name);else done(d)};
-  element.onerror=()=>done(null,'This browser cannot inspect '+file.name+'; try an audio/video format with browser playback support.');
-  element.src=url;
- });
-}
 async function loadFiles(files){
  const warnings=[],added=[];
  for(const file of files){
   const kind=typeOf(file);
   if(!kind){warnings.push('Skipped unsupported media: '+file.name);continue;}
   if(allClips().some(v=>v.name===file.name)){warnings.push('Duplicate filename skipped: '+file.name);continue;}
+  try{pathForShell(file.name)}catch{warnings.push('Unsafe filename skipped: '+file.name);continue;}
   if(kind==='video'&&project.videos.length>=8){warnings.push('Only eight video clips are supported in this demonstration.');continue;}
   const url=URL.createObjectURL(file);
   try{
-   const d=await getMetadata(file,url,kind);
+   const d=await probeDuration(file,url,kind);
    const item={id:++sequence,kind,name:file.name,file,url,duration:d,start:0,end:d,offset:0,volume:1,waveform:null};
    if(kind==='audio'){
     if(project.audio){URL.revokeObjectURL(project.audio.url);if(selected===project.audio)selected=null;}
@@ -51,8 +43,7 @@ async function extractWaveform(clip){
   const decoded=await ctx.decodeAudioData(buffer);
   const data=decoded.getChannelData(0),values=[],n=160,block=Math.max(1,Math.floor(data.length/n));
   for(let i=0;i<n;i++){let peak=0;for(let j=i*block;j<Math.min(data.length,(i+1)*block);j+=Math.max(1,Math.floor(block/80)))peak=Math.max(peak,Math.abs(data[j]));values.push(peak)}
-  clip.waveform=values;
-  renderTimeline();
+  if(project.audio===clip){clip.waveform=values;renderTimeline();}
  }catch{ /* The local source may not be decodable by Web Audio. Preview still works when supported. */ }
  finally{if(ctx)void ctx.close()}
 }
@@ -70,7 +61,8 @@ function renderAssets(){
 function waveform(canvas,clip){
  const ctx=canvas.getContext('2d');if(!ctx)return;
  const w=canvas.width,h=canvas.height;ctx.clearRect(0,0,w,h);
- ctx.fillStyle='#faafbd';const values=clip.waveform??Array.from({length:160},(_,i)=>.22+.14*Math.sin(i*.7));
+ ctx.fillStyle='#faafbd';const values=clip.waveform;
+ if(!values?.length)return;
  for(let i=0;i<values.length;i++){const x=i*w/values.length,amp=Math.max(.06,values[i])*h*.88;ctx.fillRect(x,(h-amp)/2,Math.max(1,w/values.length-1),amp)}
 }
 function renderTimeline(){
@@ -89,9 +81,9 @@ function renderTimeline(){
   const clip=project.audio,offset=Math.min(100,100*clip.offset/total),width=Math.max(3,Math.min(100-offset,100*(clip.end-clip.start)/total));
   const button=makeNode('button','segment audio');button.type='button';button.style.marginLeft=offset+'%';button.style.width=width+'%';
   button.setAttribute('aria-pressed',String(clip===selected));
-  const canvas=makeNode('canvas','waveform');canvas.width=320;canvas.height=64;canvas.setAttribute('aria-hidden','true');
-  button.append(canvas,makeNode('span','',clip.name),makeNode('small','+'+clip.offset.toFixed(1)+'s · '+fmt(clip.end-clip.start)));
-  button.addEventListener('click',()=>{selected=clip;render()});audio.append(button);waveform(canvas,clip);
+  if(clip.waveform?.length){const canvas=makeNode('canvas','waveform');canvas.width=320;canvas.height=64;canvas.setAttribute('aria-hidden','true');button.append(canvas);waveform(canvas,clip);}
+  button.append(makeNode('span','',clip.name),makeNode('small','+'+clip.offset.toFixed(1)+'s · '+fmt(clip.end-clip.start)));
+  button.addEventListener('click',()=>{selected=clip;render()});audio.append(button);
  }else audio.append(makeNode('span','track-placeholder','Add one audio file to replace the soundtrack'));
 }
 function renderProperties(){
@@ -121,6 +113,7 @@ function renderPreview(){
  const target=p.kind==='video'?video:audioPreview,other=p.kind==='video'?audioPreview:video;
  if(currentPreview!==p){other.pause();target.pause();other.hidden=true;target.src=p.url;target.load();currentPreview=p;target.addEventListener('loadedmetadata',()=>{if(currentPreview===p)target.currentTime=p.start},{once:true});}
  target.hidden=false;other.hidden=true;$('preview-empty').hidden=true;
+ if(p.kind==='audio')audioPreview.volume=Math.min(1,Math.max(0,p.volume));
  $('preview-kind').textContent=p.kind.toUpperCase()+' / LOCAL';$('preview-name').textContent=p.name;
  const scrub=$('scrub');scrub.disabled=false;scrub.min=String(p.start);scrub.max=String(p.end);scrub.value=String(Math.max(p.start,Math.min(p.end,target.currentTime||p.start)));
  $('preview-time').textContent=fmt(target.currentTime||p.start)+' / '+fmt(p.end);
@@ -162,7 +155,7 @@ function changeRange(){
 }
 for(const id of ['clip-in','clip-out'])$(id).addEventListener('change',changeRange);
 $('audio-offset').addEventListener('change',()=>{if(!project.audio)return;project.audio.offset=Math.max(0,Math.min(3600,Number($('audio-offset').value)||0));render()});
-$('audio-volume').addEventListener('input',()=>{if(!project.audio)return;project.audio.volume=Number($('audio-volume').value)/100;renderCode();$('gain-value').textContent=Math.round(project.audio.volume*100)+'%'});
+$('audio-volume').addEventListener('input',()=>{if(!project.audio)return;project.audio.volume=Number($('audio-volume').value)/100;audioPreview.volume=Math.min(1,project.audio.volume);renderCode();$('gain-value').textContent=Math.round(project.audio.volume*100)+'%'});
 for(const [id,dir] of [['move-left',-1],['move-right',1]])$(id).addEventListener('click',()=>{const i=project.videos.indexOf(selected),j=i+dir;if(i<0||j<0||j>=project.videos.length)return;[project.videos[i],project.videos[j]]=[project.videos[j],project.videos[i]];render()});
 $('remove-clip').addEventListener('click',()=>{if(!selected)return;const clip=selected;if(clip.kind==='audio')project.audio=null;else project.videos=project.videos.filter(v=>v!==clip);selected=project.videos.at(0)??project.audio;currentPreview=null;video.pause();audioPreview.pause();video.removeAttribute('src');audioPreview.removeAttribute('src');URL.revokeObjectURL(clip.url);render()});
 function clearProject(){for(const clip of allClips())URL.revokeObjectURL(clip.url);video.pause();audioPreview.pause();video.removeAttribute('src');audioPreview.removeAttribute('src');project.videos=[];project.audio=null;currentPreview=null;selected=null;tell('Project cleared. Media objects have been released from this page.');render()}
