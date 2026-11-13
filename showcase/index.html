@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="en">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Media Processing Studio | FFmpeg Media Toolkit · Cecil-IA Labs</title>
+<meta name="description" content="Build FFmpeg editing commands visually. Load video and audio locally, edit ranges on a timeline, and export FFmpeg commands or Cecil-IA Labs toolkit pipelines—without uploading media.">
+<meta name="theme-color" content="#0b121e">
+<link rel="canonical" href="https://cecil-ia-labs.github.io/ffmpeg-dev/">
+<meta property="og:type" content="website"><meta property="og:title" content="FFmpeg Media Processing Studio">
+<meta property="og:description" content="A local-media editing workspace that generates FFmpeg shell commands and compatible toolkit YAML pipelines.">
+<meta property="og:url" content="https://cecil-ia-labs.github.io/ffmpeg-dev/">
+<link rel="stylesheet" href="./style.css"><script type="module" src="./app.mjs"></script>
+</head>
+<body>
+<a class="skip" href="#studio">Skip to editor</a>
+<header class="topbar shell"><a class="brand" href="https://cecil-ia-labs.github.io/"><span class="brand-mark">▶</span><span>CECIL/IA <small>MEDIA LAB</small></span></a>
+<nav aria-label="Main navigation"><a href="#studio">Editor</a><a href="#how">How it works</a><a href="#docs">Documentation</a></nav>
+<a class="github-link" href="https://github.com/cecil-ia-labs/ffmpeg-dev">GITHUB ↗</a></header>
+<main>
+<section class="hero shell"><div><p class="eyebrow">FFMPEG MEDIA TOOLKIT / INTERACTIVE SHOWROOM</p><h1>Shape the edit.<br><em>Own the render.</em></h1>
+<p>Load files from your computer, trim and arrange video, add a soundtrack, and generate commands you can run locally. The browser previews your sources; FFmpeg performs the final render on your machine.</p>
+<div class="hero-actions"><a class="btn primary" href="#studio">Open editing workspace ↘</a><a class="btn outline" href="https://www.npmjs.com/package/@cecilialabs/ffmpeg">View npm package ↗</a></div>
+<div class="trust"><span><b>◉</b> Local file access only</span><span><b>⌁</b> No media uploads</span><span><b>⌘</b> Export commands</span></div>
+</div><div class="hero-art" aria-hidden="true"><div class="art-window"><div class="art-bar"><i></i><i></i><i></i><span>MEDIA / TIMELINE</span></div><div class="art-player"><span>▶</span></div><div class="art-track one"></div><div class="art-track two"></div><div class="art-track three"></div></div><div class="art-bubble">FFmpeg<br><strong>→ CLI</strong></div></div></section>
+<section class="workspace-section" id="studio"><div class="shell"><div class="section-title"><div><p class="eyebrow">01 / EDITOR</p><h2>Build a sequence.</h2><p>Files remain in your browser session. Nothing is transmitted to Cecil-IA Labs or any processing server.</p></div><span class="version">LOCAL MEDIA · NATIVE WEB APIs</span></div>
+<div class="editor">
+ <div class="editor-top"><div class="editor-id"><span class="led"></span> UNTITLED SESSION <small>Not saved to a server</small></div><div class="editor-actions"><button id="reset" type="button" class="subtle">Clear project</button><label class="import" for="media-input">+ Add media<input id="media-input" type="file" accept="video/*,audio/*,.mkv,.mov,.mp4,.webm,.wav,.mp3,.m4a,.flac,.ogg" multiple hidden></label></div></div>
+ <div class="editor-main">
+   <aside class="asset-pane">
+    <div class="pane-title"><span>MEDIA BIN</span><small id="asset-count">0 FILES</small></div>
+    <label id="dropzone" class="dropzone" for="drop-input" tabindex="0"><span>＋</span><strong>Drop files here</strong><small>or choose audio/video from your computer</small><input id="drop-input" type="file" accept="video/*,audio/*,.mkv,.mov,.mp4,.webm,.wav,.mp3,.m4a,.flac,.ogg" multiple hidden></label>
+    <div id="asset-list" class="asset-list" aria-live="polite"></div>
+    <p class="privacy-note">Only local object URLs are used for previews. No upload, remote rendering, or server-side transcoding.</p>
+   </aside>
+   <section class="preview-pane" aria-label="Local media preview">
+    <div class="pane-title"><span>PREVIEW MONITOR</span><small id="preview-kind">NO SOURCE</small></div>
+    <div class="monitor"><video id="video-preview" controls playsinline preload="metadata" hidden></video><div id="preview-empty" class="monitor-empty"><span>▶</span><strong>Your footage appears here</strong><p>Import a video, then select its clip on the timeline.</p></div></div>
+    <div class="monitor-footer"><span id="preview-name">No clip selected</span><span id="preview-time">00:00 / 00:00</span></div>
+    <label class="scrub-label" for="scrub">Preview position <input id="scrub" type="range" min="0" max="100" value="0" step="0.01" disabled></label>
+    <p class="preview-note">Preview displays the selected source and seek position, not a rendered composite of all clips or effects.</p>
+   </section>
+   <aside class="properties-pane"><div class="pane-title"><span>CLIP INSPECTOR</span><small>EDIT VALUES</small></div>
+    <div id="no-selection" class="no-selection">Select a video or soundtrack to edit its in/out range.</div>
+    <div id="clip-fields" hidden><div class="selected-file" id="selected-name"></div>
+      <div class="two-cols"><label>IN (SECONDS)<input id="clip-in" type="number" min="0" step="0.1" value="0"></label><label>OUT (SECONDS)<input id="clip-out" type="number" min="0" step="0.1" value="1"></label></div>
+      <p class="range-info" id="clip-range"></p>
+      <div id="audio-fields" hidden><label>AUDIO OFFSET (S)<input id="audio-offset" type="number" min="0" step="0.1" value="0"></label><label>GAIN <output id="gain-value">100%</output><input id="audio-volume" type="range" min="0" max="200" step="5" value="100"></label></div>
+      <div class="reorder" id="video-order"><button id="move-left" type="button">← Earlier</button><button id="move-right" type="button">Later →</button></div>
+      <button id="remove-clip" type="button" class="remove">Remove from project</button>
+    </div>
+    <div class="note-card"><b>Remember</b><p>The generated script expects these source filenames in the same working directory. Browsers cannot expose their absolute paths.</p></div>
+   </aside>
+ </div>
+ <div class="timeline-pane"><div class="timeline-header"><strong>SEQUENCE TIMELINE</strong><span id="duration">00:00 TOTAL</span></div>
+  <div class="ruler"><span>0s</span><span>25%</span><span>50%</span><span>75%</span><span>END</span></div>
+  <div class="track"><span class="track-label">VIDEO 01</span><div id="video-track" class="track-lane"><span class="track-placeholder">Add a video to build a sequence</span></div></div>
+  <div class="track"><span class="track-label">AUDIO 01</span><div id="audio-track" class="track-lane"><span class="track-placeholder">Optional soundtrack · the source video audio is preserved for single clips</span></div></div>
+  <p class="timeline-hint">Select a segment to edit its IN/OUT points. Use Earlier/Later to reorder clips. A supplied soundtrack replaces source audio; multiple clips without a soundtrack render silently.</p>
+ </div>
+ <div id="messages" role="status" aria-live="polite" class="messages" hidden></div>
+</div>
+<div class="export-section"><div class="export-left"><p class="eyebrow">02 / OUTPUT</p><h2>Generate. Copy. Run.</h2>
+<p>Export shell commands for the local FFmpeg installation or a YAML file for the toolkit's supported single-input pipeline schema.</p>
+<div class="output-settings">
+ <label>FORMAT<select id="format"><option value="mp4">MP4 / H.264</option><option value="webm">WebM / VP9</option></select></label>
+ <label>RESOLUTION<select id="resolution"><option value="1280x720">1280 × 720</option><option value="1920x1080">1920 × 1080</option><option value="854x480">854 × 480</option></select></label>
+ <label>FRAME RATE<select id="fps"><option value="30">30 fps</option><option value="24">24 fps</option><option value="25">25 fps</option><option value="60">60 fps</option></select></label>
+ <label>OUTPUT FILE<input id="output-file" value="edited.mp4" spellcheck="false"></label>
+</div>
+<p class="output-note">The toolkit pipeline format currently supports sequential domain steps, not arbitrary multitrack compositions. Unsupported projects are exported as native FFmpeg commands.</p>
+</div><div class="code-pane"><div class="code-tabs" role="group" aria-label="Output code format"><button data-code="ffmpeg" aria-pressed="true">FFmpeg</button><button data-code="bash" aria-pressed="false">Bash script</button><button data-code="yaml" aria-pressed="false">Toolkit YAML</button></div>
+<div class="code-top"><span id="code-title">BASH / FFMPEG</span><div><button id="copy" type="button">Copy</button><button id="download" type="button">Download</button></div></div>
+<pre class="code"><code id="code-output"># Add at least one video to generate a command.</code></pre><p class="code-warning" id="code-warning" role="status">Install FFmpeg locally. Check source paths and host codec support before running.</p>
+</div></div>
+</div></section>
+<section id="how" class="how shell"><p class="eyebrow">03 / WORKFLOW</p><h2>One workflow.<br><em>Two environments.</em></h2><div class="steps"><article><span>01</span><h3>Load locally</h3><p>Use the File API to open media for playback, metadata inspection and waveform extraction. Nothing leaves the tab.</p></article><article><span>02</span><h3>Edit visually</h3><p>Organize clips, set trim ranges, choose resolution and frame rate, or add an independent audio track.</p></article><article><span>03</span><h3>Render on your host</h3><p>Copy the generated command, run it in a directory containing the source files, and validate the resulting media locally.</p></article></div></section>
+<section class="docs" id="docs"><div class="shell docs-grid"><div><p class="eyebrow">04 / OPEN SOURCE TOOLKIT</p><h2>Beyond the<br><em>showroom.</em></h2></div><div><p>The full TypeScript toolkit includes a CLI, FFprobe diagnostics, hardware capability checks, compositing, streaming, transformations, reusable pipelines and agent skills. Its local execution path validates artifacts rather than claiming success from a dry-run.</p><p>This site is a client-only composer and is not equivalent to the complete toolkit runtime.</p><div class="docs-links"><a href="https://github.com/cecil-ia-labs/ffmpeg-dev/blob/master/docs/cli-reference.md">CLI reference ↗</a><a href="https://github.com/cecil-ia-labs/ffmpeg-dev/blob/master/docs/pipelines.md">Pipeline schema ↗</a><a href="https://www.npmjs.com/package/@cecilialabs/ffmpeg">npm package ↗</a></div></div></div></section>
+</main><footer class="shell footer"><a href="https://cecil-ia-labs.github.io/">← OPEN SOURCE OBSERVATORY</a><span>CECIL-IA LABS · FFmpeg Media Toolkit · MIT</span><a href="https://github.com/cecil-ia-labs/ffmpeg-dev">SOURCE ↗</a></footer>
+</body></html>
