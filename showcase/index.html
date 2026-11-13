@@ -36,7 +36,7 @@
     <div class="monitor"><video id="video-preview" controls playsinline preload="metadata" hidden></video><div id="preview-empty" class="monitor-empty"><span>▶</span><strong>Your footage appears here</strong><p>Import a video, then select its clip on the timeline.</p></div></div>
     <div class="monitor-footer"><span id="preview-name">No clip selected</span><span id="preview-time">00:00 / 00:00</span></div>
     <label class="scrub-label" for="scrub">Preview position <input id="scrub" type="range" min="0" max="100" value="0" step="0.01" disabled></label>
-    <p class="preview-note">Preview displays the selected source and seek position, not a rendered composite of all clips or effects.</p>
+    <p class="preview-note">Sequence preview plays trimmed local video clips in order, and can follow the external soundtrack. It does not render scaling, effects, transitions or an encoded final composition.</p>
    </section>
    <aside class="properties-pane"><div class="pane-title"><span>CLIP INSPECTOR</span><small>EDIT VALUES</small></div>
     <div id="no-selection" class="no-selection">Select a video or soundtrack to edit its in/out range.</div>
@@ -51,10 +51,18 @@
    </aside>
  </div>
  <div class="timeline-pane"><div class="timeline-header"><strong>SEQUENCE TIMELINE</strong><span id="duration">00:00 TOTAL</span></div>
+  <div class="sequence-controls" role="group" aria-label="Local sequence preview">
+   <button id="sequence-play" type="button" disabled>▶ Play sequence</button>
+   <label for="sequence-scrub" class="sequence-scrub-label">Sequence position
+    <input id="sequence-scrub" type="range" min="0" max="1" step="0.01" value="0" disabled>
+   </label>
+   <output id="sequence-time" for="sequence-scrub">00:00 / 00:00</output>
+  </div>
+  <p class="sequence-context" id="sequence-context" aria-live="polite">Add a video to preview the full sequence.</p>
   <div class="ruler"><span>0s</span><span>25%</span><span>50%</span><span>75%</span><span>END</span></div>
   <div class="track"><span class="track-label">VIDEO 01</span><div id="video-track" class="track-lane"><span class="track-placeholder">Add a video to build a sequence</span></div></div>
   <div class="track"><span class="track-label">AUDIO 01</span><div id="audio-track" class="track-lane"><span class="track-placeholder">Optional soundtrack · the source video audio is preserved for single clips</span></div></div>
-  <p class="timeline-hint">Select a segment to edit its IN/OUT points. Use Earlier/Later to reorder clips. A supplied soundtrack replaces source audio; multiple clips without a soundtrack render silently.</p>
+  <p class="timeline-hint">Select a segment to edit its IN/OUT points. Play the local sequence to preview clip boundaries. A supplied soundtrack replaces source audio; multiple clips without a soundtrack render silently. The generated command is the authoritative render plan.</p>
  </div>
  <div id="messages" role="status" aria-live="polite" class="messages" hidden></div>
 </div>
