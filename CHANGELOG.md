@@ -4,6 +4,9 @@
 
 ### Added
 
+- Standalone browser-only Media Processing Studio showroom in `showcase/`: local source previews, editable video/audio timeline, waveform sampling, and generated FFmpeg/Bash/Toolkit v1 YAML commands, with no media upload or server-side processing.
+- English-first/Portuguese/Italian README navigation, project-local `.agents/skills/` guidance, standalone tests, and a manual-only Pages deployment workflow. These do not change the package runtime or publish a new npm version.
+
 - Customer support, privacy policy, and terms of service documents for public
   distribution links.
 
